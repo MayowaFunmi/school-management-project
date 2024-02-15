@@ -11,7 +11,7 @@ namespace SchoolManagementApi.Queries.Admin
   {
     public class GetOrganizationByAdminIdQuery : IRequest<GenericResponse>
     {
-      public string AdminId { get; set; }
+      public string AdminId { get; set; } = string.Empty;
     }
 
     public class GetOrganizationsByAdminIdHandler(IOrganizationService organizationService, ILoggerManager logger) : IRequestHandler<GetOrganizationByAdminIdQuery, GenericResponse>

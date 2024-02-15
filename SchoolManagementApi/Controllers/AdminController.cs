@@ -170,6 +170,165 @@ namespace SchoolManagementApi.Controllers
         ? Ok(response) : BadRequest(response);
     }
 
+    [HttpPost]
+    [Route("add-school")]
+    [Authorize(Policy = "Admin")]
+    public async Task<IActionResult> CreateSchool(CreateSchool.CreateSchoolCommand request)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(CurrentUserId))
+        {
+            return Unauthorized("You are not an admin");
+        }
+        if (string.IsNullOrEmpty(request.OrganizationUniqueId) && string.IsNullOrEmpty(request.ZoneId) && string.IsNullOrEmpty(request.Name) && string.IsNullOrEmpty(request.Address))
+        {
+          return BadRequest("All fields are required");
+        }
+        request.AdminId = CurrentUserId;
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-schools-in-zone")]
+    [Authorize]
+    public async Task<IActionResult> GetSchoolsInZone(GetAllSchoolsInZone.GetAllSchoolsInZoneQuery request)
+    {
+      bool pageSpecified = request.Page != default;
+      bool pageSizeSpecified = request.PageSize != default;
+
+      if (!pageSpecified || !pageSizeSpecified || string.IsNullOrEmpty(request.ZoneId))
+        return BadRequest("Zone Id, Page and PageSize must be specified.");
+
+      if (request.Page == 0 || request.PageSize == 0)
+        return BadRequest("Page and PageSize must not be zero value.");
+
+      try
+      {
+        var response = await _mediator.Send(request);
+          return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-schools-in-organization")]
+    [Authorize(Policy = "OwnerSuperAdmin")]
+    public async Task<IActionResult> GetSchoolsInOrganization(GetAllOrganizationSchools.GetAllOrganizationSchoolsQuery request)
+    {
+      bool pageSpecified = request.Page != default;
+      bool pageSizeSpecified = request.PageSize != default;
+
+      if (!pageSpecified || !pageSizeSpecified || string.IsNullOrEmpty(request.OrganizationUniqueId))
+        return BadRequest("Organization Unique Id, Page and PageSize must be specified.");
+      
+      if (request.Page == 0 || request.PageSize == 0)
+        return BadRequest("Page and PageSize must not be zero value.");
+
+      try
+      {
+        if (string.IsNullOrEmpty(CurrentUserId))
+        {
+          return Unauthorized("You are not an admin");
+        }
+        
+        request.AdminId = CurrentUserId;
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-all-schools")]
+    [Authorize(Policy = "OwnerSuperAdmin")]
+    public async Task<IActionResult> GetAllSchools(GetAllSchools.GetAllSchoolsQuery request)
+    {
+      bool pageSpecified = request.Page != default;
+      bool pageSizeSpecified = request.PageSize != default;
+
+      if (!pageSpecified || !pageSizeSpecified)
+        return BadRequest("Page and PageSize must be specified.");
+      
+      if (request.Page == 0 || request.PageSize == 0)
+        return BadRequest("Page and PageSize must not be zero value.");
+
+      try
+      {
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-all-school-departments/{schoolId}")]
+    [Authorize]
+    public async Task<IActionResult> GetDepartmentsInSchool(string schoolId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(schoolId))
+        {
+          return BadRequest("You must provide a school id");
+        }
+        var response = await _mediator.Send(new GetSchoolDepartments.GetSchoolDepartmentsQuery(schoolId));
+        return response.Status == HttpStatusCode.OK.ToString()
+        ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpPost]
+    [Route("add-school-department")]
+    [Authorize(Policy = "Admin")]
+    public async Task<IActionResult> AddDepartment(CreateDepartment.CreateDepartmentCommand request)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(CurrentUserId))
+        {
+          return Unauthorized("You are not an admin");
+        }
+
+        if (string.IsNullOrEmpty(request.SchoolId) || string.IsNullOrEmpty(request.Name))
+        {
+          return BadRequest("All fields are required");
+        }
+        
+        request.AdminId = CurrentUserId;
+        var response = await _mediator.Send(request);
+          return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
     [HttpGet]
     [Route("get-user-by-unique-id/{uniqueId}")]
     [Authorize]
@@ -195,7 +354,7 @@ namespace SchoolManagementApi.Controllers
       }
       catch (Exception ex)
       {
-       return new GenericResponse
+        return new GenericResponse
         {
           Status = HttpStatusCode.InternalServerError.ToString(),
           Message = $"Internal server error occured - {ex.Message}",

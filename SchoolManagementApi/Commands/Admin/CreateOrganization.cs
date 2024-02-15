@@ -25,7 +25,7 @@ namespace SchoolManagementApi.Commands.Admin
       public async Task<GenericResponse> Handle(CreateOrganizationsCommand request, CancellationToken cancellationToken)
       {
         // get the admin user
-        var admin = await _userManager.FindByIdAsync(request.AdminId);
+        var admin = await _userManager.FindByIdAsync(request.AdminId!);
         if (admin == null)
         {
           return new GenericResponse
@@ -38,8 +38,8 @@ namespace SchoolManagementApi.Commands.Admin
         var organization = new Organization
         {
           OrganizationUniqueId = GenerateUserCode.GenerateOrgUniqueId(),
-          AdminId = request.AdminId,
-          Name = request.OrganizationName
+          AdminId = request.AdminId!,
+          Name = request.OrganizationName!
         };
         // call service
         var createdOrganization = await _organizationService.CreateOrganization(organization);

@@ -33,15 +33,15 @@ namespace SchoolManagementApi.Data
         .HasIndex(s => s.SchoolUniqueId)
         .IsUnique();
 
-      modelBuilder.Entity<School>()
-        .HasOne(s => s.Zone)
-        .WithMany(z => z.Schools)
-        .OnDelete(DeleteBehavior.NoAction);
+      // modelBuilder.Entity<School>()
+      //   .HasOne(s => s.Zone)
+      //   .WithMany(z => z.Schools)
+      //   .OnDelete(DeleteBehavior.NoAction);
 
-      modelBuilder.Entity<Department>()
-        .HasOne(d => d.School)
-        .WithMany(s => s.Departments)
-        .OnDelete(DeleteBehavior.NoAction);
+      // modelBuilder.Entity<Department>()
+      //   .HasOne(d => d.School)
+      //   .WithMany(s => s.Departments)
+      //   .OnDelete(DeleteBehavior.NoAction);
 
       modelBuilder.Entity<ClassArms>()
         .HasOne(c => c.StudentClass)

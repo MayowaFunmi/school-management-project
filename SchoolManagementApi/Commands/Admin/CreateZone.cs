@@ -1,8 +1,5 @@
 using System.Net;
-using System.Security.Policy;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SchoolManagementApi.Data;
 using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Admin;
 
@@ -23,7 +20,7 @@ namespace SchoolManagementApi.Commands.Admin
 
       public async Task<GenericResponse> Handle(CreateZoneCommand request, CancellationToken cancellationToken)
       {
-        var organizationId = await _zoneService.OrganizationExists(request.OrganizationUniqueId!, request.AdminId);
+        var organizationId = await _zoneService.OrganizationExists(request.OrganizationUniqueId!, request.AdminId!);
         if (string.IsNullOrEmpty(organizationId))
         {
           return new GenericResponse

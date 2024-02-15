@@ -9,7 +9,7 @@ namespace SchoolManagementApi.Queries.Admin
   {
     public class GetAllOrganizationZonesQuery : IRequest<GenericResponse>
     {
-      public string? AdminId { get; set; }
+      public string AdminId { get; set; } = string.Empty;
       public string? OrganizationUniqueId { get; set; }
     }
 
