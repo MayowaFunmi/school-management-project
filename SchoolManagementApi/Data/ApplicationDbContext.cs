@@ -43,10 +43,10 @@ namespace SchoolManagementApi.Data
       //   .WithMany(s => s.Departments)
       //   .OnDelete(DeleteBehavior.NoAction);
 
-      modelBuilder.Entity<ClassArms>()
-        .HasOne(c => c.StudentClass)
-        .WithMany(s => s.ClassArms)
-        .OnDelete(DeleteBehavior.NoAction);
+      // modelBuilder.Entity<ClassArms>()
+      //   .HasOne(c => c.StudentClass)
+      //   .WithMany(s => s.ClassArms)
+      //   .OnDelete(DeleteBehavior.NoAction);
         
     }
   }

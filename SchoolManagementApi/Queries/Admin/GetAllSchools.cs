@@ -24,7 +24,7 @@ namespace SchoolManagementApi.Queries.Admin
         try
         {
           var schools = await _schoolServices.AllScchools(request.Page, request.PageSize);
-          if (schools != null)
+          if (schools.Count != 0)
           {
             var response = new PaginationResponse
             {

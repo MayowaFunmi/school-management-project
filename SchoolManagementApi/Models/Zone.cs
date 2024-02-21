@@ -5,6 +5,7 @@ namespace SchoolManagementApi.Models
 {
   public class Zone
   {
+    [Key]
     public Guid ZoneId { get; set; }
     [ForeignKey("OrganizationId")]
     [Required]

@@ -27,6 +27,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+
 builder.Services.AddTransient<ApplicationDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -63,6 +64,9 @@ builder.Services.AddScoped<ILoggerManager, LoggerManager>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IZoneService, ZoneService>();
+builder.Services.AddScoped<IDepartmentServices, DepartmentServices>();
+builder.Services.AddScoped<ISchoolServices, SchoolServices>();
+builder.Services.AddScoped<IStudentClassServices, StudentClassServices>();
 
 builder.Services.AddCors(options =>
     {

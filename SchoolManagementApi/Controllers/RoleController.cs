@@ -12,11 +12,10 @@ namespace SchoolManagementApi.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
-  public class RoleController(ApplicationDbContext context, IRoleService roleService, IAdminService adminService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) : ControllerBase
+  public class RoleController(ApplicationDbContext context, IRoleService roleService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager) : ControllerBase
   {
     private readonly ApplicationDbContext _context = context;
     private readonly IRoleService _roleService = roleService;
-    private readonly IAdminService _adminService = adminService;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 

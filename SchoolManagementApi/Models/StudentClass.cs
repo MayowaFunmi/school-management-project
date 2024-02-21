@@ -6,6 +6,7 @@ namespace SchoolManagementApi.Models
 {
   public class StudentClass
   {
+    [Key]
     public Guid StudentClassId { get; set; }
 
     [ForeignKey("SchoolId")]
@@ -13,7 +14,6 @@ namespace SchoolManagementApi.Models
     public string Name { get; set; }  // ss1, ss2, etc
     [Range(1, int.MaxValue)]
     public int Arm { get; set; }
-    public School School { get; set; }
     public List<ClassArms> ClassArms { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }

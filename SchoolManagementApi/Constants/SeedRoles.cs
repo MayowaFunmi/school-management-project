@@ -41,7 +41,7 @@ namespace SchoolManagementApi.Constants
         if (userRole == null)
         {
           await userManager.CreateAsync(user, password);
-          await userManager.AddToRolesAsync(user, new [] {StaticUserRoles.Owner, StaticUserRoles.Users, StaticUserRoles.SuperAdmin, StaticUserRoles.Admin});
+          await userManager.AddToRolesAsync(user, [StaticUserRoles.Owner, StaticUserRoles.Users, StaticUserRoles.SuperAdmin, StaticUserRoles.Admin]);
         }
       }
     }

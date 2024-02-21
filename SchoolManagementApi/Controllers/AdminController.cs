@@ -154,6 +154,28 @@ namespace SchoolManagementApi.Controllers
       }
     }
 
+    [HttpGet]
+    [Route("admin-get-all-organization-zones")]
+    [Authorize(Policy = "Admin")]
+    public async Task<IActionResult> GetOranizationZonesForAdmin(GetAllOrganizationZones.GetAllOrganizationZonesQuery request)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(CurrentUserId))
+          return BadRequest("You are not an Admin");
+        if (string.IsNullOrEmpty(request.OrganizationUniqueId))
+          return BadRequest("Organization Unique Id cannot be empty");
+        request.AdminId = CurrentUserId;
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
 
     [HttpPost]
     [Route("add-zone-for-admin/{adminId}")]
@@ -321,6 +343,92 @@ namespace SchoolManagementApi.Controllers
         request.AdminId = CurrentUserId;
         var response = await _mediator.Send(request);
           return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpPost]
+    [Route("add-student-class")]
+    [Authorize(Policy = "Admin")]
+    public async Task<IActionResult> AddStudentClass(CreateStudentClass.CreateStudentClassCommand request)
+    {
+      try
+      {
+        bool arm = request.Arm != default;
+
+        if (!arm)
+          return BadRequest("Class Arm must be set");
+        if (request.Arm < 1)
+          return BadRequest("Class Arm must not be less than 1");
+
+        if (string.IsNullOrEmpty(request.SchoolId) || string.IsNullOrEmpty(request.Name))
+          return BadRequest("School Id or Name must be set");
+        var response = await _mediator.Send(request);
+          return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-claases-in-school/{schoolId}")]
+    [Authorize]
+    public async Task<IActionResult> GetAllClassesInSchool(string schoolId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(schoolId))
+          return BadRequest("School Id cannot be null");
+        var response = await _mediator.Send(new GetAllStudentClasses.GetAllStudentClassesQuery(schoolId));
+          return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-all-school-classarms")]
+    public async Task<IActionResult> AllSchoolClassArms(GetAllClassArms.GetAllClassArmsQuery request)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(CurrentUserId))
+          return BadRequest("You are not an Admin");
+        if (string.IsNullOrEmpty(request.SchoolId) || string.IsNullOrEmpty(request.ClassId))
+          return BadRequest("School Id or Class Id cannot be null");
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-organization-school-data/{organizationUniqueId}")]
+    [Authorize(Policy = "OwnerSuperAdmin")]
+    public async Task<IActionResult> GetOrganizationSchoolData(string organizationUniqueId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(CurrentUserId))
+          return BadRequest("You are not authorize");
+        if (string.IsNullOrEmpty(organizationUniqueId))
+          return BadRequest("Organization Unique Id cannot b null");
+        var response = await _mediator.Send(new GetOrganizationSchoolData.GetOrganizationSchoolDataQuery(organizationUniqueId));
+        return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);
       }
       catch (Exception ex)

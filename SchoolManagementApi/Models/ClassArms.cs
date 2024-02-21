@@ -6,22 +6,22 @@ namespace SchoolManagementApi.Models
 {
   public class ClassArms
   {
-    [Key]   
+    [Key]
     public Guid ClassArmId { get; set; }
+
+    [Required]
     public string Name { get; set; }
 
+    [ForeignKey("SchoolId")]
     [Required]
     public Guid SchoolId { get; set; }
-    [ForeignKey("SchoolId")]
-    public School School { get; set; }
-    [Required]
+    
+    [ForeignKey("StudentClassId")]
     public Guid StudentClassId { get; set; }
 
-    [ForeignKey("StudentClassId")]
-    public StudentClass StudentClass { get; set; }
-    public Guid DepartmentId { get; set; }
-
     [ForeignKey("DepartmentId")]
+    public Guid? DepartmentId { get; set; }
+
     public Department? Department { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;

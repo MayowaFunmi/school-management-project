@@ -15,10 +15,9 @@ namespace SchoolManagementApi.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
-  public class AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration) : ControllerBase
+  public class AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration) : ControllerBase
   {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
     private readonly IConfiguration _configuration = configuration;
 
     // register users

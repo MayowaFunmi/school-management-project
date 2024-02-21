@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementApi.Data;
+using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
 using SchoolManagementApi.Models;
@@ -101,6 +102,28 @@ namespace SchoolManagementApi.Services.Admin
       {
         _logger.LogError($"Error getting all Schools in the zone with id {ZoneId} - {ex.Message}");
         WatchLogger.LogError(ex.ToString(), $"Error getting all Schools in the zone with id {ZoneId} - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<OrganizationData>> OrganizationData(string organizationUniqueId)
+    {
+      try
+      {
+        return  await _context.Schools
+          .Where(s => s.OrganizationUniqueId == organizationUniqueId)
+          .Select(s => new OrganizationData
+          {
+            SchholName = s.Name,
+            SchholAddress = s.Address,
+            SchoolUniqueId = s.SchoolUniqueId
+          })
+          .ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting organization's school data - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting organization's school data - {ex.Message}");
         throw;
       }
     }

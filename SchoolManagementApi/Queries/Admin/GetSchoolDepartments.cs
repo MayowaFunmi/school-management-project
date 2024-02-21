@@ -18,7 +18,7 @@ namespace SchoolManagementApi.Queries.Admin
         try
         {
           var departments = await _departmentServices.GetSchoolDepartments(request.SchoolId);
-          if (departments != null)
+          if (departments.Count != 0)
           {
             return new GenericResponse
             {

@@ -19,24 +19,6 @@ namespace SchoolManagementApi.Queries.Admin
 
       public async Task<GenericResponse> Handle(GetAllOrganizationZonesQuery request, CancellationToken cancellationToken)
       {
-        if (string.IsNullOrEmpty(request.AdminId))
-        {
-          return new GenericResponse
-          {
-            Status = HttpStatusCode.Unauthorized.ToString(),
-            Message = "You must be logged in",
-          };
-        }
-
-        if (string.IsNullOrEmpty(request.OrganizationUniqueId))
-        {
-          return new GenericResponse
-          {
-            Status = HttpStatusCode.BadRequest.ToString(),
-            Message = "Organization unique id cannot be null",
-          };
-        }
-
         var organizationId = await _zoneService.OrganizationExists(request.OrganizationUniqueId!, request.AdminId);
         if (string.IsNullOrEmpty(organizationId))
         {
