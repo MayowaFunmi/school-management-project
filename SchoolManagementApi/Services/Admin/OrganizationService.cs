@@ -50,7 +50,12 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-    public async Task<List<Organization>> RetrieveAdminOrganizations(string adminId)
+        public Task<List<TeachingStaff>> GetAllTeachersInOrganization(string organizationId, int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Organization>> RetrieveAdminOrganizations(string adminId)
     {
       try
       {

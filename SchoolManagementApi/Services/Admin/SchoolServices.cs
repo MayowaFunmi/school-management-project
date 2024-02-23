@@ -4,6 +4,7 @@ using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
 using SchoolManagementApi.Models;
+using SchoolManagementApi.Models.UserModels;
 using WatchDog;
 
 namespace SchoolManagementApi.Services.Admin
@@ -106,7 +107,12 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-    public async Task<List<OrganizationData>> OrganizationData(string organizationUniqueId)
+        public Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<OrganizationData>> OrganizationData(string organizationUniqueId)
     {
       try
       {

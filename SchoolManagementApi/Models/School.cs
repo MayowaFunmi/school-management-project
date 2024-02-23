@@ -15,6 +15,7 @@ namespace SchoolManagementApi.Models
     public Guid ZoneId { get; set; }
     public string Name { get; set; }
     public string Address { get; set; }
+    public string LocalGovtArea { get; set; }
     public List<Department> Departments { get;set; }
     public List<StudentClass> StudentClasses { get;set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;

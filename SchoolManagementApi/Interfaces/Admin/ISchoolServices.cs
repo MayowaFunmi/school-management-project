@@ -1,5 +1,6 @@
 using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Models;
+using SchoolManagementApi.Models.UserModels;
 
 namespace SchoolManagementApi.Intefaces.Admin
 {
@@ -14,5 +15,6 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<List<School>> AllOrganizationScchools(string OrganizationUniqueId, int page, int pageSize);
     Task<List<OrganizationData>> OrganizationData(string organizationUniqueId);
     Task<List<School>> AllZoneScchools(string ZoneId, int page, int pageSize);
+    Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize);
   }
 }

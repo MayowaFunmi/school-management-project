@@ -11,6 +11,11 @@ namespace SchoolManagementApi.Configurations
       options.AddPolicy("OwnerSuperAdmin", policy => policy.RequireRole("Owner", "SuperAdmin"));
       options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
       options.AddPolicy("AdminSuperAdmin", policy => policy.RequireRole("Admin", "SuperAdmin"));
+      options.AddPolicy("TeachingStaff", policy => policy.RequireRole("TeachingStaff"));
+      options.AddPolicy("NonTeachingStaff", policy => policy.RequireRole("NonTeachingStaff"));
+      options.AddPolicy("Parent", policy => policy.RequireRole("Parent"));
+      options.AddPolicy("Student", policy => policy.RequireRole("Student"));
+      options.AddPolicy("TeacherStudent", policy => policy.RequireRole("Teacher", "Student", "Admin", "Owner"));
     }
   }
 }

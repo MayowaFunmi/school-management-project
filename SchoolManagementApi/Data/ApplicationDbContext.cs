@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementApi.Models;
+using SchoolManagementApi.Models.DocumentModels;
 using SchoolManagementApi.Models.UserModels;
 
 namespace SchoolManagementApi.Data
@@ -14,6 +15,12 @@ namespace SchoolManagementApi.Data
     public DbSet<Department> Departments { get; set; }
     public DbSet<StudentClass> StudentClasses { get; set; }
     public DbSet<ClassArms> ClassArms { get; set; }
+    public DbSet<TeachingStaff> TeachingStaffs { get; set; }
+    public DbSet<NonTeachingStaff> NonTeachingStaffs { get; set; }
+    public DbSet<Parent> Parents { get; set; }
+    public DbSet<Student> Students { get; set; }
+    public DbSet<DocumentFile> DocumentFiles { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

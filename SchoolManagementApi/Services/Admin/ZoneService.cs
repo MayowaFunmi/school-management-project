@@ -3,6 +3,7 @@ using SchoolManagementApi.Data;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
 using SchoolManagementApi.Models;
+using SchoolManagementApi.Models.UserModels;
 using WatchDog;
 
 namespace SchoolManagementApi.Services.Admin
@@ -46,7 +47,12 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-    public async Task<string> OrganizationExists(string organizationUniqueId, string adminId)
+        public Task<List<TeachingStaff>> GetAllTeachersInZone(string zoneId, int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> OrganizationExists(string organizationUniqueId, string adminId)
     {
       try
       {
