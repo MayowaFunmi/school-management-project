@@ -5,7 +5,6 @@ namespace SchoolManagementApi.Models.UserModels
 {
   public class NonTeachingStaff : StaffProfile
   {
-    [Key]
-    public Guid NonTeachingStaffId { get; set; }
+    
   }
 }

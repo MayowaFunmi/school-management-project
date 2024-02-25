@@ -33,6 +33,7 @@ namespace SchoolManagementApi.Migrations
                     UniqueId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PercentageCompleted = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -53,6 +54,20 @@ namespace SchoolManagementApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subjects",
+                columns: table => new
+                {
+                    SubjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subjects", x => x.SubjectId);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,12 +223,42 @@ namespace SchoolManagementApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Parents",
+                columns: table => new
+                {
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Religion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaritalStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StateOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LgaOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LgaOfResidence = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Occupation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Parents", x => x.ParentId);
+                    table.ForeignKey(
+                        name: "FK_Parents_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Zones",
                 columns: table => new
                 {
                     ZoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocalGovtAreas = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -238,6 +283,7 @@ namespace SchoolManagementApi.Migrations
                     ZoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocalGovtArea = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -274,6 +320,74 @@ namespace SchoolManagementApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NonTeachingStaffs",
+                columns: table => new
+                {
+                    StaffProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    StateOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LgaOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Religion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaritalStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AboutMe = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GradeLevel = table.Column<int>(type: "int", nullable: false),
+                    FirstAppointment = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    YearsInService = table.Column<int>(type: "int", nullable: false),
+                    Qualification = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Discipline = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurrentPostingZoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CurrentPostingSchoolId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PreviousPosting1Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PreviousPosting2Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PreviousPosting3Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NonTeachingStaffs", x => x.StaffProfileId);
+                    table.ForeignKey(
+                        name: "FK_NonTeachingStaffs_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NonTeachingStaffs_Schools_CurrentPostingSchoolId",
+                        column: x => x.CurrentPostingSchoolId,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_NonTeachingStaffs_Schools_PreviousPosting1Id",
+                        column: x => x.PreviousPosting1Id,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_NonTeachingStaffs_Schools_PreviousPosting2Id",
+                        column: x => x.PreviousPosting2Id,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_NonTeachingStaffs_Schools_PreviousPosting3Id",
+                        column: x => x.PreviousPosting3Id,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_NonTeachingStaffs_Zones_CurrentPostingZoneId",
+                        column: x => x.CurrentPostingZoneId,
+                        principalTable: "Zones",
+                        principalColumn: "ZoneId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StudentClasses",
                 columns: table => new
                 {
@@ -293,6 +407,83 @@ namespace SchoolManagementApi.Migrations
                         principalTable: "Schools",
                         principalColumn: "SchoolId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeachingStaffs",
+                columns: table => new
+                {
+                    StaffProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PublishedWork = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CurrentSubjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OtherSubjects = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    StateOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LgaOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Religion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaritalStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AboutMe = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GradeLevel = table.Column<int>(type: "int", nullable: false),
+                    FirstAppointment = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    YearsInService = table.Column<int>(type: "int", nullable: false),
+                    Qualification = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Discipline = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurrentPostingZoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CurrentPostingSchoolId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PreviousPosting1Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PreviousPosting2Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PreviousPosting3Id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeachingStaffs", x => x.StaffProfileId);
+                    table.ForeignKey(
+                        name: "FK_TeachingStaffs_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeachingStaffs_Schools_CurrentPostingSchoolId",
+                        column: x => x.CurrentPostingSchoolId,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_TeachingStaffs_Schools_PreviousPosting1Id",
+                        column: x => x.PreviousPosting1Id,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_TeachingStaffs_Schools_PreviousPosting2Id",
+                        column: x => x.PreviousPosting2Id,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_TeachingStaffs_Schools_PreviousPosting3Id",
+                        column: x => x.PreviousPosting3Id,
+                        principalTable: "Schools",
+                        principalColumn: "SchoolId");
+                    table.ForeignKey(
+                        name: "FK_TeachingStaffs_Subjects_CurrentSubjectId",
+                        column: x => x.CurrentSubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "SubjectId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeachingStaffs_Zones_CurrentPostingZoneId",
+                        column: x => x.CurrentPostingZoneId,
+                        principalTable: "Zones",
+                        principalColumn: "ZoneId");
                 });
 
             migrationBuilder.CreateTable(
@@ -321,6 +512,57 @@ namespace SchoolManagementApi.Migrations
                         principalTable: "StudentClasses",
                         principalColumn: "StudentClassId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DocumentFiles",
+                columns: table => new
+                {
+                    DocumenetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NonTeachingStaffStaffProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TeachingStaffStaffProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DocumentFiles", x => x.DocumenetId);
+                    table.ForeignKey(
+                        name: "FK_DocumentFiles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DocumentFiles_NonTeachingStaffs_NonTeachingStaffStaffProfileId",
+                        column: x => x.NonTeachingStaffStaffProfileId,
+                        principalTable: "NonTeachingStaffs",
+                        principalColumn: "StaffProfileId");
+                    table.ForeignKey(
+                        name: "FK_DocumentFiles_TeachingStaffs_TeachingStaffStaffProfileId",
+                        column: x => x.TeachingStaffStaffProfileId,
+                        principalTable: "TeachingStaffs",
+                        principalColumn: "StaffProfileId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileNameContent",
+                columns: table => new
+                {
+                    FileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocumentFileDocumenetId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileNameContent", x => x.FileId);
+                    table.ForeignKey(
+                        name: "FK_FileNameContent_DocumentFiles_DocumentFileDocumenetId",
+                        column: x => x.DocumentFileDocumenetId,
+                        principalTable: "DocumentFiles",
+                        principalColumn: "DocumenetId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -383,6 +625,56 @@ namespace SchoolManagementApi.Migrations
                 column: "SchoolId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DocumentFiles_NonTeachingStaffStaffProfileId",
+                table: "DocumentFiles",
+                column: "NonTeachingStaffStaffProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocumentFiles_TeachingStaffStaffProfileId",
+                table: "DocumentFiles",
+                column: "TeachingStaffStaffProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocumentFiles_UserId",
+                table: "DocumentFiles",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileNameContent_DocumentFileDocumenetId",
+                table: "FileNameContent",
+                column: "DocumentFileDocumenetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NonTeachingStaffs_CurrentPostingSchoolId",
+                table: "NonTeachingStaffs",
+                column: "CurrentPostingSchoolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NonTeachingStaffs_CurrentPostingZoneId",
+                table: "NonTeachingStaffs",
+                column: "CurrentPostingZoneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NonTeachingStaffs_PreviousPosting1Id",
+                table: "NonTeachingStaffs",
+                column: "PreviousPosting1Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NonTeachingStaffs_PreviousPosting2Id",
+                table: "NonTeachingStaffs",
+                column: "PreviousPosting2Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NonTeachingStaffs_PreviousPosting3Id",
+                table: "NonTeachingStaffs",
+                column: "PreviousPosting3Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NonTeachingStaffs_UserId",
+                table: "NonTeachingStaffs",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Organizations_AdminId",
                 table: "Organizations",
                 column: "AdminId");
@@ -392,6 +684,11 @@ namespace SchoolManagementApi.Migrations
                 table: "Organizations",
                 column: "OrganizationUniqueId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Parents_UserId",
+                table: "Parents",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schools_SchoolUniqueId",
@@ -408,6 +705,41 @@ namespace SchoolManagementApi.Migrations
                 name: "IX_StudentClasses_SchoolId",
                 table: "StudentClasses",
                 column: "SchoolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingStaffs_CurrentPostingSchoolId",
+                table: "TeachingStaffs",
+                column: "CurrentPostingSchoolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingStaffs_CurrentPostingZoneId",
+                table: "TeachingStaffs",
+                column: "CurrentPostingZoneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingStaffs_CurrentSubjectId",
+                table: "TeachingStaffs",
+                column: "CurrentSubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingStaffs_PreviousPosting1Id",
+                table: "TeachingStaffs",
+                column: "PreviousPosting1Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingStaffs_PreviousPosting2Id",
+                table: "TeachingStaffs",
+                column: "PreviousPosting2Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingStaffs_PreviousPosting3Id",
+                table: "TeachingStaffs",
+                column: "PreviousPosting3Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeachingStaffs_UserId",
+                table: "TeachingStaffs",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Zones_OrganizationId",
@@ -440,6 +772,12 @@ namespace SchoolManagementApi.Migrations
                 name: "ClassArms");
 
             migrationBuilder.DropTable(
+                name: "FileNameContent");
+
+            migrationBuilder.DropTable(
+                name: "Parents");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -449,7 +787,19 @@ namespace SchoolManagementApi.Migrations
                 name: "StudentClasses");
 
             migrationBuilder.DropTable(
+                name: "DocumentFiles");
+
+            migrationBuilder.DropTable(
+                name: "NonTeachingStaffs");
+
+            migrationBuilder.DropTable(
+                name: "TeachingStaffs");
+
+            migrationBuilder.DropTable(
                 name: "Schools");
+
+            migrationBuilder.DropTable(
+                name: "Subjects");
 
             migrationBuilder.DropTable(
                 name: "Zones");

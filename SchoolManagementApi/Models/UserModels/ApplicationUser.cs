@@ -8,6 +8,7 @@ namespace SchoolManagementApi.Models.UserModels
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public ICollection<IdentityRole> Roles { get; set; }
+    public int PercentageCompleted { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
   }

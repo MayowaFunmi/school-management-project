@@ -18,6 +18,7 @@ namespace SchoolManagementApi.DTOs
 
     [Required(ErrorMessage = "Phone Number is required")]
     public string PhoneNumber { get; set; }
+    public string Role { get; set; }
 
     [Required(ErrorMessage = "Password is required")]
     public string Password { get; set; }

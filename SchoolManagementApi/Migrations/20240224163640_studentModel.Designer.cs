@@ -12,8 +12,8 @@ using SchoolManagementApi.Data;
 namespace SchoolManagementApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240220104945_initialCreate")]
-    partial class initialCreate
+    [Migration("20240224163640_studentModel")]
+    partial class studentModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,6 +173,28 @@ namespace SchoolManagementApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SchoolManagementApi.DTOs.FileNameContent", b =>
+                {
+                    b.Property<Guid>("FileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DocumentFileDocumenetId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FileId");
+
+                    b.HasIndex("DocumentFileDocumenetId");
+
+                    b.ToTable("FileNameContent");
+                });
+
             modelBuilder.Entity("SchoolManagementApi.Models.ClassArms", b =>
                 {
                     b.Property<Guid>("ClassArmId")
@@ -233,6 +255,39 @@ namespace SchoolManagementApi.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("SchoolManagementApi.Models.DocumentModels.DocumentFile", b =>
+                {
+                    b.Property<Guid>("DocumenetId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("NonTeachingStaffStaffProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TeachingStaffStaffProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("DocumenetId");
+
+                    b.HasIndex("NonTeachingStaffStaffProfileId");
+
+                    b.HasIndex("TeachingStaffStaffProfileId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DocumentFiles");
+                });
+
             modelBuilder.Entity("SchoolManagementApi.Models.Organization", b =>
                 {
                     b.Property<Guid>("OrganizationId")
@@ -279,6 +334,10 @@ namespace SchoolManagementApi.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LocalGovtArea")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -337,6 +396,27 @@ namespace SchoolManagementApi.Migrations
                     b.ToTable("StudentClasses");
                 });
 
+            modelBuilder.Entity("SchoolManagementApi.Models.Subject", b =>
+                {
+                    b.Property<Guid>("SubjectId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("SubjectId");
+
+                    b.ToTable("Subjects");
+                });
+
             modelBuilder.Entity("SchoolManagementApi.Models.UserModels.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -384,6 +464,9 @@ namespace SchoolManagementApi.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PercentageCompleted")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -420,6 +503,299 @@ namespace SchoolManagementApi.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.NonTeachingStaff", b =>
+                {
+                    b.Property<Guid>("StaffProfileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AboutMe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CurrentPostingSchoolId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CurrentPostingZoneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discipline")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FirstAppointment")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GradeLevel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LgaOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaritalStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PreviousPosting1Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PreviousPosting2Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PreviousPosting3Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Qualification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Religion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("YearsInService")
+                        .HasColumnType("int");
+
+                    b.HasKey("StaffProfileId");
+
+                    b.HasIndex("CurrentPostingSchoolId");
+
+                    b.HasIndex("CurrentPostingZoneId");
+
+                    b.HasIndex("PreviousPosting1Id");
+
+                    b.HasIndex("PreviousPosting2Id");
+
+                    b.HasIndex("PreviousPosting3Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("NonTeachingStaffs");
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.Parent", b =>
+                {
+                    b.Property<Guid>("ParentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LgaOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LgaOfResidence")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaritalStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Occupation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Religion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ParentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Parents");
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.TeachingStaff", b =>
+                {
+                    b.Property<Guid>("StaffProfileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AboutMe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CurrentPostingSchoolId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CurrentPostingZoneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CurrentSubjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discipline")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FirstAppointment")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GradeLevel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LgaOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaritalStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OtherSubjects")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PreviousPosting1Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PreviousPosting2Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PreviousPosting3Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublishedWork")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Qualification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Religion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("YearsInService")
+                        .HasColumnType("int");
+
+                    b.HasKey("StaffProfileId");
+
+                    b.HasIndex("CurrentPostingSchoolId");
+
+                    b.HasIndex("CurrentPostingZoneId");
+
+                    b.HasIndex("CurrentSubjectId");
+
+                    b.HasIndex("PreviousPosting1Id");
+
+                    b.HasIndex("PreviousPosting2Id");
+
+                    b.HasIndex("PreviousPosting3Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TeachingStaffs");
+                });
+
             modelBuilder.Entity("SchoolManagementApi.Models.Zone", b =>
                 {
                     b.Property<Guid>("ZoneId")
@@ -428,6 +804,10 @@ namespace SchoolManagementApi.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LocalGovtAreas")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -512,6 +892,13 @@ namespace SchoolManagementApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SchoolManagementApi.DTOs.FileNameContent", b =>
+                {
+                    b.HasOne("SchoolManagementApi.Models.DocumentModels.DocumentFile", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("DocumentFileDocumenetId");
+                });
+
             modelBuilder.Entity("SchoolManagementApi.Models.ClassArms", b =>
                 {
                     b.HasOne("SchoolManagementApi.Models.Department", "Department")
@@ -534,6 +921,25 @@ namespace SchoolManagementApi.Migrations
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.DocumentModels.DocumentFile", b =>
+                {
+                    b.HasOne("SchoolManagementApi.Models.UserModels.NonTeachingStaff", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("NonTeachingStaffStaffProfileId");
+
+                    b.HasOne("SchoolManagementApi.Models.UserModels.TeachingStaff", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("TeachingStaffStaffProfileId");
+
+                    b.HasOne("SchoolManagementApi.Models.UserModels.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SchoolManagementApi.Models.Organization", b =>
@@ -565,6 +971,111 @@ namespace SchoolManagementApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.NonTeachingStaff", b =>
+                {
+                    b.HasOne("SchoolManagementApi.Models.School", "CurrentPostingSchool")
+                        .WithMany()
+                        .HasForeignKey("CurrentPostingSchoolId");
+
+                    b.HasOne("SchoolManagementApi.Models.Zone", "CurrentPostingZone")
+                        .WithMany()
+                        .HasForeignKey("CurrentPostingZoneId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagementApi.Models.School", "PreviousPosting1")
+                        .WithMany()
+                        .HasForeignKey("PreviousPosting1Id");
+
+                    b.HasOne("SchoolManagementApi.Models.School", "PreviousPosting2")
+                        .WithMany()
+                        .HasForeignKey("PreviousPosting2Id");
+
+                    b.HasOne("SchoolManagementApi.Models.School", "PreviousPosting3")
+                        .WithMany()
+                        .HasForeignKey("PreviousPosting3Id");
+
+                    b.HasOne("SchoolManagementApi.Models.UserModels.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CurrentPostingSchool");
+
+                    b.Navigation("CurrentPostingZone");
+
+                    b.Navigation("PreviousPosting1");
+
+                    b.Navigation("PreviousPosting2");
+
+                    b.Navigation("PreviousPosting3");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.Parent", b =>
+                {
+                    b.HasOne("SchoolManagementApi.Models.UserModels.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.TeachingStaff", b =>
+                {
+                    b.HasOne("SchoolManagementApi.Models.School", "CurrentPostingSchool")
+                        .WithMany()
+                        .HasForeignKey("CurrentPostingSchoolId");
+
+                    b.HasOne("SchoolManagementApi.Models.Zone", "CurrentPostingZone")
+                        .WithMany()
+                        .HasForeignKey("CurrentPostingZoneId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagementApi.Models.Subject", "CurrentSubject")
+                        .WithMany()
+                        .HasForeignKey("CurrentSubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagementApi.Models.School", "PreviousPosting1")
+                        .WithMany()
+                        .HasForeignKey("PreviousPosting1Id");
+
+                    b.HasOne("SchoolManagementApi.Models.School", "PreviousPosting2")
+                        .WithMany()
+                        .HasForeignKey("PreviousPosting2Id");
+
+                    b.HasOne("SchoolManagementApi.Models.School", "PreviousPosting3")
+                        .WithMany()
+                        .HasForeignKey("PreviousPosting3Id");
+
+                    b.HasOne("SchoolManagementApi.Models.UserModels.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CurrentPostingSchool");
+
+                    b.Navigation("CurrentPostingZone");
+
+                    b.Navigation("CurrentSubject");
+
+                    b.Navigation("PreviousPosting1");
+
+                    b.Navigation("PreviousPosting2");
+
+                    b.Navigation("PreviousPosting3");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SchoolManagementApi.Models.Zone", b =>
                 {
                     b.HasOne("SchoolManagementApi.Models.Organization", null)
@@ -572,6 +1083,11 @@ namespace SchoolManagementApi.Migrations
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.DocumentModels.DocumentFile", b =>
+                {
+                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("SchoolManagementApi.Models.Organization", b =>
@@ -589,6 +1105,16 @@ namespace SchoolManagementApi.Migrations
             modelBuilder.Entity("SchoolManagementApi.Models.StudentClass", b =>
                 {
                     b.Navigation("ClassArms");
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.NonTeachingStaff", b =>
+                {
+                    b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.TeachingStaff", b =>
+                {
+                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("SchoolManagementApi.Models.Zone", b =>

@@ -15,6 +15,7 @@ namespace SchoolManagementApi.Data
     public DbSet<Department> Departments { get; set; }
     public DbSet<StudentClass> StudentClasses { get; set; }
     public DbSet<ClassArms> ClassArms { get; set; }
+    public DbSet<Subject> Subjects { get; set; }
     public DbSet<TeachingStaff> TeachingStaffs { get; set; }
     public DbSet<NonTeachingStaff> NonTeachingStaffs { get; set; }
     public DbSet<Parent> Parents { get; set; }
@@ -40,10 +41,35 @@ namespace SchoolManagementApi.Data
         .HasIndex(s => s.SchoolUniqueId)
         .IsUnique();
 
-      // modelBuilder.Entity<School>()
-      //   .HasOne(s => s.Zone)
-      //   .WithMany(z => z.Schools)
-      //   .OnDelete(DeleteBehavior.NoAction);
+      modelBuilder.Entity<NonTeachingStaff>()
+        .HasOne(s => s.CurrentPostingZone)
+        .WithMany()
+        .OnDelete(DeleteBehavior.NoAction);
+
+      modelBuilder.Entity<TeachingStaff>()
+        .HasOne(s => s.CurrentPostingZone)
+        .WithMany()
+        .OnDelete(DeleteBehavior.NoAction);
+      
+      modelBuilder.Entity<Student>()
+        .HasOne(s => s.Parent)
+        .WithMany()
+        .OnDelete(DeleteBehavior.NoAction);
+
+      modelBuilder.Entity<Student>()
+        .HasOne(s => s.StudentClass)
+        .WithMany()
+        .OnDelete(DeleteBehavior.NoAction);
+
+      modelBuilder.Entity<Student>()
+        .HasOne(s => s.Department)
+        .WithMany()
+        .OnDelete(DeleteBehavior.NoAction);
+
+      modelBuilder.Entity<Student>()
+        .HasOne(s => s.CurrentSchool)
+        .WithMany()
+        .OnDelete(DeleteBehavior.NoAction);
 
       // modelBuilder.Entity<Department>()
       //   .HasOne(d => d.School)

@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using SchoolManagementApi.Models;
 using SchoolManagementApi.Models.DocumentModels;
 using SchoolManagementApi.Models.UserModels;
-using static SchoolManagementApi.Constants.RoleCionstants;
 namespace SchoolManagementApi.DTOs
 {
   public class StaffProfile

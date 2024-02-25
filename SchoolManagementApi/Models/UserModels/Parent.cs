@@ -11,11 +11,11 @@ namespace SchoolManagementApi.Models.UserModels
     [ForeignKey("UserId")]
     public string UserId { get; set; }
     public virtual ApplicationUser User { get; set; }
-    public TitleEnum? Title { get; set; } = TitleEnum.Mr;
+    public string? Title { get; set; }
     public string ProfilePicture { get; set; }
     public string Address { get; set; }
-    public ReligionEnum Religion { get; set; } = ReligionEnum.Christianity;
-    public MaritalStatus MaritalStatus { get; set; } = MaritalStatus.Single;
+    public string Religion { get; set; }
+    public string MaritalStatus { get; set; }
     public string StateOfOrigin { get; set; }
     public string LgaOfOrigin { get; set; }
     public string LgaOfResidence { get; set; }

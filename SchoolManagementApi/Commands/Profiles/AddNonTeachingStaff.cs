@@ -8,9 +8,9 @@ using static SchoolManagementApi.Constants.DictionaryMaps;
 
 namespace SchoolManagementApi.Commands.Profiles
 {
-  public class AddTeachingStaff
+  public class AddNonTeachingStaff
   {
-    public class AddTeachingStaffCommand : IRequest<GenericResponse>
+    public class AddNonTeachingStaffCommand : IRequest<GenericResponse>
     {
       public required string UserId { get; set; }
       public string? Title { get; set; }
@@ -36,31 +36,29 @@ namespace SchoolManagementApi.Commands.Profiles
       public required string PreviousPosting1Id { get; set; }
       public required string PreviousPosting2Id { get; set; }
       public required string PreviousPosting3Id { get; set; }
-      public string? PublishedWork { get; set; }
-      public required string CurrentSubjectId { get; set; }
-      public List<string>? OtherSubjects { get; set; } = [];
       public bool HasUploads { get; set; } = false;
     }
 
-    public class AddTeachingStaffHandler(ITeachingStaffInterface teachingStaffInterface, ApplicationDbContext context) : IRequestHandler<AddTeachingStaffCommand, GenericResponse>
+    public class AddNonTeachingStaffHandler(INonTeachingStaffInterface nonTeachingStaffInterface, ApplicationDbContext context) : IRequestHandler<AddNonTeachingStaffCommand, GenericResponse>
     {
-      private readonly ITeachingStaffInterface _teachingStaffInterface = teachingStaffInterface;
+      private readonly INonTeachingStaffInterface _nonTeachingStaffInterface = nonTeachingStaffInterface;
       private readonly ApplicationDbContext _context = context;
 
-      public async Task<GenericResponse> Handle(AddTeachingStaffCommand request, CancellationToken cancellationToken)
+      public async Task<GenericResponse> Handle(AddNonTeachingStaffCommand request, CancellationToken cancellationToken)
       {
         try
         {
-          var checkTeacherProfile = await _teachingStaffInterface.TeachingStaffExists(request.UserId);
-          if (checkTeacherProfile)
+          var checkStaffExists = await _nonTeachingStaffInterface.NonTeachingStaffExists(request.UserId);
+          if (checkStaffExists)
           {
             return new GenericResponse
             {
               Status = HttpStatusCode.Forbidden.ToString(),
-              Message = $"Profile already exists for Teacher with id {request.UserId}"
+              Message = $"Profile already exists for staff with id {request.UserId}"
             };
           }
-          var teacher = new TeachingStaff
+
+          var staff = new NonTeachingStaff
           {
             UserId = request.UserId,
             Title = TitleMap.TitleDictionary.TryGetValue(request.Title!, out string? value) ? value : "Mr",
@@ -85,12 +83,9 @@ namespace SchoolManagementApi.Commands.Profiles
             PreviousPosting1Id = Guid.Parse(request.PreviousPosting1Id),
             PreviousPosting2Id = Guid.Parse(request.PreviousPosting2Id),
             PreviousPosting3Id = Guid.Parse(request.PreviousPosting3Id),
-            PublishedWork = request.PublishedWork,
-            CurrentSubjectId = Guid.Parse(request.CurrentSubjectId),
-            OtherSubjects = request.OtherSubjects
           };
-          var createdTeacher = await _teachingStaffInterface.AddTeachingStaff(teacher);
-          if (createdTeacher != null)
+          var createdSyaff = await _nonTeachingStaffInterface.AddNonTeachingStaff(staff);
+          if (createdSyaff != null)
           {
             var user = _context.Users.FirstOrDefault(u => u.Id == request.UserId);
             if (user != null)
@@ -102,14 +97,14 @@ namespace SchoolManagementApi.Commands.Profiles
             return new GenericResponse
             {
               Status = HttpStatusCode.OK.ToString(),
-              Message = "Teacher profile created sucessfully",
-              Data = createdTeacher
+              Message = "Non Teaching Staff profile created sucessfully",
+              Data = createdSyaff
             };
           }
           return new GenericResponse
           {
             Status = HttpStatusCode.BadRequest.ToString(),
-            Message = "Failed to add teacher profile",
+            Message = "Failed to add staff profile",
           };
         }
         catch (Exception ex)

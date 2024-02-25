@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagementApi.Data;
 
@@ -11,9 +12,11 @@ using SchoolManagementApi.Data;
 namespace SchoolManagementApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240224163310_initialCreate")]
+    partial class initialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,9 +267,6 @@ namespace SchoolManagementApi.Migrations
                     b.Property<Guid?>("NonTeachingStaffStaffProfileId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("TeachingStaffStaffProfileId")
                         .HasColumnType("uniqueidentifier");
 
@@ -280,8 +280,6 @@ namespace SchoolManagementApi.Migrations
                     b.HasKey("DocumenetId");
 
                     b.HasIndex("NonTeachingStaffStaffProfileId");
-
-                    b.HasIndex("StudentId");
 
                     b.HasIndex("TeachingStaffStaffProfileId");
 
@@ -353,9 +351,6 @@ namespace SchoolManagementApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -366,8 +361,6 @@ namespace SchoolManagementApi.Migrations
 
                     b.HasIndex("SchoolUniqueId")
                         .IsUnique();
-
-                    b.HasIndex("StudentId");
 
                     b.HasIndex("ZoneId");
 
@@ -680,83 +673,6 @@ namespace SchoolManagementApi.Migrations
                     b.ToTable("Parents");
                 });
 
-            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.Student", b =>
-                {
-                    b.Property<Guid>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AdmissionNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AdmissionYear")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MiddleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProfilePicture")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Religion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SchoolId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("StudentClassId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("StudentId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("SchoolId");
-
-                    b.HasIndex("StudentClassId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Students");
-                });
-
             modelBuilder.Entity("SchoolManagementApi.Models.UserModels.TeachingStaff", b =>
                 {
                     b.Property<Guid>("StaffProfileId")
@@ -1013,10 +929,6 @@ namespace SchoolManagementApi.Migrations
                         .WithMany("Documents")
                         .HasForeignKey("NonTeachingStaffStaffProfileId");
 
-                    b.HasOne("SchoolManagementApi.Models.UserModels.Student", null)
-                        .WithMany("Documents")
-                        .HasForeignKey("StudentId");
-
                     b.HasOne("SchoolManagementApi.Models.UserModels.TeachingStaff", null)
                         .WithMany("Documents")
                         .HasForeignKey("TeachingStaffStaffProfileId");
@@ -1043,10 +955,6 @@ namespace SchoolManagementApi.Migrations
 
             modelBuilder.Entity("SchoolManagementApi.Models.School", b =>
                 {
-                    b.HasOne("SchoolManagementApi.Models.UserModels.Student", null)
-                        .WithMany("PreviousSchools")
-                        .HasForeignKey("StudentId");
-
                     b.HasOne("SchoolManagementApi.Models.Zone", null)
                         .WithMany("Schools")
                         .HasForeignKey("ZoneId")
@@ -1113,49 +1021,6 @@ namespace SchoolManagementApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.Student", b =>
-                {
-                    b.HasOne("SchoolManagementApi.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("SchoolManagementApi.Models.UserModels.Parent", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("SchoolManagementApi.Models.School", "CurrentSchool")
-                        .WithMany()
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("SchoolManagementApi.Models.ClassArms", "StudentClass")
-                        .WithMany()
-                        .HasForeignKey("StudentClassId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("SchoolManagementApi.Models.UserModels.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CurrentSchool");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Parent");
-
-                    b.Navigation("StudentClass");
 
                     b.Navigation("User");
                 });
@@ -1245,13 +1110,6 @@ namespace SchoolManagementApi.Migrations
             modelBuilder.Entity("SchoolManagementApi.Models.UserModels.NonTeachingStaff", b =>
                 {
                     b.Navigation("Documents");
-                });
-
-            modelBuilder.Entity("SchoolManagementApi.Models.UserModels.Student", b =>
-                {
-                    b.Navigation("Documents");
-
-                    b.Navigation("PreviousSchools");
                 });
 
             modelBuilder.Entity("SchoolManagementApi.Models.UserModels.TeachingStaff", b =>

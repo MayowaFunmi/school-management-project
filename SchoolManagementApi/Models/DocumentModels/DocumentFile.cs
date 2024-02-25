@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Models.UserModels;
 
 namespace SchoolManagementApi.Models.DocumentModels
@@ -8,8 +9,7 @@ namespace SchoolManagementApi.Models.DocumentModels
   {
     [Key]
     public Guid DocumenetId { get; set; }
-    public string FileName { get; set; }
-    public string FileContent { get; set; }
+    public List<FileNameContent> Documents { get; set; }
 
     [ForeignKey("UserId")]
     public string UserId { get; set; }

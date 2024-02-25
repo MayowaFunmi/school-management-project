@@ -1,4 +1,5 @@
 using System.Text;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,15 @@ using SchoolManagementApi.Constants;
 using SchoolManagementApi.Data;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
+using SchoolManagementApi.Intefaces.Profiles;
 using SchoolManagementApi.Intefaces.Roles;
+using SchoolManagementApi.Intefaces.Uploads;
 using SchoolManagementApi.Models.UserModels;
 using SchoolManagementApi.Services.Admin;
 using SchoolManagementApi.Services.LoggerManager;
+using SchoolManagementApi.Services.Profiles;
 using SchoolManagementApi.Services.RoleServices;
+using SchoolManagementApi.Services.Uploads;
 using Swashbuckle.AspNetCore.Filters;
 using WatchDog;
 using WatchDog.src.Enums;
@@ -27,6 +32,14 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+
+IConfigurationSection cloudinaryConfig = builder.Configuration.GetSection("Cloudinary");
+Account cloudinaryAccount = new(
+    cloudinaryConfig["CloudName"],
+    cloudinaryConfig["ApiKey"],
+    cloudinaryConfig["ApiSecret"]
+);
+builder.Services.AddSingleton(new Cloudinary(cloudinaryAccount));
 
 builder.Services.AddTransient<ApplicationDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -67,6 +80,9 @@ builder.Services.AddScoped<IZoneService, ZoneService>();
 builder.Services.AddScoped<IDepartmentServices, DepartmentServices>();
 builder.Services.AddScoped<ISchoolServices, SchoolServices>();
 builder.Services.AddScoped<IStudentClassServices, StudentClassServices>();
+builder.Services.AddScoped<ITeachingStaffInterface, TeachingStaffService>();
+builder.Services.AddScoped<INonTeachingStaffInterface, NonTeachingStaffService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddCors(options =>
     {

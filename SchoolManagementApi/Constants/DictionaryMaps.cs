@@ -34,6 +34,7 @@ namespace SchoolManagementApi.Constants
         { "NCE", "NCE" },
         { "HND", "HND" },
         { "BSc", "BSc" },
+        { "BEd", "BEd" },
         { "PGDE", "PGDE" },
         { "BArts", "BArts" },
         { "MSc", "MSc" },

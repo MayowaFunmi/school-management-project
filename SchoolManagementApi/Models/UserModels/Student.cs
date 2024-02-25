@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SchoolManagementApi.Models.DocumentModels;
-using static SchoolManagementApi.Constants.RoleCionstants;
 
 namespace SchoolManagementApi.Models.UserModels
 {
@@ -17,34 +16,30 @@ namespace SchoolManagementApi.Models.UserModels
     public string AdmissionYear { get; set; }
 
     [ForeignKey("SchoolId")]
-    public string SchoolId { get; set; }
+    public Guid SchoolId { get; set; }
     public virtual School CurrentSchool { get; set; }
 
     [ForeignKey("DepartmentId")]
-    public string DepartmentId { get; set; }
+    public Guid DepartmentId { get; set; }
     public virtual Department Department { get; set; }
 
     [ForeignKey("StudentClassId")]
-    public string StudentClassId { get; set; }
+    public Guid StudentClassId { get; set; }
     public virtual ClassArms StudentClass { get; set; }
 
     public virtual List<School> PreviousSchools { get; set; }
     public string ProfilePicture { get; set; }
-    public GenderEnum Gender { get; set; } = GenderEnum.Male;
+    public string Gender { get; set; }
     public DateTime DateOfBirth { get; set; }
     public int Age { get; set; }
     public string Address { get; set; }
-    public ReligionEnum Religion { get; set; } = ReligionEnum.Christianity;
+    public string Religion { get; set; }
     public virtual IList<DocumentFile>? Documents { get; set;}
 
+    [ForeignKey("ParentId")]
+    public Guid ParentId { get; set; }
+    public virtual Parent Parent { get; set; }
 
-    [ForeignKey("Parent1Id")]
-    public string Parent1Id { get; set; }
-    public virtual Parent Parent1 { get; set; }
-
-    [ForeignKey("Parent12d")]
-    public string Parent2Id { get; set; }
-    public virtual Parent Parent2 { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
   }

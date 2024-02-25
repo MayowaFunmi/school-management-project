@@ -54,6 +54,7 @@ namespace SchoolManagementApi.Controllers
         FirstName = registerDto.FirstName,
         LastName = registerDto.LastName,
         PhoneNumber = registerDto.PhoneNumber,
+        PercentageCompleted = 30,
         SecurityStamp = Guid.NewGuid().ToString(),
         CreatedAt = DateTime.Now,
         UpdatedAt = DateTime.Now  
@@ -67,7 +68,7 @@ namespace SchoolManagementApi.Controllers
           Message = "User Creation Failed"
         };
       }
-      await _userManager.AddToRoleAsync(newUser, StaticUserRoles.Users);
+      await _userManager.AddToRolesAsync(newUser, [StaticUserRoles.Users, registerDto.Role]);
       return new GenericResponse
       {
         Status = HttpStatusCode.OK.ToString(),
