@@ -12,7 +12,7 @@ namespace SchoolManagementApi.Models
     public Guid OrganizationId { get; set; }
     public string Name { get; set; }
     public List<School> Schools { get; set; }
-    public List<string> LocalGovtAreas { get; set; }
+    public List<string>? LocalGovtAreas { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
   }

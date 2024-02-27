@@ -28,6 +28,34 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
+    public async Task<bool> GenerateClassArms(StudentClass studentClass)
+    {
+      try
+      {
+        var classArms = Enumerable.Range(65, studentClass.Arm).Select(i => $"{studentClass.Name}{(char)i}").ToList();
+        foreach (var armName in classArms)
+        {
+          var departmentId = AddDepartment(armName, _context);
+          _context.ClassArms.Add(new ClassArms
+          {
+            SchoolId = studentClass.SchoolId,
+            StudentClassId = studentClass.StudentClassId,
+            Name = armName,
+            DepartmentId = departmentId ?? null
+          });
+
+          await _context.SaveChangesAsync();
+        }
+        return true;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error generating student class arms - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error generating student class arms - {ex.Message}");
+        throw;
+      }
+    }
+
     public async Task<List<ClassArms>> GetAllClassArms(string schoolId, string classId)
     {
       try
@@ -63,5 +91,59 @@ namespace SchoolManagementApi.Services.Admin
         throw;
       }
     }
+
+    private static Guid? AddDepartment(string armName, ApplicationDbContext dbContext)
+    {
+      var department = new Department();
+      if (armName[0] == 'S')
+      {
+        var lastChar = char.ToUpper(armName[^1]);
+        var departmentName = lastChar switch
+        {
+          'A' => "Science",
+          'B' => "Arts",
+          'C' => "Commercial",
+          _ => null
+        };
+        department = dbContext.Departments.FirstOrDefault(d => d.Name == departmentName);
+        return department?.DepartmentId;
+      }
+      else if (armName[0] == 'J')
+      {
+          // Retrieve the department from the database based on the name "Junior School"
+          department = dbContext.Departments.FirstOrDefault(d => d.Name == "Junior School");
+          return department?.DepartmentId;
+      }
+      
+      // Return null if armName doesn't start with 'S' or 'J'
+      return null;
+    }
+
+    // private static Guid? AddDepartment(string armName, ApplicationDbContext dbContext)
+    // {
+    //   var department = new Department();
+    //   if (armName.Contains('A'))
+    //   {
+    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Science");
+    //     return department.DepartmentId;
+    //   }
+    //   else if (armName.Contains('B'))
+    //   {
+    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Arts");
+    //     return department.DepartmentId;
+    //   }
+    //   else if (armName.Contains('C'))
+    //   {
+    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Commercial");
+    //     return department.DepartmentId;
+    //   }
+    //   else if (armName.Contains('J'))
+    //   {
+    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Junior School");
+    //     return department.DepartmentId;
+    //   }
+    //   else
+    //     return null;
+    // }
   }
 }

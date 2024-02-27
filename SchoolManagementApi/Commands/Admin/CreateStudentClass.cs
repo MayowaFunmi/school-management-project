@@ -32,6 +32,7 @@ namespace SchoolManagementApi.Commands.Admin
           var studentClassesCreated = await _studentClassServices.AddStudentClass(studentClasses);
           if (studentClassesCreated != null)
           {
+            await _studentClassServices.GenerateClassArms(studentClasses);
             return new GenericResponse
             {
               Status = HttpStatusCode.OK.ToString(),

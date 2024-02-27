@@ -16,7 +16,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpGet]
     [Route("get-all-users")]
-    [Authorize(Policy = "OwnerOnly")]
+    [Authorize(Policy = "OwnerSuperAdmin")]
     public async Task<GenericResponse> ShowAllUsers()
     {
       var usersWithRoles = await _adminService.GetAllUsersWithRoles();
@@ -30,7 +30,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpPost]
     [Route("create-organization")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "OrganizationAdmin")]
     public async Task<IActionResult> CreateOrganization(CreateOrganization.CreateOrganizationsCommand request)
     {
       try
@@ -84,7 +84,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpGet]
     [Route("get-admin-organizations/{adminId}")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "OwnerOrganizationAdminSuperAdmin")]
 
     public async Task<IActionResult> GetAllAdminOrganizations(string adminId)
     {
@@ -99,7 +99,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpGet]
     [Route("get-all-organizations")]
-    //[Authorize(Policy = "OwnerOnly")]
+    [Authorize(Policy = "OwnerSuperAdmin")]
     public async Task<IActionResult> AllOrganizations()
     {
       var response = await _mediator.Send(new GetAllOrganizations.GetAllOrganizationsQuery());
@@ -109,7 +109,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpPost]
     [Route("add-zone")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "OrganizationAdmin")]
     public async Task<IActionResult> CreateZone(CreateZone.CreateZoneCommand request)
     {
       try
@@ -136,6 +136,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpGet]
     [Route("get-all-organization-zones/{organizationUniqueId}")]
+    [Authorize]
     public async Task<IActionResult> GetOranizationZones(string organizationUniqueId)
     {
       try
@@ -156,7 +157,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpGet]
     [Route("admin-get-all-organization-zones")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "OwnerSuperAdmin")]
     public async Task<IActionResult> GetOranizationZonesForAdmin(GetAllOrganizationZones.GetAllOrganizationZonesQuery request)
     {
       try
@@ -194,7 +195,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpPost]
     [Route("add-school")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "OrganizationAdmin")]
     public async Task<IActionResult> CreateSchool(CreateSchool.CreateSchoolCommand request)
     {
       try
@@ -203,7 +204,7 @@ namespace SchoolManagementApi.Controllers
         {
             return Unauthorized("You are not an admin");
         }
-        if (string.IsNullOrEmpty(request.OrganizationUniqueId) && string.IsNullOrEmpty(request.ZoneId) && string.IsNullOrEmpty(request.Name) && string.IsNullOrEmpty(request.Address))
+        if (string.IsNullOrEmpty(request.OrganizationUniqueId) || string.IsNullOrEmpty(request.ZoneId) || string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Address) || string.IsNullOrEmpty(request.LocalGovtArea))
         {
           return BadRequest("All fields are required");
         }
@@ -246,7 +247,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpGet]
     [Route("get-schools-in-organization")]
-    [Authorize(Policy = "OwnerSuperAdmin")]
+    [Authorize(Policy = "OwnerOrganizationAdminSuperAdmin")]
     public async Task<IActionResult> GetSchoolsInOrganization(GetAllOrganizationSchools.GetAllOrganizationSchoolsQuery request)
     {
       bool pageSpecified = request.Page != default;
@@ -325,7 +326,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpPost]
     [Route("add-school-department")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "AdminOrganizationAdmin")]
     public async Task<IActionResult> AddDepartment(CreateDepartment.CreateDepartmentCommand request)
     {
       try

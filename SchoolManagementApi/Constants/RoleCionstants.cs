@@ -7,6 +7,7 @@ namespace SchoolManagementApi.Constants
       Users,
       Admin,
       SuperAdmin,
+      OrganizationAdmin,
       TeachingStaff,
       NonTeachingStaff,
       Parent,

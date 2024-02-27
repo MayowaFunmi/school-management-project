@@ -16,6 +16,7 @@ namespace SchoolManagementApi.Constants
       await roleManager.CreateAsync(new IdentityRole(Roles.Users.ToString()));
       await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
       await roleManager.CreateAsync(new IdentityRole(Roles.SuperAdmin.ToString()));
+      await roleManager.CreateAsync(new IdentityRole(Roles.OrganizationAdmin.ToString()));
       await roleManager.CreateAsync(new IdentityRole(Roles.TeachingStaff.ToString()));
       await roleManager.CreateAsync(new IdentityRole(Roles.NonTeachingStaff.ToString()));
       await roleManager.CreateAsync(new IdentityRole(Roles.Parent.ToString()));

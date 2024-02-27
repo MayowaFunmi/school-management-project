@@ -16,6 +16,7 @@ namespace SchoolManagementApi.Commands.Admin
       public string? ZoneId { get; set; }
       public string? Name { get; set; }
       public string? Address { get; set; }
+      public string? LocalGovtArea { get; set; }
     }
 
     public class CreateSchoolHandler(ISchoolServices schoolServices) : IRequestHandler<CreateSchoolCommand, GenericResponse>
@@ -40,6 +41,7 @@ namespace SchoolManagementApi.Commands.Admin
           ZoneId = Guid.Parse(request.ZoneId!),
           Name = request.Name!,
           Address = request.Address!,
+          LocalGovtArea = request.LocalGovtArea!
         };
         var schoolCreated = await _schoolServices.AddSchool(school);
         if (schoolCreated != null)

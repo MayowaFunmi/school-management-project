@@ -13,9 +13,7 @@ using SchoolManagementApi.Utilities;
 
 namespace SchoolManagementApi.Controllers
 {
-  [ApiController]
-  [Route("api/[controller]")]
-  public class AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration) : ControllerBase
+  public class AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration) : BaseController
   {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly IConfiguration _configuration = configuration;
@@ -25,6 +23,14 @@ namespace SchoolManagementApi.Controllers
     [Route("signup")]
     public async Task<GenericResponse> Register([FromBody] RegisterDto registerDto)
     {
+      if (!string.IsNullOrEmpty(CurrentUserId))
+      {
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.BadRequest.ToString(),
+          Message = "current user is already logged in"
+        };
+      }
       var isUsernameExists = await _userManager.FindByNameAsync(registerDto.UserName);
       var isEmailExists = await _userManager.FindByEmailAsync(registerDto.Email);
 
@@ -82,6 +88,9 @@ namespace SchoolManagementApi.Controllers
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
+      if (!string.IsNullOrEmpty(CurrentUserId))
+        return Unauthorized("current user is already logged in");
+
       var user = await _userManager.FindByNameAsync(loginDto.UserName);
       if (user is null)
         return Unauthorized("Username not found!");

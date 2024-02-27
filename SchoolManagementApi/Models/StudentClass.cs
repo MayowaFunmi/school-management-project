@@ -17,27 +17,5 @@ namespace SchoolManagementApi.Models
     public List<ClassArms> ClassArms { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
-
-    public void Save(ApplicationDbContext dbContext)
-    {
-      dbContext.StudentClasses.Add(this);
-      dbContext.SaveChanges();
-      GenerateClassArms(dbContext);
-    }
-
-    private void GenerateClassArms(ApplicationDbContext dbContext)
-    {
-      var classArms = Enumerable.Range(65, Arm).Select(i => $"{Name}{(char)i}").ToList();
-      foreach (var armName in classArms)
-      {
-        dbContext.ClassArms.Add(new ClassArms
-        {
-          SchoolId = SchoolId,
-          StudentClassId = StudentClassId,
-          Name = armName
-        });
-        dbContext.SaveChanges();
-      }
-    }
   }
 }

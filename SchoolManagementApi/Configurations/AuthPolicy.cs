@@ -8,8 +8,13 @@ namespace SchoolManagementApi.Configurations
     {
       options.AddPolicy("OwnerOnly", policy => policy.RequireRole("Owner"));
       options.AddPolicy("OwnerAdminSuperAdmin", policy => policy.RequireRole("Owner", "Admin", "SuperAdmin"));
+      options.AddPolicy("OwnerOrganizationAdminSuperAdmin", policy => policy.RequireRole("Owner", "OrganizationAdmin", "SuperAdmin"));
       options.AddPolicy("OwnerSuperAdmin", policy => policy.RequireRole("Owner", "SuperAdmin"));
-      options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+      options.AddPolicy("OwnerOrganizationAdmin", policy => policy.RequireRole("Owner", "OrganizationAdmin"));
+      options.AddPolicy("Admin", policy => policy.RequireRole("Admin")); // school admin
+      options.AddPolicy("OrganizationAdmin", policy => policy.RequireRole("OrganizationAdmin"));
+      options.AddPolicy("AdminOrganizationAdmin", policy => policy.RequireRole("Admin", "OrganizationAdmin"));
+
       options.AddPolicy("AdminSuperAdmin", policy => policy.RequireRole("Admin", "SuperAdmin"));
       options.AddPolicy("TeachingStaff", policy => policy.RequireRole("TeachingStaff"));
       options.AddPolicy("NonTeachingStaff", policy => policy.RequireRole("NonTeachingStaff"));
