@@ -118,32 +118,5 @@ namespace SchoolManagementApi.Services.Admin
       // Return null if armName doesn't start with 'S' or 'J'
       return null;
     }
-
-    // private static Guid? AddDepartment(string armName, ApplicationDbContext dbContext)
-    // {
-    //   var department = new Department();
-    //   if (armName.Contains('A'))
-    //   {
-    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Science");
-    //     return department.DepartmentId;
-    //   }
-    //   else if (armName.Contains('B'))
-    //   {
-    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Arts");
-    //     return department.DepartmentId;
-    //   }
-    //   else if (armName.Contains('C'))
-    //   {
-    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Commercial");
-    //     return department.DepartmentId;
-    //   }
-    //   else if (armName.Contains('J'))
-    //   {
-    //     department = dbContext.Departments.FirstOrDefault(d => d.Name == "Junior School");
-    //     return department.DepartmentId;
-    //   }
-    //   else
-    //     return null;
-    // }
   }
 }

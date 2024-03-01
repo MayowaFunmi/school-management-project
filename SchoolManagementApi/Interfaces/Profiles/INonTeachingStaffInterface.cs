@@ -10,6 +10,6 @@ namespace SchoolManagementApi.Intefaces.Profiles
     Task<NonTeachingStaff> GetStaffById(string userId);
     Task<NonTeachingStaff> GetStaffByUniqueId(string uniqueId);
     Task<bool> NonTeachingStaffExists(string userId);
-    Task<DocumentFile> UploadDocuments(string userId, List<FileNameContent> files);
+    Task<DocumentFile> UploadDocuments(string userId, List<string> filesList);
   }
 }

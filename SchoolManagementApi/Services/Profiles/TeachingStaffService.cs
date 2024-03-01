@@ -101,16 +101,40 @@ namespace SchoolManagementApi.Services.Profiles
       }
     }
 
-    public async Task<DocumentFile> UploadDocuments(string userId, List<FileNameContent> files)
+    // public async Task<DocumentFile> UploadDocuments(string userId, List<FileNameContent> files)
+    // {
+    //   try
+    //   {
+    //     var fileExists = await _context.DocumentFiles.FirstOrDefaultAsync(d => d.UserId == userId);
+    //     if (fileExists == null)
+    //       return null!;
+    //     var file = new DocumentFile
+    //     {
+    //       Documents = files,
+    //       UserId = userId
+    //     };
+    //     _context.DocumentFiles.Add(file);
+    //     await _context.SaveChangesAsync();
+    //     return file;
+    //   }
+    //   catch (Exception ex)
+    //   {
+    //     _logger.LogError($"Error uploading documents - {ex.Message}");
+    //     WatchLogger.LogError(ex.ToString(), $"Error uploading documents - {ex.Message}");
+    //     throw;
+    //   }
+    // }
+
+    public async Task<DocumentFile> UploadDocuments(string userId, List<string> filesUrls)
     {
       try
       {
         var fileExists = await _context.DocumentFiles.FirstOrDefaultAsync(d => d.UserId == userId);
-        if (fileExists == null)
+        if (fileExists != null)
           return null!;
         var file = new DocumentFile
         {
-          Documents = files,
+          FilesUrls = filesUrls,
           UserId = userId
         };
         _context.DocumentFiles.Add(file);

@@ -97,7 +97,7 @@ namespace SchoolManagementApi.Services.Profiles
       }
     }
 
-    public async Task<DocumentFile> UploadDocuments(string userId, List<FileNameContent> files)
+    public async Task<DocumentFile> UploadDocuments(string userId, List<string> filesUrls)
     {
       try
       {
@@ -106,7 +106,7 @@ namespace SchoolManagementApi.Services.Profiles
           return null!;
         var file = new DocumentFile
         {
-          Documents = files,
+          FilesUrls = filesUrls,
           UserId = userId
         };
         _context.DocumentFiles.Add(file);

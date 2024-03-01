@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SchoolManagementApi.Data;
 
 namespace SchoolManagementApi.Models
 {

@@ -9,7 +9,7 @@ namespace SchoolManagementApi.Models.DocumentModels
   {
     [Key]
     public Guid DocumenetId { get; set; }
-    public List<FileNameContent> Documents { get; set; }
+    public List<string> FilesUrls { get; set; }
 
     [ForeignKey("UserId")]
     public string UserId { get; set; }
