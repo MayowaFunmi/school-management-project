@@ -39,9 +39,6 @@ namespace SchoolManagementApi.Services.Profiles
           .Include(t => t.User)
           .Include(t => t.CurrentPostingZone)
           .Include(t => t.CurrentPostingSchool)
-          .Include(t => t.PreviousPosting1)
-          .Include(t => t.PreviousPosting2)
-          .Include(t => t.PreviousPosting3)
           //.Include(t => t.Documents)
           .FirstOrDefaultAsync();
 
@@ -64,9 +61,6 @@ namespace SchoolManagementApi.Services.Profiles
           .Include(t => t.User)
           .Include(t => t.CurrentPostingZone)
           .Include(t => t.CurrentPostingSchool)
-          .Include(t => t.PreviousPosting1)
-          .Include(t => t.PreviousPosting2)
-          .Include(t => t.PreviousPosting3)
           //.Include(t => t.Documents)
           .FirstOrDefaultAsync();
 

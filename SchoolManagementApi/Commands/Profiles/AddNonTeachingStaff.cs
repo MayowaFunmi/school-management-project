@@ -15,7 +15,6 @@ namespace SchoolManagementApi.Commands.Profiles
       public required string UserId { get; set; }
       public string? Title { get; set; }
       public string? MiddleName { get; set; }
-      public string? ProfilePicture { get; set; }
       public required string Gender { get; set; }
       public required DateTime DateOfBirth { get; set; }
       public required int Age { get; set; }
@@ -33,9 +32,7 @@ namespace SchoolManagementApi.Commands.Profiles
       public required string Discipline { get; set; }
       public required string CurrentPostingZoneId { get; set; }
       public required string CurrentPostingSchoolId { get; set; }
-      public required string PreviousPosting1Id { get; set; }
-      public required string PreviousPosting2Id { get; set; }
-      public required string PreviousPosting3Id { get; set; }
+      public List<string>? PreviousSchoolsIds { get; set; }
       public bool HasUploads { get; set; } = false;
     }
 
@@ -63,7 +60,6 @@ namespace SchoolManagementApi.Commands.Profiles
             UserId = request.UserId,
             Title = TitleMap.TitleDictionary.TryGetValue(request.Title!, out string? value) ? value : "Mr",
             MiddleName = request.MiddleName!,
-            ProfilePicture = request.ProfilePicture!,
             Gender = TitleMap.GenderDictionary.TryGetValue(request.Gender!, out string? GenderValue) ? GenderValue : "Male",
             DateOfBirth = request.DateOfBirth,
             Age = request.Age,
@@ -80,9 +76,8 @@ namespace SchoolManagementApi.Commands.Profiles
             Qualification = TitleMap.QualificationDictionary.TryGetValue(request.Qualification!, out string? QualificationValue) ? QualificationValue : "BEd",
             Discipline = request.Discipline,
             CurrentPostingSchoolId = Guid.Parse(request.CurrentPostingSchoolId),
-            PreviousPosting1Id = Guid.Parse(request.PreviousPosting1Id),
-            PreviousPosting2Id = Guid.Parse(request.PreviousPosting2Id),
-            PreviousPosting3Id = Guid.Parse(request.PreviousPosting3Id),
+            PreviousSchoolsIds = request.PreviousSchoolsIds,
+            CurrentPostingZoneId = Guid.Parse(request.CurrentPostingZoneId),
           };
           var createdSyaff = await _nonTeachingStaffInterface.AddNonTeachingStaff(staff);
           if (createdSyaff != null)

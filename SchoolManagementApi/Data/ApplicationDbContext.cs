@@ -71,6 +71,11 @@ namespace SchoolManagementApi.Data
         .WithMany()
         .OnDelete(DeleteBehavior.NoAction);
 
+      // modelBuilder.Entity<Subject>()
+      //   .HasOne(s => s.School)
+      //   .WithMany(s => s.Subjects)
+      //   .OnDelete(DeleteBehavior.NoAction);
+
       modelBuilder.Entity<StudentClass>()
         .HasMany(sc => sc.ClassArms)
         .WithOne()

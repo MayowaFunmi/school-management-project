@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagementApi.Data;
 
@@ -11,9 +12,11 @@ using SchoolManagementApi.Data;
 namespace SchoolManagementApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240302231022_updateStaff")]
+    partial class updateStaff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -394,9 +397,6 @@ namespace SchoolManagementApi.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("SchoolId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("SubjectName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -405,8 +405,6 @@ namespace SchoolManagementApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("SubjectId");
-
-                    b.HasIndex("SchoolId");
 
                     b.ToTable("Subjects");
                 });
@@ -1018,13 +1016,6 @@ namespace SchoolManagementApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SchoolManagementApi.Models.Subject", b =>
-                {
-                    b.HasOne("SchoolManagementApi.Models.School", null)
-                        .WithMany("Subjects")
-                        .HasForeignKey("SchoolId");
-                });
-
             modelBuilder.Entity("SchoolManagementApi.Models.UserModels.NonTeachingStaff", b =>
                 {
                     b.HasOne("SchoolManagementApi.Models.School", "CurrentPostingSchool")
@@ -1156,8 +1147,6 @@ namespace SchoolManagementApi.Migrations
                     b.Navigation("Departments");
 
                     b.Navigation("StudentClasses");
-
-                    b.Navigation("Subjects");
                 });
 
             modelBuilder.Entity("SchoolManagementApi.Models.StudentClass", b =>

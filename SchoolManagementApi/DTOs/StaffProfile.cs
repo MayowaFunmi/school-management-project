@@ -38,19 +38,7 @@ namespace SchoolManagementApi.DTOs
     [ForeignKey("CurrentPostingSchoolId")]
     public Guid? CurrentPostingSchoolId { get; set; }
     public virtual School? CurrentPostingSchool { get; set; }
-
-    [ForeignKey("PreviousPosting1Id")]
-    public Guid? PreviousPosting1Id { get; set; }
-    public virtual School? PreviousPosting1 { get; set; }
-
-    [ForeignKey("PreviousPosting2Id")]
-    public Guid? PreviousPosting2Id { get; set; }
-    public virtual School? PreviousPosting2 { get; set; }
-
-    [ForeignKey("PreviousPosting3Id")]
-    public Guid? PreviousPosting3Id { get; set; }
-    public virtual School? PreviousPosting3 { get; set; }
-
+    public virtual List<string>? PreviousSchoolsIds { get; set; }
     public virtual IList<DocumentFile>? Documents { get; set;}
     public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime UpdatedDate { get; set; }

@@ -438,6 +438,26 @@ namespace SchoolManagementApi.Controllers
       }
     }
 
+    [HttpPost]
+    [Route("add-school-subject")]
+    [Authorize(Policy = "OwnerSuperAdmin")]
+    public async Task<IActionResult> AddSubjects(AddSchoolSubject.AddSchoolSubjectCommand request)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(CurrentUserId))
+          return BadRequest("You are not authorized");
+        request.AdminId = CurrentUserId;
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
     [HttpGet]
     [Route("get-user-by-unique-id/{uniqueId}")]
     [Authorize]
