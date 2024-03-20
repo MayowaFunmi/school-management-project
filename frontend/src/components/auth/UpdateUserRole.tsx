@@ -9,7 +9,7 @@ import { Users } from '../../models/userModel';
 
 const UpdateUserRole: React.FC = () => {
 
-  const { isAuthenticated, isSuperAdminRoleExists } = useAuth();
+  const { isAuthenticated, isSuperAdminRoleExists, roles } = useAuth();
   const [uniqueId, setUniqueid] = useState('');
   const [userDetails, setUserDetails] = useState<Users | undefined>(undefined);
   const [userId, setUserId] = useState("");
@@ -22,7 +22,6 @@ const UpdateUserRole: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const { loading, data, status, roleMsg } = useAppSelector((state) => state.admin);
-  const { roles } = useAuth();
 
   useEffect(() => {
     if (!loading) {

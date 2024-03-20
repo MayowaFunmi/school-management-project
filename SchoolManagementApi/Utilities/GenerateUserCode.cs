@@ -31,7 +31,8 @@ namespace SchoolManagementApi.Utilities
     public static string GenerateOrgUniqueId()
     {
       return $"ORG-{UniqueId()}";
-    }public static string GenerateSchoolUniqueId()
+    }
+    public static string GenerateSchoolUniqueId()
     {
       return $"SCH-{UniqueId()}";
     }

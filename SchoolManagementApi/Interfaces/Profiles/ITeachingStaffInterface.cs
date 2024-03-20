@@ -1,4 +1,4 @@
-using SchoolManagementApi.DTOs;
+using SchoolManagementApi.Models;
 using SchoolManagementApi.Models.DocumentModels;
 using SchoolManagementApi.Models.UserModels;
 
@@ -10,6 +10,8 @@ namespace SchoolManagementApi.Intefaces.Profiles
     Task<TeachingStaff> GetTeacherById(string userId);
     Task<TeachingStaff> GetTeacherByUniqueId(string uniqueId);
     Task<bool> TeachingStaffExists(string userId);
+    Task<List<Zone>> AllOrganizationZones(string organizationUniqueId);
+    Task<bool> OrganizationExists(string organizationUniqueId);
     Task<DocumentFile> UploadDocuments(string userId, List<string> filesUrls);
   }
 }

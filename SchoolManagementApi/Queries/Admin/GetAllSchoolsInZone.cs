@@ -9,9 +9,9 @@ namespace SchoolManagementApi.Queries.Admin
   {
     public class GetAllSchoolsInZoneQuery : IRequest<GenericResponse>
     {
-      public string? ZoneId { get; set; }
-      public int Page { get; set; }
-      public int PageSize { get; set; }
+      public string ZoneId { get; set; } = string.Empty;
+      public int Page { get; set; } = 0;
+      public int PageSize { get; set; } = 0;
     }
 
     public class GetAllSchoolsInZoneHandler(ISchoolServices schoolServices) : IRequestHandler<GetAllSchoolsInZoneQuery, GenericResponse>
@@ -20,11 +20,13 @@ namespace SchoolManagementApi.Queries.Admin
 
       public async Task<GenericResponse> Handle(GetAllSchoolsInZoneQuery request, CancellationToken cancellationToken)
       {
-        int totalSchoolCount = await _schoolServices.AllSchoolsInZoneCount(request.ZoneId!);
-        int totalPages = (int)Math.Ceiling((double)totalSchoolCount / request.PageSize);
+        int totalSchoolCount = await _schoolServices.AllSchoolsInZoneCount(request.ZoneId);
+        int totalPages = 1;
+        if (request.Page != 0 || request.PageSize != 0)
+          totalPages = (int)Math.Ceiling((double)totalSchoolCount / request.PageSize);
         try
         {
-          var schools = await _schoolServices.AllZoneScchools(request.ZoneId!, request.Page, request.PageSize);
+          var schools = await _schoolServices.AllZoneScchools(request.ZoneId, request.Page, request.PageSize);
           if (schools.Count != 0)
           {
             var response = new PaginationResponse

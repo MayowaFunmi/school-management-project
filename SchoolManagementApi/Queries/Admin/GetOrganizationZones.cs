@@ -20,7 +20,7 @@ namespace SchoolManagementApi.Queries.Admin
       {
         try
         {
-          var zones = await _zoneService.AllOrganizationZones(request.OrganizationUniqueId);
+          var zones = await _zoneService.AllOrganizationZones(request.OrganizationUniqueId);  // this uses organization Id. not unique id
           if (zones.Count == 0)
           {
             return new GenericResponse

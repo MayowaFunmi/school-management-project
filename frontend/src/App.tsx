@@ -11,6 +11,8 @@ import UpdateUserRole from './components/auth/UpdateUserRole';
 import Organization from './components/admin/Organization';
 import OrganizationsList from './components/admin/OrganizationsList';
 import OrganizationDetails from './components/admin/OrganizationDetails';
+import UserProfile from './components/pages/users/UserProfile';
+import CheckUserStatus from './components/pages/CheckUserStatus';
 
 const App: React.FC = () => {
 
@@ -19,13 +21,14 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Navbar />
         <Routes>
-        <Route path="/" element={<Home />}>
-          <Route index element={<div>Home content</div>} />
-          <Route path="add-role-to-user" element={<UpdateUserRole />} />
-          <Route path='create-organization' element={<Organization />} />
-          <Route path='show-all-organizations' element={<OrganizationsList />} />
-          <Route path='/organization-details/:organizationId' element={<OrganizationDetails />} />
-        </Route>
+          <Route path="/" element={<Home />}>
+            <Route index element={<CheckUserStatus />} />
+            <Route path="add-role-to-user" element={<UpdateUserRole />} />
+            <Route path='create-organization' element={<Organization />} />
+            <Route path='show-all-organizations' element={<OrganizationsList />} />
+            <Route path='/organization-details/:organizationId' element={<OrganizationDetails />} />
+            <Route path='get-user-profile' element={<UserProfile />} />
+          </Route>
           <Route path='/signup' element={<SignUp />} />
           <Route path='/login' element={<Login />} />
         </Routes>

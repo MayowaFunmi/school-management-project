@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosConfig, baseUrl } from "../config/Config";
+import { getAxiosConfig, baseUrl } from "../config/Config";
 import axios from "axios";
-import { Data, Values, Values2, ZoneValues } from "../models/userModel";
+import { Data, SchoolSearch, Values, Values2, ZoneValues } from "../models/userModel";
 
 const initialState: Data = {
 	loading: false,
@@ -31,35 +31,12 @@ const initialState: Data = {
 	allOrganizations: [],
 	allOrgsMsg: "",
 	zone: {
-		id: "",
+		zoneId: "",
 		organizationId: "",
 		name: "",
 		createdAt: "",
 		updatedAt: ""
 	},
-	// zone: {
-	// 	_id: "",
-	// 	organizationId: {
-	// 		_id: "",
-	// 		userId: {
-	// 			_id: "",
-	// 			username: "",
-	// 			firstName: "",
-	// 			lastName: "",
-	// 			email: "",
-	// 			roles: [],
-	// 			uniqueId: "",
-	// 			createdAt: "",
-	// 		  },
-	// 		organizationName: "",
-	// 		organizationUniqueId: "",
-	// 		createdAt: "",
-	// 		updatedAt: ""
-	// 	},
-	// 	name: "",
-	// 	createdAt: "",
-	// 	updatedAt: ""
-	// },
 	zoneMsg: "",
 	allZones: [],
 	allZoneMsg: ""
@@ -70,7 +47,7 @@ export const getUserDetails = createAsyncThunk(
     async (data: string, thunkApi) => {
       try {
         const endpoint = `${baseUrl}/api/admin/get-user-by-unique-id/${data}`;
-        const response = await axios.get(endpoint, axiosConfig);
+        const response = await axios.get(endpoint, getAxiosConfig());
         return response.data;
       } catch (error: any) {
         return thunkApi.rejectWithValue(error.message);
@@ -82,7 +59,7 @@ export const addRoleToUser = createAsyncThunk(
 	'admin/addRoleToUser',
 	async (values: Values, thunkApi) => {
 		try {
-			const response = await axios.post(`${baseUrl}/api/role/add-role-to-user`, values, axiosConfig)
+			const response = await axios.post(`${baseUrl}/api/role/add-role-to-user`, values, getAxiosConfig())
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -106,7 +83,7 @@ export const createOrganization = createAsyncThunk(
 	'admin/createOrganization',
 	async (organizationName: string, thunkApi) => {
 		try {
-			const response = await axios.post(`${baseUrl}/api/admin/create-organization`, {organizationName}, axiosConfig)
+			const response = await axios.post(`${baseUrl}/api/admin/create-organization`, {organizationName}, getAxiosConfig())
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -118,7 +95,7 @@ export const createZone = createAsyncThunk(
 	'admin/createZone',
 	async (values: ZoneValues, thunkApi) => {
 		try {
-			const response = await axios.post(`${baseUrl}/api/admin/add-zone`, values, axiosConfig)
+			const response = await axios.post(`${baseUrl}/api/admin/add-zone`, values, getAxiosConfig())
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -131,7 +108,7 @@ export const getOrganizationZones = createAsyncThunk(
     async (organizationId: string, thunkApi) => {
       try {
         const endpoint = `${baseUrl}/api/admin/get-all-organization-zones/${organizationId}`;
-        const response = await axios.get(endpoint, axiosConfig);
+        const response = await axios.get(endpoint, getAxiosConfig());
         return response.data;
       } catch (error: any) {
         return thunkApi.rejectWithValue(error.message);
@@ -139,11 +116,24 @@ export const getOrganizationZones = createAsyncThunk(
     }
 );
 
+export const getOrganizationZonesByUniqueId = createAsyncThunk(
+	'admin/getOrganizationZonesByUniqueId',
+	async (organizationUniqueId: string, thunkApi) => {
+		try {
+			const endpoint = `${baseUrl}/api/admin/show-all-organization-zones/${organizationUniqueId}`;
+			const response = await axios.get(endpoint, getAxiosConfig());
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+);
+
 export const getAdminOrganizations = createAsyncThunk(
 	'admin/getAdminOrganizations',
 	async(userId: string, thunkApi) => {
 		try {
-			const response = await axios.get(`${baseUrl}/api/admin/get-admin-organizations/${userId}`, axiosConfig);
+			const response = await axios.get(`${baseUrl}/api/admin/get-admin-organizations/${userId}`, getAxiosConfig());
 			return response.data
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -155,8 +145,21 @@ export const getAllOrganizations = createAsyncThunk(
 	'admin/getAllOrganizations',
 	async(_, thunkApi) => {
 		try {
-			const response = await axios.get(`${baseUrl}/api/admin/get-all-organizations`, axiosConfig);
+			const response = await axios.get(`${baseUrl}/api/admin/get-all-organizations`, getAxiosConfig());
 			return response.data
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getSchoolsInZone = createAsyncThunk(
+	'admin/getSchoolsInZone',
+	async (data: string, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/admin/get-schools-in-zone/${data}`)
+			console.log("school = ", response.data)
+			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
 		}
@@ -174,7 +177,7 @@ const adminSlice = createSlice({
 			state.allZones = [];
 			state.allZoneMsg = "";
 			state.zone = {
-				id: "",
+				zoneId: "",
 				organizationId: "",
 				name: "",
 				createdAt: "",
@@ -343,6 +346,27 @@ const adminSlice = createSlice({
 				}
 			})
 			.addCase(getOrganizationZones.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const zoneData = action.payload;
+					return {
+						...state, allZones: zoneData.data, allZoneMsg: "rejected"
+					}
+				}
+			})
+
+		builder
+			.addCase(getOrganizationZonesByUniqueId.pending, (state) => {
+				return { ...state, allZoneMsg: "pending" }
+			})
+			.addCase(getOrganizationZonesByUniqueId.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const zoneData = action.payload;
+					return {
+						...state, allZones: zoneData.data, allZoneMsg: "success"
+					}
+				}
+			})
+			.addCase(getOrganizationZonesByUniqueId.rejected, (state, action: PayloadAction<any>) => {
 				if (action.payload) {
 					const zoneData = action.payload;
 					return {

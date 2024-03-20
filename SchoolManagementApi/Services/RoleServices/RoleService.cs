@@ -1,17 +1,11 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using SchoolManagementApi.Data;
-using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Roles;
-using SchoolManagementApi.Models.UserModels;
 
 namespace SchoolManagementApi.Services.RoleServices
 {
-  public class RoleService(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ApplicationDbContext context) : IRoleService
+  public class RoleService(RoleManager<IdentityRole> roleManager) : IRoleService
   {
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-    private readonly ApplicationDbContext _context = context;
 
     public async Task<bool> AddRole(string roleName)
     {
@@ -48,6 +42,18 @@ namespace SchoolManagementApi.Services.RoleServices
       List<IdentityRole> roles = [];
       foreach (var role in _roleManager.Roles)
       {
+        roles.Add(role);
+      }
+      return roles;
+    }
+
+    public List<IdentityRole> GetSelectedRoleList()
+    {
+      List<string> outRole = ["TeachingStaff", "NonTeachingStaff", "Parent", "Student"];
+      List<IdentityRole> roles = [];
+      foreach (var role in _roleManager.Roles)
+      {
+        if (!string.IsNullOrEmpty(role.Name) && outRole.Contains(role.Name))
           roles.Add(role);
       }
       return roles;

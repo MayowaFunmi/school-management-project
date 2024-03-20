@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,7 @@ namespace SchoolManagementApi.Controllers
 
 		[HttpGet]
 		[Route("get-all-roles")]
+		[Authorize]
 		public GenericResponse GetAllRoles()
 		{
 			var result = _roleService.GetRoleList();
@@ -69,6 +71,30 @@ namespace SchoolManagementApi.Controllers
 			}
 		}
 
+		[HttpGet]
+		[Route("get-selected-roles")]
+		public GenericResponse GetSelectedRoles()
+		{
+			var result = _roleService.GetSelectedRoleList();
+			if (result.Count > 0)
+			{
+				return new GenericResponse()
+				{
+					Status = HttpStatusCode.OK.ToString(),
+					Message = "All Roles Retrieved Successfully",
+					Data = result
+				};
+			}
+			else
+			{
+				return new GenericResponse()
+				{
+					Status = HttpStatusCode.NotFound.ToString(),
+					Message = "No Role Has Been Added!!!",
+					Data = null
+				};
+			}
+		}
 		public class EditRoleRequest
 		{
 			public string RoleName { get; set; } = string.Empty;

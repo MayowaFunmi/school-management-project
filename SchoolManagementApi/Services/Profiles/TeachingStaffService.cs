@@ -3,6 +3,7 @@ using SchoolManagementApi.Data;
 using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.LoggerManager;
 using SchoolManagementApi.Intefaces.Profiles;
+using SchoolManagementApi.Models;
 using SchoolManagementApi.Models.DocumentModels;
 using SchoolManagementApi.Models.UserModels;
 using WatchDog;
@@ -41,7 +42,7 @@ namespace SchoolManagementApi.Services.Profiles
           .Include(t => t.CurrentPostingSchool)
           //.Include(t => t.Documents)
           .Include(t => t.CurrentSubject)
-          .Include(t => t.OtherSubjects)
+          //.Include(t => t.OtherSubjects)
           .FirstOrDefaultAsync();
 
         return teacher!;
@@ -65,7 +66,7 @@ namespace SchoolManagementApi.Services.Profiles
           .Include(t => t.CurrentPostingSchool)
           //.Include(t => t.Documents)
           .Include(t => t.CurrentSubject)
-          .Include(t => t.OtherSubjects)
+          //.Include(t => t.OtherSubjects)
           .FirstOrDefaultAsync();
 
         return teacher!;
@@ -76,6 +77,38 @@ namespace SchoolManagementApi.Services.Profiles
         WatchLogger.LogError(ex.ToString(), $"Error getting teacher by unique id - {ex.Message}");
         throw;
       }
+    }
+
+    public async Task<bool> OrganizationExists(string organizationUniqueId)
+    {
+      var organization = await _context.Organizations.FirstOrDefaultAsync(o => o.OrganizationUniqueId == organizationUniqueId);
+      if (organization != null)
+        return true;
+      return false;
+    }
+
+    public async Task<List<Zone>> AllOrganizationZones(string organizationUniqueId)
+    {
+      // var organizationId = await _context.Organizations
+      //   .Include(o => o.Zones)
+      //   .Where(o => o.OrganizationUniqueId == organizationUniqueId)
+      //   .Select(o => o.OrganizationUniqueId)
+      //   .FirstOrDefaultAsync();
+
+      // if (!string.IsNullOrEmpty(organizationId))
+      // {
+      //   var zones = await _context.Zones.Where(z => z.OrganizationId.ToString() == organizationId).ToListAsync();
+      //   return zones;
+      // }
+      // return [];
+      var organization = await _context.Organizations
+        .Include(o => o.Zones) // Eager loading of Zones
+        .Where(o => o.OrganizationUniqueId == organizationUniqueId)
+        .FirstOrDefaultAsync();
+
+      if (organization != null)
+        return [.. organization.Zones];
+      return [];
     }
 
     public async Task<bool> TeachingStaffExists(string userId)

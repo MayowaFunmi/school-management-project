@@ -26,7 +26,7 @@ const GetZonesModal: React.FC<OrganizationZonesModalProps> = ({ isModalOpen, clo
                     <hr />
                     {allZones?.map((zone) => (
                       <>
-                        <div key={zone.id}>
+                        <div key={zone.zoneId}>
                           <p>Zone Name: {zone.name}</p>
                           <p>Organization Id: {zone.organizationId}</p>
                           <p>Time Added: {formatDate(zone.createdAt.toString())}</p>

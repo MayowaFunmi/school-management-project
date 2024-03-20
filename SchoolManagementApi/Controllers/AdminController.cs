@@ -156,6 +156,27 @@ namespace SchoolManagementApi.Controllers
     }
 
     [HttpGet]
+    [Route("show-all-organization-zones/{organizationUniqueId}")]
+    [Authorize]
+    public async Task<IActionResult> GetAllOranizationZonesByuniqueId(string organizationUniqueId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(organizationUniqueId))
+        {
+          return BadRequest("Organization Unique Id cannot be empty");
+        }
+        var response = await _mediator.Send(new GetAllZonesByUniqueId.GetAllZonesByUniqueIdCommand(organizationUniqueId));
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
     [Route("admin-get-all-organization-zones")]
     [Authorize(Policy = "OwnerSuperAdmin")]
     public async Task<IActionResult> GetOranizationZonesForAdmin(GetAllOrganizationZones.GetAllOrganizationZonesQuery request)
@@ -220,21 +241,21 @@ namespace SchoolManagementApi.Controllers
     }
 
     [HttpGet]
-    [Route("get-schools-in-zone")]
+    [Route("get-schools-in-zone/{zoneId}")]
     [Authorize]
-    public async Task<IActionResult> GetSchoolsInZone(GetAllSchoolsInZone.GetAllSchoolsInZoneQuery request)
+    public async Task<IActionResult> GetSchoolsInZone(string zoneId)
     {
-      bool pageSpecified = request.Page != default;
-      bool pageSizeSpecified = request.PageSize != default;
-
-      if (!pageSpecified || !pageSizeSpecified || string.IsNullOrEmpty(request.ZoneId))
-        return BadRequest("Zone Id, Page and PageSize must be specified.");
-
-      if (request.Page == 0 || request.PageSize == 0)
-        return BadRequest("Page and PageSize must not be zero value.");
-
+      // bool pageSpecified = request.Page != default;
+      // bool pageSizeSpecified = request.PageSize != default;
+      if (string.IsNullOrEmpty(zoneId))
+        return BadRequest("Zone Id must be specified.");
+      
       try
       {
+        var request = new GetAllSchoolsInZone.GetAllSchoolsInZoneQuery
+        {
+          ZoneId = zoneId
+        };
         var response = await _mediator.Send(request);
           return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);

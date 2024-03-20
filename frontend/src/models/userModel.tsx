@@ -27,7 +27,7 @@ export interface Organization {
 }
 
 export interface Zone {
-	id: string;
+	zoneId: string;
 	organizationId: string;
 	name: string;
 	createdAt: string;
@@ -102,6 +102,17 @@ export interface AddZoneModalProps {
   closeModal: React.MouseEventHandler;
   org: Organization;
 }
+
+export interface RoleData {
+  id: string
+  name: string
+}
+export interface Role {
+    status: string
+    message: string,
+    data: RoleData[]
+}
 export interface Values { uniqueId: string, roleName: string }
+export interface SchoolSearch { zoneId: string, page: number, pageSize: number }
 export interface Values2 { uniqueId: string, roleName2: string }
 export interface ZoneValues { organizationUniqueId: string, zoneName: string }

@@ -1,10 +1,8 @@
 using System.Net;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using SchoolManagementApi.Data;
 using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Profiles;
-using SchoolManagementApi.Intefaces.Uploads;
 using SchoolManagementApi.Models.UserModels;
 using static SchoolManagementApi.Constants.DictionaryMaps;
 
@@ -15,6 +13,7 @@ namespace SchoolManagementApi.Commands.Profiles
     public class AddTeachingStaffCommand : IRequest<GenericResponse>
     {
       public required string UserId { get; set; }
+      public required string OrganizationUniqueId { get; set; }
       public string? Title { get; set; }
       public string? MiddleName { get; set; }
       public required string Gender { get; set; }
@@ -28,6 +27,7 @@ namespace SchoolManagementApi.Commands.Profiles
       public required string AboutMe { get; set; }
       public required string Designation { get; set; }
       public required int GradeLevel { get; set; }
+      public required int Step { get; set; }
       public required DateTime FirstAppointment { get; set; }
       public required int YearsInService { get; set; }
       public required string Qualification { get; set; }
@@ -50,6 +50,16 @@ namespace SchoolManagementApi.Commands.Profiles
       {
         try
         {
+          // check if organization exists
+          var checkOrganization = await _teachingStaffInterface.OrganizationExists(request.OrganizationUniqueId);
+          if (!checkOrganization)
+          {
+            return new GenericResponse
+            {
+              Status = HttpStatusCode.OK.ToString(),
+              Message = $"Organization with unique id {request.OrganizationUniqueId} not found"
+            };
+          }
           var checkTeacherProfile = await _teachingStaffInterface.TeachingStaffExists(request.UserId);
           if (checkTeacherProfile)
           {
@@ -99,9 +109,9 @@ namespace SchoolManagementApi.Commands.Profiles
         return new TeachingStaff
           {
             UserId = request.UserId,
+            OrganizationUniqueId = request.OrganizationUniqueId,
             Title = TitleMap.TitleDictionary.TryGetValue(request.Title!, out string? value) ? value : "Mr",
             MiddleName = request.MiddleName!,
-            //ProfilePicture = request.ProfilePicture!,
             Gender = TitleMap.GenderDictionary.TryGetValue(request.Gender!, out string? GenderValue) ? GenderValue : "Male",
             DateOfBirth = request.DateOfBirth,
             Age = request.Age,
@@ -113,6 +123,7 @@ namespace SchoolManagementApi.Commands.Profiles
             AboutMe = request.AboutMe,
             Designation = TitleMap.DesignationDictionary.TryGetValue(request.Designation!, out string? DesignationValue) ? DesignationValue : "ClassTeacher",
             GradeLevel = request.GradeLevel,
+            Step = request.Step,
             FirstAppointment = request.FirstAppointment,
             YearsInService = request.YearsInService,
             Qualification = TitleMap.QualificationDictionary.TryGetValue(request.Qualification!, out string? QualificationValue) ? QualificationValue : "BEd",

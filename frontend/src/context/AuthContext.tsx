@@ -4,12 +4,18 @@ import { useJwt } from "react-jwt";
 import { baseUrl } from "../config/Config";
 import { logoutUser } from "../features/userSlice";
 import axios from "axios";
+import { Role, RoleData } from "../models/userModel";
 
 interface AuthContextProps {
     isAuthenticated: boolean
     isAdminRoleExists: boolean | null
     isSuperAdminRoleExists: boolean | null
     isOwnerExists: boolean | null
+    isOrganizationAdminExists: boolean | null
+    isTeachingStaffExists: boolean | null
+    isNonTeachingStaffExists: boolean | null
+    isParentExists: boolean | null
+    isStudentExists: boolean | null
     token: string
     userId: string
     loading: boolean
@@ -25,23 +31,6 @@ interface DecodedToken {
     exp: number;
 }
 
-interface Data {
-    _id: object,
-    roleName: string,
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
-
-interface RoleData {
-  id: string
-  name: string
-}
-interface Role {
-    message: string,
-    data: RoleData[]
-}
-
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode}> = ({ children }) => {
@@ -52,6 +41,11 @@ export const AuthProvider: React.FC<{ children: ReactNode}> = ({ children }) => 
     const [isAdminRoleExists, setIsAdminRoleExists] = useState<boolean | null>(null);
     const [isSuperAdminRoleExists, setIsSuperAdminRoleExists] = useState<boolean | null>(null);
     const [isOwnerExists, setIsOwnerExists] = useState<boolean | null>(null);
+    const [isOrganizationAdminExists, setIsOrganizationAdminExists] = useState<boolean | null>(null);
+    const [isTeachingStaffExists, setIsTeachingStaffExists] = useState<boolean | null>(null);
+    const [isNonTeachingStaffExists, setIsNonTeachingStaffExists] = useState<boolean | null>(null);
+    const [isParentExists, setIsParentExists] = useState<boolean | null>(null);
+    const [isStudentExists, setIsStudentExists] = useState<boolean | null>(null);
 
     const { isAuthenticated, token, loading, message, status } = useAppSelector((state) => state.user);
     //const dispatch = useAppDispatch();
@@ -59,9 +53,17 @@ export const AuthProvider: React.FC<{ children: ReactNode}> = ({ children }) => 
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if(isExpired) {
-            dispatch(logoutUser());
-        };
+      if(isExpired) {
+        setIsAdminRoleExists(null);
+        setIsSuperAdminRoleExists(null);
+        setIsOwnerExists(null);
+        setIsOrganizationAdminExists(null);
+        setIsTeachingStaffExists(null);
+        setIsNonTeachingStaffExists(null);
+        setIsParentExists(null);
+        setIsStudentExists(null);
+        dispatch(logoutUser());
+      };
     }, [dispatch, isExpired])
 
     useEffect(() => {
@@ -98,10 +100,45 @@ export const AuthProvider: React.FC<{ children: ReactNode}> = ({ children }) => 
                   roleNames.includes(role.name) &&
                   role.name === "Owner"
               );
-      
+
+              const isOrganizationAdmin = allRoles.some(
+                (role) =>
+                  roleNames.includes(role.name) &&
+                  role.name === "OrganizationAdmin"
+              );
+
+              const isTeachingStaff = allRoles.some(
+                (role) =>
+                  roleNames.includes(role.name) &&
+                  role.name === "TeachingStaff"
+              );
+
+              const isNonTeachingStaff = allRoles.some(
+                (role) =>
+                  roleNames.includes(role.name) &&
+                  role.name === "NonTeachingStaff"
+              );
+
+              const isParent = allRoles.some(
+                (role) =>
+                  roleNames.includes(role.name) &&
+                  role.name === "Parent"
+              );
+
+              const isStudent = allRoles.some(
+                (role) =>
+                  roleNames.includes(role.name) &&
+                  role.name === "Student"
+              );
               setIsAdminRoleExists(isAdmin);
               setIsSuperAdminRoleExists(isSuperAdmin);
               setIsOwnerExists(isOwner);
+              setIsOrganizationAdminExists(isOrganizationAdmin);
+              setIsTeachingStaffExists(isTeachingStaff);
+              setIsNonTeachingStaffExists(isNonTeachingStaff);
+              setIsParentExists(isParent);
+              setIsStudentExists(isStudent);
+
             } catch (error) {
               console.error('Error fetching roles:', error);
             }
@@ -123,6 +160,11 @@ export const AuthProvider: React.FC<{ children: ReactNode}> = ({ children }) => 
                 isAdminRoleExists,
                 isSuperAdminRoleExists,
                 isOwnerExists,
+                isOrganizationAdminExists,
+                isTeachingStaffExists,
+                isNonTeachingStaffExists,
+                isParentExists,
+                isStudentExists,
                 userId,
                 roles
             }}

@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { baseUrl } from '../../config/Config';
+import { Role, RoleData } from '../../models/userModel';
 
 const SignUp: React.FC = () => {
   const backgroundImages = {
@@ -19,7 +20,9 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [roles, setRoles] = useState<RoleData[]>([]);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('');
 
   const notifyError = (msg: string) => toast.error(msg);
   const notifySuccess = (msg: string) => toast.success(msg);
@@ -27,10 +30,25 @@ const SignUp: React.FC = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const getRoles = async () => {
+      try {
+        const res = await axios.get<Role>(`${baseUrl}/api/role/get-selected-roles`)
+        const response = res.data
+        if (response.status === "OK") {
+          setRoles(response.data)
+        }
+      } catch (error) {
+        console.log(`Error fetching data: ${error}`)
+      }
+    }
+    getRoles();
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // check if all fields are filled
-    if (!username || !firstName || !lastName || !email || !password || !confirmPassword) {
+    if (!username || !firstName || !lastName || !email || !password || !confirmPassword || !role) {
       notifyError("None of the fields must be empty")
       return;
     }
@@ -47,7 +65,7 @@ const SignUp: React.FC = () => {
 
     try {
       const result = await axios.post(`${baseUrl}/api/auth/signup`, {
-        username, firstName, lastName, email, phoneNumber, password
+        username, firstName, lastName, email, phoneNumber, password, role
       })
       if (result.status === 200) {
         setUsername("");
@@ -144,6 +162,28 @@ const SignUp: React.FC = () => {
               }}
             />
             <label htmlFor="floatingPhoneNumber">Phone Number</label>
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="userRoles" className="form-label">
+              I am a
+            </label>
+            <select
+              className="form-select"
+              id="userRoles"
+              name="roleName"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a role
+              </option>
+              {roles.map((role) => (
+                <option key={role.id} value={role.name}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="form-floating mb-3">

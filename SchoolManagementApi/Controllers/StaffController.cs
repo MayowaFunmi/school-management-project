@@ -70,6 +70,8 @@ namespace SchoolManagementApi.Controllers
           return BadRequest("You are not an authenticated");
         if (string.IsNullOrEmpty(staffId))
           return BadRequest("staff Id cannot be empty");
+        if (staffId != CurrentUserId)
+          return BadRequest("Logged in user and staff id are not the same");
         var response = await _mediator.Send(new GetTeachingStaffById.GetTeachingStaffByIdQuery(staffId));
         return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);

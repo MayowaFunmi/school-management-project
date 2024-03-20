@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector';
 import { loginUser } from '../../features/userSlice';
@@ -52,7 +52,10 @@ const Login: React.FC = () => {
       	username, password
 			};
 			dispatch(loginUser(userCredentials));
-			navigate('/');
+			//navigate('/get-user-profile');
+			if (status === "success") {
+				return <Navigate to='/' />
+			}
     } catch (error) {
 	  	notifyError(message);
     }

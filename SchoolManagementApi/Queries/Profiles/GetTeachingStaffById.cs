@@ -24,7 +24,7 @@ namespace SchoolManagementApi.Queries.Profiles
           {
             return new GenericResponse
             {
-              Status = HttpStatusCode.Unauthorized.ToString(),
+              Status = HttpStatusCode.OK.ToString(),
               Message = "You are not authorized",
             };
           }
@@ -41,7 +41,7 @@ namespace SchoolManagementApi.Queries.Profiles
           }
           return new GenericResponse
           {
-            Status = HttpStatusCode.NotFound.ToString(),
+            Status = HttpStatusCode.OK.ToString(),
             Message = $"Teacher with Id {request.StaffId} not found",
           };
         }
@@ -52,7 +52,7 @@ namespace SchoolManagementApi.Queries.Profiles
           return new GenericResponse
           {
             Status = HttpStatusCode.InternalServerError.ToString(),
-            Message = $"Error getting organizations for admin id - {ex.Message}",
+            Message = $"Error getting teaching staff by id - {ex.Message}",
           };
         }
       }

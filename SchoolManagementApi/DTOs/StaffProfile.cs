@@ -12,6 +12,7 @@ namespace SchoolManagementApi.DTOs
     [ForeignKey("UserId")]
     public string UserId { get; set; }
     public virtual ApplicationUser User { get; set; }
+    public string OrganizationUniqueId { get; set; }
     public string? Title { get; set; }
     public string MiddleName { get; set; }
     public string? ProfilePicture { get; set; }
@@ -26,6 +27,7 @@ namespace SchoolManagementApi.DTOs
     public string AboutMe { get; set; }
     public string Designation { get; set; }
     public int GradeLevel { get; set; }
+    public int Step { get; set; }
     public DateTime? FirstAppointment { get; set; }
     public int YearsInService { get; set; }
     public string? Qualification { get; set; }
