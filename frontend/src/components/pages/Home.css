@@ -127,3 +127,8 @@
   .navbar .form-control {
     padding: .75rem 1rem;
   }
+
+  .custom-placeholder {
+    color: #999; /* Faded color */
+    font-style: italic;
+  }

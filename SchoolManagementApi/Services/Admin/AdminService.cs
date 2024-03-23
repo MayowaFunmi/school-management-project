@@ -4,6 +4,7 @@ using SchoolManagementApi.Data;
 using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
+using SchoolManagementApi.Models;
 using SchoolManagementApi.Models.UserModels;
 using WatchDog;
 
@@ -68,6 +69,20 @@ namespace SchoolManagementApi.Services.Admin
             {
                 _logger.LogError($"Error getting user with uniqueId - {ex.Message}");
                 WatchLogger.LogError(ex.ToString(), $"Error getting user with uniqueId - {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<Subject>> GetSubjectsInSchool()
+        {
+            try
+            {
+                return await _context.Subjects.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error getting Subjects - {ex.Message}");
+                WatchLogger.LogError(ex.ToString(), $"Error getting Subjects - {ex.Message}");
                 throw;
             }
         }

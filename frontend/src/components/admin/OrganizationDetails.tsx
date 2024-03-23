@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { getOrganizationZones, resetAllZones } from '../../features/adminSlice';
+import { getOrganizationZones } from '../../features/adminSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector';
 import GetZonesModal from '../../modals/GetZonesModal';
 import { Organization, Zone } from '../../models/userModel';
@@ -14,11 +14,11 @@ const OrganizationDetails = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { orgMsg, orgStatus, organizations, checkOrgs, allZones, zoneMsg } = useAppSelector((state) => state.admin);
-
+  const { zoneMsg } = useAppSelector((state) => state.admin);
+  const { allZones } = useAppSelector((state) => state.zone);
 
   const getZones = async (id: string) => {
-    store.dispatch(resetAllZones());
+    //store.dispatch(resetAllZones());
     try {
       await dispatch(getOrganizationZones(id));
       setIsModalOpen(true)
@@ -28,7 +28,7 @@ const OrganizationDetails = () => {
   };
 
   const addZone = async (id: string) => {
-    store.dispatch(resetAllZones());
+    //store.dispatch(resetAllZones());
     try {
       setIsModalOpen(true);
     } catch (error) {

@@ -267,27 +267,23 @@ namespace SchoolManagementApi.Controllers
     }
 
     [HttpGet]
-    [Route("get-schools-in-organization")]
-    [Authorize(Policy = "OwnerOrganizationAdminSuperAdmin")]
-    public async Task<IActionResult> GetSchoolsInOrganization(GetAllOrganizationSchools.GetAllOrganizationSchoolsQuery request)
+    [Route("get-schools-in-organization/{organizationUniqueId}")]
+    [Authorize]
+    public async Task<IActionResult> GetSchoolsInOrganization(string organizationUniqueId)
     {
-      bool pageSpecified = request.Page != default;
-      bool pageSizeSpecified = request.PageSize != default;
+      // bool pageSpecified = request.Page != default;
+      // bool pageSizeSpecified = request.PageSize != default;
 
-      if (!pageSpecified || !pageSizeSpecified || string.IsNullOrEmpty(request.OrganizationUniqueId))
-        return BadRequest("Organization Unique Id, Page and PageSize must be specified.");
-      
-      if (request.Page == 0 || request.PageSize == 0)
-        return BadRequest("Page and PageSize must not be zero value.");
+      if (string.IsNullOrEmpty(organizationUniqueId))
+        return BadRequest("Organization Unique Id must be specified.");
 
       try
       {
-        if (string.IsNullOrEmpty(CurrentUserId))
+        var request = new GetAllOrganizationSchools.GetAllOrganizationSchoolsQuery
         {
-          return Unauthorized("You are not an admin");
-        }
-        
-        request.AdminId = CurrentUserId;
+          OrganizationUniqueId = organizationUniqueId
+        };
+      
         var response = await _mediator.Send(request);
         return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);
@@ -472,6 +468,21 @@ namespace SchoolManagementApi.Controllers
         var response = await _mediator.Send(request);
         return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-all-subjects")]
+    public async Task<IActionResult> GetAllSubjects()
+    {
+      try
+      {
+        var res = await _adminService.GetSubjectsInSchool();
+        return Ok(res);
       }
       catch (Exception ex)
       {

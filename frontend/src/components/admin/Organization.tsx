@@ -3,14 +3,12 @@ import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector'
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createOrganization, getAdminOrganizations, getOrganizationZones, resetAllZones } from '../../features/adminSlice';
-import Zones from './Zones';
+import { createOrganization, getAdminOrganizations, getOrganizationZones } from '../../features/adminSlice';
 import { OrgData as UserOrganization } from '../../models/userModel';
-import store from '../../store/store';
 
 const Organization = () => {
 
-  const { orgMsg, orgStatus, organizations, checkOrgs, allZones, zoneMsg } = useAppSelector((state) => state.admin);
+  const { orgMsg, orgStatus, organizations } = useAppSelector((state) => state.admin);
   const { isAuthenticated, isAdminRoleExists, userId } = useAuth();
   const dispatch = useAppDispatch();
 
@@ -62,7 +60,7 @@ const Organization = () => {
   };
 
   const handleViewDetails  = (org: UserOrganization) => {
-    store.dispatch(resetAllZones());
+    //store.dispatch(resetAllZones());
     navigate(`/organization-details/${org.organizationId}`, { state: { org } });
   };
 

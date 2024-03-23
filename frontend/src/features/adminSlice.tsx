@@ -1,13 +1,13 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getAxiosConfig, baseUrl } from "../config/Config";
 import axios from "axios";
-import { Data, SchoolSearch, Values, Values2, ZoneValues } from "../models/userModel";
+import { Data, Values, Values2, ZoneValues } from "../models/userModel";
 
 const initialState: Data = {
 	loading: false,
 	status: "",
 	data: {
-	  user: {
+		user: {
 			id: "",
 			userName: "",
 			firstName: "",
@@ -20,7 +20,7 @@ const initialState: Data = {
 		userRoles: []
 	},
 	roles: {
-	  roles: [],
+		roles: [],
 	},
 	roleMsg: "",
 	orgMsg: "",
@@ -38,9 +38,7 @@ const initialState: Data = {
 		updatedAt: ""
 	},
 	zoneMsg: "",
-	allZones: [],
-	allZoneMsg: ""
-  };
+};
 
 export const getUserDetails = createAsyncThunk(
     'admin/getUserDetails',
@@ -116,19 +114,6 @@ export const getOrganizationZones = createAsyncThunk(
     }
 );
 
-export const getOrganizationZonesByUniqueId = createAsyncThunk(
-	'admin/getOrganizationZonesByUniqueId',
-	async (organizationUniqueId: string, thunkApi) => {
-		try {
-			const endpoint = `${baseUrl}/api/admin/show-all-organization-zones/${organizationUniqueId}`;
-			const response = await axios.get(endpoint, getAxiosConfig());
-			return response.data;
-		} catch (error: any) {
-			return thunkApi.rejectWithValue(error.message);
-		}
-	}
-);
-
 export const getAdminOrganizations = createAsyncThunk(
 	'admin/getAdminOrganizations',
 	async(userId: string, thunkApi) => {
@@ -153,38 +138,25 @@ export const getAllOrganizations = createAsyncThunk(
 	}
 )
 
-export const getSchoolsInZone = createAsyncThunk(
-	'admin/getSchoolsInZone',
-	async (data: string, thunkApi) => {
-		try {
-			const response = await axios.get(`${baseUrl}/api/admin/get-schools-in-zone/${data}`)
-			console.log("school = ", response.data)
-			return response.data;
-		} catch (error: any) {
-			return thunkApi.rejectWithValue(error.message);
-		}
-	}
-)
-
 const adminSlice = createSlice({
 	name: 'admin',
 	initialState,
 	reducers: {
 		clearUserData: (state) => {
-			return { ...initialState, };
+			return { ...initialState };
 		},
-		resetAllZones: (state) => {
-			state.allZones = [];
-			state.allZoneMsg = "";
-			state.zone = {
-				zoneId: "",
-				organizationId: "",
-				name: "",
-				createdAt: "",
-				updatedAt: ""
-			};
-			state.zoneMsg = ""
-		  },
+		// resetAllZones: (state) => {
+		// 	state.allZones = [];
+		// 	state.allZoneMsg = "";
+		// 	state.zone = {
+		// 		zoneId: "",
+		// 		organizationId: "",
+		// 		name: "",
+		// 		createdAt: "",
+		// 		updatedAt: ""
+		// 	};
+		// 	state.zoneMsg = ""
+		//   },
 	},
 	extraReducers: (builder) => {
 		builder
@@ -353,28 +325,7 @@ const adminSlice = createSlice({
 					}
 				}
 			})
-
-		builder
-			.addCase(getOrganizationZonesByUniqueId.pending, (state) => {
-				return { ...state, allZoneMsg: "pending" }
-			})
-			.addCase(getOrganizationZonesByUniqueId.fulfilled, (state, action: PayloadAction<any>) => {
-				if (action.payload) {
-					const zoneData = action.payload;
-					return {
-						...state, allZones: zoneData.data, allZoneMsg: "success"
-					}
-				}
-			})
-			.addCase(getOrganizationZonesByUniqueId.rejected, (state, action: PayloadAction<any>) => {
-				if (action.payload) {
-					const zoneData = action.payload;
-					return {
-						...state, allZones: zoneData.data, allZoneMsg: "rejected"
-					}
-				}
-			})
 	}
 })
-export const { clearUserData, resetAllZones } = adminSlice.actions;
+export const { clearUserData } = adminSlice.actions;
 export default adminSlice.reducer;

@@ -34,13 +34,23 @@ namespace SchoolManagementApi.Services.Admin
     {
       try
       {
-        var schools = await _context.Schools
+        List<School> schools = [];
+        if (page == 0 || pageSize == 0)
+        {
+          schools = await _context.Schools
+          .Where(s => s.OrganizationUniqueId == OrganizationUniqueId)
+          .ToListAsync();
+        }
+        else
+        {
+          schools = await _context.Schools
           .Where(s => s.OrganizationUniqueId == OrganizationUniqueId)
           .Include(s => s.Departments)
           .Include(s => s.StudentClasses)
           .Skip((page - 1) * pageSize)
           .Take(pageSize)
           .ToListAsync();
+        }
         return schools;
       }
       catch (Exception ex)

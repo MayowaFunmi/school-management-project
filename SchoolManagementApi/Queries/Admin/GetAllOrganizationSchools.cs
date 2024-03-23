@@ -9,10 +9,9 @@ namespace SchoolManagementApi.Queries.Admin
   {
     public class GetAllOrganizationSchoolsQuery : IRequest<GenericResponse>
     {
-      public string AdminId { get; set; } = string.Empty;
-      public string? OrganizationUniqueId { get; set; }
-      public int Page { get; set; }
-      public int PageSize { get; set; }
+      public string OrganizationUniqueId { get; set; } = string.Empty;
+      public int Page { get; set; } = 0;
+      public int PageSize { get; set; } = 0;
     }
 
     public class GetAllOrganizationSchoolsHandler(ISchoolServices schoolServices) : IRequestHandler<GetAllOrganizationSchoolsQuery, GenericResponse>
@@ -22,8 +21,10 @@ namespace SchoolManagementApi.Queries.Admin
       public async Task<GenericResponse> Handle(GetAllOrganizationSchoolsQuery request, CancellationToken cancellationToken)
       {
         int totalSchoolCount = await _schoolServices.AllOrganizationSchoolsCount(request.OrganizationUniqueId!);
-        int totalPages = (int)Math.Ceiling((double)totalSchoolCount / request.PageSize);
-        
+        int totalPages = 1;
+        if (request.Page != 0 || request.PageSize != 0)
+          totalPages = (int)Math.Ceiling((double)totalSchoolCount / request.PageSize);
+          
         try
         {
           var schools = await _schoolServices.AllOrganizationScchools(request.OrganizationUniqueId!, request.Page, request.PageSize);

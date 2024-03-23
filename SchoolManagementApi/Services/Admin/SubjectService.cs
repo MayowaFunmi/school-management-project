@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SchoolManagementApi.Data;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
@@ -25,11 +26,6 @@ namespace SchoolManagementApi.Services.Admin
         WatchLogger.LogError(ex.ToString(), $"Error Adding Subject - {ex.Message}");
         throw;
       }
-    }
-
-    public async Task<List<Subject>> GetSubjectsInSchool(string SchoolId)
-    {
-        throw new NotImplementedException();
     }
   }
 }

@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector';
-import { getAllOrganizations, getOrganizationZones, resetAllZones } from '../../features/adminSlice';
+import { getAllOrganizations, getOrganizationZones } from '../../features/adminSlice';
 import { toast } from 'react-toastify';
 import { OrgData as UserOrganization } from '../../models/userModel';
 import store from '../../store/store';
 
 const OrganizationsList: React.FC = () => {
   const { isAuthenticated, isSuperAdminRoleExists } = useAuth();
-  const { allOrganizations, allOrgsMsg, allZones, allZoneMsg } = useAppSelector((state) => state.admin);
+  const { allOrganizations } = useAppSelector((state) => state.admin);
+  const { allZoneMsg } = useAppSelector((state) => state.zone);
+
   const [organizationDetails, setOrganizationDetails] = useState<UserOrganization | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,7 +27,7 @@ const OrganizationsList: React.FC = () => {
 
   const handleViewDetails  = (org: UserOrganization) => {
     // reset the state
-    store.dispatch(resetAllZones())
+    //store.dispatch(resetAllZones())
     setOrganizationDetails(org);
     setIsModalOpen(true);
   };

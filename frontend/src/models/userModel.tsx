@@ -34,6 +34,41 @@ export interface Zone {
 	updatedAt: string;
 }
 
+export interface School {
+  schoolId: string
+  organizationUniqueId: string
+  schoolUniqueId: string
+  zoneId: string
+  name: string
+  address: string
+  localGovtArea: string
+  createdAt: string
+}
+
+export interface Subject {
+  subjectId: string
+  subjectName: string
+}
+
+export interface IZone {
+  allZones: Zone[]
+	allZoneMsg: string
+}
+
+export interface ISchool {
+  allSchools: School[]
+  schMsg: string
+}
+
+export interface ISubject {
+  allSubjects: Subject[]
+  subMsg: string
+}
+
+export interface IOrgSchools {
+  allOrgSch: School[]
+  orgSchs: string
+}
 // export interface Users {
 // 	id: string
 // 	username: string
@@ -85,8 +120,6 @@ export interface Data {
 	allOrgsMsg: string
 	zone: Zone
 	zoneMsg: string
-	allZones: Zone[]
-	allZoneMsg: string
 }
 
 export interface OrganizationZonesModalProps {

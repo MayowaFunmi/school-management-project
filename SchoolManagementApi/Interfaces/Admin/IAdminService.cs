@@ -1,4 +1,5 @@
 using SchoolManagementApi.DTOs;
+using SchoolManagementApi.Models;
 
 namespace SchoolManagementApi.Intefaces.Admin
 {
@@ -6,5 +7,6 @@ namespace SchoolManagementApi.Intefaces.Admin
   {
     Task<List<UserWithRoles>> GetAllUsersWithRoles();
     Task<UserWithRoles> GetUserByUniqueId(string uniqueId);
+    Task<List<Subject>> GetSubjectsInSchool();
   }
 }
