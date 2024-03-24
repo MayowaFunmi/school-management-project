@@ -9,26 +9,31 @@ import { getOrganizationZonesByUniqueId } from '../../../features/zoneSlice';
 import { getSchoolsInZone } from '../../../features/schoolSlice';
 import { getSchoolsInOrganization } from '../../../features/organizationSlice';
 import { getAllSubjects } from '../../../features/subjectSlice';
+import { createTeacherProfile } from '../../../features/teacherSlice';
+import { useNavigate } from 'react-router-dom';
 
 const TeacherProfile: React.FC = () => {
   const { userId } = useAuth();
   const notifyError = (msg: string) => toast.error(msg);
   const notifySuccess = (msg: string) => toast.success(msg);
   const dispatch = useAppDispatch();
+
+  const navigate = useNavigate()
+
   const { allZones } = useAppSelector((state) => state.zone);
   const { allSchools, schMsg } = useAppSelector((state) => state.school);
   const { allSubjects } = useAppSelector((state) => state.subject);
-
   const { allOrgSch } = useAppSelector((state) => state.organization);
+  const { teacherData, teacherMsg, msg } = useAppSelector((state) => state.teacher)
 
   const [isFirstPartComplete, setIsFirstPartComplete] = useState<boolean>(false)
-  const [organizationUniqueId, setOrganizationUniqueId] = useState<string>("");
   const [zonesList, setZonesList] = useState<Zone[]>([]);
   const [schoolsList, setSchoolsList] = useState<School[]>([]);
   const [orgSchoolsList, setOrgSchoolsList] = useState<School[]>([]);
   const [subjectsList, setSubjectsList] = useState<Subject[]>([]);
 
   const [title, setTitle] = useState<string>("");
+  const [organizationUniqueId, setOrganizationUniqueId] = useState<string>("");
   const [middleName, setMiddleName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
   const [gender, setGender] = useState<string>("");
@@ -74,8 +79,19 @@ const TeacherProfile: React.FC = () => {
     }
   }
 
-  const handleSubmitProfile = (e: React.FormEvent) => {
+  const handleSubmitProfile = async (e: React.FormEvent) => {
     e.preventDefault()
+    const teacherData = {
+      userId, organizationUniqueId, title, middleName, dateOfBirth, gender, age, stateOfOrigin, lgaOfOrigin, address,
+      religion, maritalStatus, aboutMe, designation, gradeLevel, step, firstAppointment, yearsInService, qualification, discipline,
+      currentPostingZoneId, currentPostingSchoolId, previousSchoolsIds, publishedWork, currentSubjectId, otherSubjectsIds
+    }
+    await dispatch(createTeacherProfile(teacherData))
+    if (teacherData && teacherMsg && msg) {
+      notifySuccess(msg)
+      //navigate to tearcher profile page
+      navigate("/")
+    }
   }
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -151,7 +167,7 @@ const TeacherProfile: React.FC = () => {
   }, [dispatch, organizationUniqueId])
 
   useEffect(() => {
-    if (currentPostingZoneId) {
+    if (currentPostingZoneId !== null) {
       dispatch(getSchoolsInZone(currentPostingZoneId));
     }
   }, [dispatch, currentPostingZoneId])
@@ -421,7 +437,17 @@ const TeacherProfile: React.FC = () => {
             </div>
 
             <div className="form-floating mb-3">
-              <textarea name="aboutMe" id="aboutMe" placeholder='Write something about yourself ...' cols={40} rows={5} value={aboutMe} onChange={(e) => {setAboutMe(e.target.value)}} required></textarea>
+              <textarea
+                name="aboutMe" 
+                id="aboutMe" 
+                placeholder='Write something about yourself ...' 
+                cols={40} 
+                rows={5} 
+                value={aboutMe} 
+                onChange={(e) => {setAboutMe(e.target.value)}} 
+                required
+              >
+              </textarea>
             </div>
           </>
         )}
@@ -466,10 +492,10 @@ const TeacherProfile: React.FC = () => {
                 value={gradeLevel}
                 required
                 onChange={(e) => {
-                  setGradeLevel(parseInt(e.target.value));
+                  setGradeLevel(+e.target.value);
                 }}
               />
-              <label htmlFor="floatingMAddress">Grade Level</label>
+              <label htmlFor="gradeLevel">Grade Level</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -485,7 +511,7 @@ const TeacherProfile: React.FC = () => {
                   setStep(parseInt(e.target.value));
                 }}
               />
-              <label htmlFor="floatingMAddress">Step</label>
+              <label htmlFor="step">Step</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -498,7 +524,7 @@ const TeacherProfile: React.FC = () => {
                 required
                 onChange={handleServiceDateChange}
               />
-              <label htmlFor="floatingUsername">Date Of First Appointment</label>
+              <label htmlFor="firstAppointment">Date Of First Appointment</label>
             </div>
 
             <div className="form-floating mb-3">
@@ -583,7 +609,7 @@ const TeacherProfile: React.FC = () => {
 
             <div className="mb-3">
               <label htmlFor="CurrentPostingSchoolId" className="form-label">
-                Choose a school in your zone
+                School you currently work
               </label>
               <select
                 className="form-select"
@@ -595,6 +621,7 @@ const TeacherProfile: React.FC = () => {
                   setCurrentPostingSchoolId(e.target.value);
                 }}
               >
+                <option value="" disabled>Select School</option>
                 {schoolsList?.map((school) => (
                   <option key={school.schoolId} value={school.schoolId}>
                     {school.name}
@@ -650,6 +677,7 @@ const TeacherProfile: React.FC = () => {
                   setCurrentSubjectId(e.target.value);
                 }}
               >
+                <option value="" disabled>Select A Subject</option>
                 {subjectsList?.map((subject) => (
                   <option key={subject.subjectId} value={subject.subjectId}>
                     {subject.subjectName}

@@ -6,6 +6,7 @@ import zoneReducer from "../features/zoneSlice";
 import schoolReducer from "../features/schoolSlice";
 import organizationReducer from "../features/organizationSlice";
 import subjectReducer from "../features/subjectSlice";
+import teacherReducer from "../features/teacherSlice";
 
 const store = configureStore({
     reducer: {
@@ -16,7 +17,8 @@ const store = configureStore({
       zone: zoneReducer,
       school: schoolReducer,
       organization: organizationReducer,
-      subject: subjectReducer
+      subject: subjectReducer,
+      teacher: teacherReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
       immutableCheck: { warnAfter: 128 }, // or false
