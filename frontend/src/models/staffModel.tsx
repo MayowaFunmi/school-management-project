@@ -1,4 +1,6 @@
-interface SchoolIdList {
+import { School, User, Zone } from "./userModel"
+
+export interface SchoolIdList {
   schoolId: string
 }
 
@@ -8,6 +10,7 @@ interface SubjectList {
 
 export interface TeachingStaff {
   userId: string
+  user: User
   title: string
   middleName: string
   dateOfBirth: string
@@ -20,19 +23,23 @@ export interface TeachingStaff {
   maritalStatus: string
   aboutMe: string
   designation: string
-  gradeLevel: string
+  gradeLevel: number
+  step: number
   firstAppointment: string
   yearsInService: string
   qualification: string
   discipline: string
   currentPostingZoneId: string
+  currentPostingZone: Zone
   currentPostingSchoolId: string
-  previousSchoolsIds: SchoolIdList[]
+  currentPostingSchool: School
+  previousSchoolsIds: string[]
   createdDate: string
   updatedDate: string
   publishedWork: string
   currentSubjectId: string
-  OtherSubjects: SubjectList[]
+  currentSubject: SubjectList
+  OtherSubjects: string[]
 }
 
 export interface Response {

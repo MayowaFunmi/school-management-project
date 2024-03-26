@@ -20,7 +20,8 @@ const initialState: Response = {
     maritalStatus: "",
     aboutMe: "",
     designation: "",
-    gradeLevel: "",
+    gradeLevel: 0,
+    step: 0,
     firstAppointment: "",
     yearsInService: "",
     qualification: "",
@@ -32,7 +33,40 @@ const initialState: Response = {
     updatedDate: "",
     publishedWork: "",
     currentSubjectId: "",
-    OtherSubjects: []
+    OtherSubjects: [],
+    user: {
+      id: "",
+      userName: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      uniqueId: "",
+      createdAt: "",
+      percentageCompleted: 0
+    },
+    currentPostingZone: {
+      zoneId: "",
+      organizationId: "",
+      name: "",
+      schools: [],
+      localGovtArea: [],
+      createdAt: "",
+      updatedAt: ""
+    },
+    currentPostingSchool: {
+      schoolId: "",
+      organizationUniqueId: "",
+      schoolUniqueId: "",
+      zoneId: "",
+      name: "",
+      address: "",
+      localGovtArea: "",
+      createdAt: ""
+    },
+    currentSubject: {
+      subjectName: ""
+    },
   }
 }
 

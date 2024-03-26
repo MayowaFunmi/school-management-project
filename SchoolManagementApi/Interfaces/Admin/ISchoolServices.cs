@@ -16,5 +16,6 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<List<OrganizationData>> OrganizationData(string organizationUniqueId);
     Task<List<School>> AllZoneScchools(string ZoneId, int page, int pageSize);
     Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize);
+    Task<List<School>> GetSchoolByIdList(List<string> schoolIds);
   }
 }

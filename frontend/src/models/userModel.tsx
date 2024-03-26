@@ -30,6 +30,8 @@ export interface Zone {
 	zoneId: string;
 	organizationId: string;
 	name: string;
+  schools: School[]
+  localGovtArea: string[]
 	createdAt: string;
 	updatedAt: string;
 }
@@ -58,6 +60,8 @@ export interface IZone {
 export interface ISchool {
   allSchools: School[]
   schMsg: string
+  allSchoolIds: School[]
+  schIdMsg: string
 }
 
 export interface ISubject {
@@ -88,7 +92,7 @@ export interface User
     lastName: string
     email: string
     phoneNumber: string
-    //roles: { roleName: string }[];
+    percentageCompleted: number
     uniqueId: string
     createdAt: string
   }
@@ -151,6 +155,7 @@ export interface Values2 { uniqueId: string, roleName2: string }
 export interface ZoneValues { organizationUniqueId: string, zoneName: string }
 export interface TSProfile {
   userId: string
+  user: User
   organizationUniqueId: string
   title: string
   middleName: string
@@ -176,6 +181,35 @@ export interface TSProfile {
   publishedWork: string
   currentSubjectId: string
   otherSubjectsIds: string[]
+}
+
+export interface TSProfileData {
+  userId: string
+  organizationUniqueId: string
+  title: string
+  middleName: string
+  dateOfBirth: string
+  gender: string
+  age: number
+  stateOfOrigin: string
+  lgaOfOrigin: string
+  address: string
+  religion: string
+  maritalStatus: string
+  aboutMe: string
+  designation: string
+  gradeLevel: number
+  step: number
+  firstAppointment: string
+  yearsInService: number
+  qualification: string
+  discipline: string
+  currentPostingZoneId: string
+  currentPostingSchoolId: string
+  previousSchoolsIds: string[]
+  publishedWork: string
+  currentSubjectId: string
+  otherSubjects: string[]
 }
 
 export interface ITeacherProfile {

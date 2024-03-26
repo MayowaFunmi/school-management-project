@@ -132,6 +132,22 @@ namespace SchoolManagementApi.Services.Admin
             throw new NotImplementedException();
         }
 
+        public async Task<List<School>> GetSchoolByIdList(List<string> schoolIds)
+        {
+          try
+          {
+            return await _context.Schools
+            .Where(s => schoolIds.Contains(s.SchoolId.ToString()))
+            .ToListAsync();
+          }
+          catch (Exception ex)
+          {
+            _logger.LogError($"Error getting list of schools - {ex.Message}");
+            WatchLogger.LogError(ex.ToString(), $"Error getting list of schools - {ex.Message}");
+            throw;
+          }
+        }
+
         public async Task<List<OrganizationData>> OrganizationData(string organizationUniqueId)
     {
       try

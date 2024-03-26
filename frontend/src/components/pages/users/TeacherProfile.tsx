@@ -57,7 +57,7 @@ const TeacherProfile: React.FC = () => {
   const [previousSchoolsIds, setPreviousSchoolsIds] = useState<string[]>([]);
   const [publishedWork, setPublishedWork] = useState<string>("");
   const [currentSubjectId, setCurrentSubjectId] = useState<string>("");
-  const [otherSubjectsIds, setOtherSubjectsIds] = useState<string[]>([]);
+  const [otherSubjects, setOtherSubjects] = useState<string[]>([]);
 
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const { name, value } = e.target;
@@ -84,7 +84,7 @@ const TeacherProfile: React.FC = () => {
     const teacherData = {
       userId, organizationUniqueId, title, middleName, dateOfBirth, gender, age, stateOfOrigin, lgaOfOrigin, address,
       religion, maritalStatus, aboutMe, designation, gradeLevel, step, firstAppointment, yearsInService, qualification, discipline,
-      currentPostingZoneId, currentPostingSchoolId, previousSchoolsIds, publishedWork, currentSubjectId, otherSubjectsIds
+      currentPostingZoneId, currentPostingSchoolId, previousSchoolsIds, publishedWork, currentSubjectId, otherSubjects
     }
     await dispatch(createTeacherProfile(teacherData))
     if (teacherData && teacherMsg && msg) {
@@ -109,9 +109,9 @@ const TeacherProfile: React.FC = () => {
     const checkedSubjectId = event.target.value;
   
     if (event.target.checked) {
-      setOtherSubjectsIds([...otherSubjectsIds, checkedSubjectId]); // Add subject ID
+      setOtherSubjects([...otherSubjects, checkedSubjectId]); // Add subject ID
     } else {
-      setOtherSubjectsIds(otherSubjectsIds.filter((id) => id !== checkedSubjectId)); // Remove subject ID
+      setOtherSubjects(otherSubjects.filter((id) => id !== checkedSubjectId)); // Remove subject ID
     }
   };
   
@@ -697,7 +697,7 @@ const TeacherProfile: React.FC = () => {
                       type="checkbox" 
                       id="otherSubjectsIds" 
                       value={subject.subjectId}
-                      checked={otherSubjectsIds.includes(subject.subjectId)} 
+                      checked={otherSubjects.includes(subject.subjectId)} 
                       onChange={handleSubjectChange}
                     />
                     {subject.subjectName}

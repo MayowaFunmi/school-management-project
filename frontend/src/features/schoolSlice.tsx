@@ -4,8 +4,10 @@ import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 
 const initialState: ISchool= {
-  allSchools: [],
-  schMsg: ""
+	allSchools: [],
+	schMsg: "",
+	allSchoolIds: [],
+	schIdMsg: ""
 }
 
 export const getSchoolsInZone = createAsyncThunk(
@@ -13,6 +15,20 @@ export const getSchoolsInZone = createAsyncThunk(
 	async (data: string, thunkApi) => {
 		try {
 			const response = await axios.get(`${baseUrl}/api/admin/get-schools-in-zone/${data}`, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getSchoolsByIds = createAsyncThunk(
+	'school/getSchoolsByIds',
+	async (schoolIds: string[], thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/school/get-schools-by-id`, {
+				params: { schoolIds: schoolIds.join(',')}
+			})
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -46,6 +62,27 @@ const schoolSlice = createSlice({
 					const schData = action.payload;
 					return {
 						...state, allSchools: schData.data, schMsg: "rejected"
+					}
+				}
+			})
+
+		builder
+			.addCase(getSchoolsByIds.pending, (state) => {
+				return { ...state, schIdMsg: "pending" }
+			})
+			.addCase(getSchoolsByIds.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload !== null) {
+					const schData = action.payload;
+					return {
+						...state, allSchoolIds: schData.data, schIdMsg: "success"
+					}
+				}
+			})
+			.addCase(getSchoolsByIds.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const schData = action.payload;
+					return {
+						...state, allSchoolIds: schData.data, schIdMsg: "rejected"
 					}
 				}
 			})

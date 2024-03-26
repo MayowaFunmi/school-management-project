@@ -15,7 +15,8 @@ const initialState: Data = {
 			email: "",
 			phoneNumber: "",
 			uniqueId: "",
-			createdAt: ""
+			createdAt: "",
+			percentageCompleted: 0
 		},
 		userRoles: []
 	},
@@ -35,7 +36,9 @@ const initialState: Data = {
 		organizationId: "",
 		name: "",
 		createdAt: "",
-		updatedAt: ""
+		updatedAt: "",
+		schools: [],
+		localGovtArea: []
 	},
 	zoneMsg: "",
 };
@@ -145,18 +148,6 @@ const adminSlice = createSlice({
 		clearUserData: (state) => {
 			return { ...initialState };
 		},
-		// resetAllZones: (state) => {
-		// 	state.allZones = [];
-		// 	state.allZoneMsg = "";
-		// 	state.zone = {
-		// 		zoneId: "",
-		// 		organizationId: "",
-		// 		name: "",
-		// 		createdAt: "",
-		// 		updatedAt: ""
-		// 	};
-		// 	state.zoneMsg = ""
-		//   },
 	},
 	extraReducers: (builder) => {
 		builder

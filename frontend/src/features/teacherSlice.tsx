@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ITeacherProfile, TSProfile } from "../models/userModel";
+import { ITeacherProfile, TSProfile, TSProfileData } from "../models/userModel";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 import axios from "axios";
 
@@ -30,7 +30,18 @@ const initialState: ITeacherProfile = {
     previousSchoolsIds: [],
     publishedWork: "",
     currentSubjectId: "",
-    otherSubjectsIds: []
+    otherSubjectsIds: [],
+    user: {
+      id: "",
+      userName: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      uniqueId: "",
+      createdAt: "",
+      percentageCompleted: 0
+    }
   },
   teacherMsg: "",
   msg: ""
@@ -38,7 +49,7 @@ const initialState: ITeacherProfile = {
 
 export const createTeacherProfile = createAsyncThunk(
 	'teacher/createTeacherProfile',
-	async (data: TSProfile, thunkApi) => {
+	async (data: TSProfileData, thunkApi) => {
 		try {
 			const response = await axios.post(`${baseUrl}/api/staff/add-teaching-staff-profile`, data, getAxiosConfig())
       console.log("teacher data = ", response.data)

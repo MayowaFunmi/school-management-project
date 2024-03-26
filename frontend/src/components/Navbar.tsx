@@ -5,6 +5,7 @@ import { useAppDispatch } from '../hooks/useTypedSelector';
 import { logoutUser } from '../features/userSlice';
 import SuperAdminDropdown from './SuperAdminDropdown';
 import AdminDropdown from './AdminDropdown';
+import { clearState } from '../utils/clearState';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Navbar: React.FC = () => {
 
   const logOutUser = async () => {
     try {
+			clearState();
       await dispatch(logoutUser());
       navigate('/login')
     } catch (error) {

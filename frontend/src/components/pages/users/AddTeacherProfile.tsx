@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector'
 import { getTeacherProfile } from '../../../features/staffSlice';
 import { TeachingStaff } from '../../../models/staffModel';
 import TeacherProfile from './TeacherProfile';
+import TeacherDetails from './TeacherDetails';
 
 const AddTeacherProfile: React.FC = () => {
   const { userId } = useAuth();
@@ -13,12 +14,9 @@ const AddTeacherProfile: React.FC = () => {
   const [profileData, setProfileData] = useState<TeachingStaff | null>(null);
 
   useEffect(() => {
-    const getTeacher = async() => {
-      if (userId) {
-        await dispatch(getTeacherProfile(userId))
-      }
+    if (userId) {
+      dispatch(getTeacherProfile(userId))
     }
-    getTeacher()
   }, [dispatch, userId])
 
   useEffect(() => {
@@ -29,15 +27,30 @@ const AddTeacherProfile: React.FC = () => {
 
   return (
     <div>
-      {profileData === null ? (
+      {profileData ? (
+        <TeacherDetails data={data} />
+      ) : (
         <>
           <p>{message}</p>
           <h2>Create teacher profile</h2>
           <TeacherProfile />
         </>
-      ) : (message)}
+      )}
+
+      {status === "pending" ? (
+        <p>{message}</p>
+      ) : (status === " success" && profileData ? (
+        <TeacherDetails data={data} />
+      ) : (status === " success" && !profileData ? (
+        <>
+          <h2>Create teacher profile</h2>
+          <TeacherProfile />
+        </>
+      ) : null
+      )) }
     </div>
   )
 }
+
 
 export default AddTeacherProfile
