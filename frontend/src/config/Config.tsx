@@ -9,3 +9,13 @@ export const getAxiosConfig = () => {
         }
     }
 }
+
+export const getAxiosUploadConfig = () => {
+    const token = localStorage.getItem("user");
+    return {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        }
+    }
+}

@@ -40,6 +40,7 @@ export interface TeachingStaff {
   currentSubjectId: string
   currentSubject: SubjectList
   OtherSubjects: string[]
+  profilePicture: string
 }
 
 export interface Response {

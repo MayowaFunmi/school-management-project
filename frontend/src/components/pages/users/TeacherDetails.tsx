@@ -3,7 +3,11 @@ import { TeachingStaff } from '../../../models/staffModel'
 import { formatDateOfBirth } from '../../../utils/formatDate';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
 import { getSchoolsByIds } from '../../../features/schoolSlice';
-import { School } from '../../../models/userModel';
+import { School, Subject } from '../../../models/userModel';
+import { getSubjectsByIds } from '../../../features/subjectSlice';
+import ProfileImage from '../../images/ProfileImage';
+import { uploadProfilePicture } from '../../../features/uploadSlice';
+import { toast } from 'react-toastify';
 
 interface TeacherDetailsProps {
   data: TeachingStaff;
@@ -12,26 +16,107 @@ interface TeacherDetailsProps {
 const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   const dispatch = useAppDispatch();
   const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
+  const { allSubjectsIds, subIdMsg } = useAppSelector((state) => state.subject);
+  const { status, error } = useAppSelector((state) => state.upload);
+
+  const notifySuccess = (msg: string) => toast.success(msg);
+  const notifyError = (msg: string) => toast.error(msg);
 
   const [schoolsList, setSchoolsList] = useState<School[]>([])
+  const [subjectsList, setSubjectsList] = useState<Subject[]>([])
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [image, setImage] = useState<File | null>(null);
+
+  const progressWith = `${data.user.percentageCompleted}%`;
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleUpload = () => {
+    setIsModalOpen(true);
+  }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const selectedImage = files[0];
+      setImage(selectedImage)
+    }
+  }
+
+  const handleSubmit = () => {
+    if (image) {
+      const formData = new FormData();
+      formData.append('profilePicture', image);
+      dispatch(uploadProfilePicture(formData));
+    }
+  }
 
   useEffect(() => {
-    dispatch(getSchoolsByIds(data.previousSchoolsIds));
+    if (data.previousSchoolsIds.length > 0) {
+      dispatch(getSchoolsByIds(data.previousSchoolsIds));
+    }
   }, [data.previousSchoolsIds, dispatch])
+
+  useEffect(() => {
+    if (data.OtherSubjects && data.OtherSubjects.length > 0) {
+      dispatch(getSubjectsByIds(data.OtherSubjects));
+    }
+  }, [data.OtherSubjects, dispatch])
 
   useEffect(() => {
     if (schIdMsg === "success") {
       setSchoolsList(allSchoolIds);
     }
-  }, [allSchoolIds, schIdMsg])
+
+    if (subIdMsg === "success") {
+      setSubjectsList(allSubjectsIds);
+    }
+  }, [allSchoolIds, allSubjectsIds, schIdMsg, subIdMsg])
+
+  useEffect(() => {
+    if (status === "success") {
+      notifySuccess("Profile Picture uploaded successfully")
+    } else if (status === "failed") {
+      notifyError("failed To Upload Profile Picture")
+    }
+  }, [status])
   
   return (
     <>
       <div className='row'>
         <h3>Percentage Completed: {data.user.percentageCompleted}%</h3>
+        <div className="progress" role="progressbar" aria-label="Basic example" aria-valuenow={data.user.percentageCompleted} aria-valuemin={0} aria-valuemax={100}>
+          <div className="progress-bar" style={{ width: progressWith }}></div>
+        </div>
         <p>About me: {data.aboutMe}</p>
         <div className="col-sm-5">
-          <h2>profile picture here</h2>
+          {data.profilePicture ? (
+            <ProfileImage imageUrl={data.profilePicture} size='200px' />
+          ) : (
+            data.gender === "Male" ? (
+            <>
+              <ProfileImage imageUrl="/male_avatar.jpeg" size='200px' />
+              <button 
+                className="btn btn-primary"
+                onClick={handleUpload}
+              >
+                Add Picture
+              </button>
+            </>
+            ) : (
+            <>
+              <ProfileImage imageUrl="female_avatar.png" size='200px' />
+              <button 
+                className="btn btn-primary"
+                onClick={handleUpload}
+              >
+                Add Picture
+              </button>
+            </>
+            )
+          )}
           <p><strong>Unique ID: </strong>{data.user.uniqueId}</p>
         </div>
 
@@ -59,7 +144,23 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
           <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
           <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>
           <p><strong>Subject Taught: </strong>{data.currentSubject.subjectName}</p>
-          <p><strong>Other Subjects: </strong>{}</p> 
+          <p><strong>Other Subjects Previously Taught: </strong></p> 
+          {subjectsList.length > 0 ? (
+            <div>
+            {
+              subjectsList?.map((subject) => (
+                <div key={subject.subjectId}>
+                  <ol>
+                    <li>{subject.subjectName}</li>
+                  </ol>
+                </div>
+              ))
+            }
+          </div>
+          ) : (
+            <p>None</p>
+          )}
+          
           <p><strong>Grade Level: </strong>Level {data.gradeLevel}, Step {data.step}</p>
           <p><strong>Qualification: </strong>{data.qualification}</p>
           <p><strong>Discipline: </strong>{data.discipline}</p>
@@ -70,7 +171,8 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
           <p><strong>Date Of First Appointment: </strong>{formatDateOfBirth(data.firstAppointment)}</p>
           <p><strong>Number of Years In Service: </strong>{data.yearsInService}</p>
           <p><strong>Previous Schools Posted: </strong></p>
-          <div>
+          {schoolsList.length > 0 ? (
+            <div>
             {
               schoolsList?.map((school) => (
                 <div key={school.schoolId}>
@@ -85,6 +187,44 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
                 </div>
               ))
             }
+          </div>
+          ) : (
+            <p>None</p>
+          )}
+          
+        </div>
+      </div>
+
+      <div className={`modal ${isModalOpen ? 'show' : ''}`} tabIndex={-1} role="dialog" style={{ display: isModalOpen ? 'block' : 'none' }}>
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Upload Profile Picture For {data.user.userName}</h5>
+              <button type="button" className="close" onClick={closeModal} aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div>
+                <input type="file" accept='image/*' onChange={handleFileChange} />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                Close
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleSubmit}
+                disabled={status === "success" || status === "loading" ? (true) : (false)}
+              >
+                {status === "loading" ? ("Please wait") 
+                  : 
+                (status === "failed" || status === "idle" ? (
+                  "Upload Picture"
+                ) : ("Uploaded!"))}
+              </button>
+            </div>
           </div>
         </div>
       </div>

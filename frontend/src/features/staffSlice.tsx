@@ -67,6 +67,7 @@ const initialState: Response = {
     currentSubject: {
       subjectName: ""
     },
+    profilePicture: ""
   }
 }
 

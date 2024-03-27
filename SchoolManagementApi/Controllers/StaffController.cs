@@ -160,7 +160,7 @@ namespace SchoolManagementApi.Controllers
     [HttpPost]
     [Consumes("multipart/form-data")]
     [Route("upload-profile-pictures")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> UploadProfilePicture([FromForm] UploadProfilePicture.UploadProfilePictureCommand request)
     {
       try

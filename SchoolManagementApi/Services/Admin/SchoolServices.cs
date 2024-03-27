@@ -148,6 +148,22 @@ namespace SchoolManagementApi.Services.Admin
           }
         }
 
+        public async Task<List<Subject>> GetSubjectsByIdList(List<string> subjectIds)
+        {
+          try
+          {
+            return await _context.Subjects
+            .Where(s => subjectIds.Contains(s.SubjectId.ToString()))
+            .ToListAsync();
+          }
+          catch (Exception ex)
+          {
+            _logger.LogError($"Error getting list of subjects - {ex.Message}");
+            WatchLogger.LogError(ex.ToString(), $"Error getting list of subjects - {ex.Message}");
+            throw;
+          }
+        }
+
         public async Task<List<OrganizationData>> OrganizationData(string organizationUniqueId)
     {
       try

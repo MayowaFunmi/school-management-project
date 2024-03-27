@@ -67,6 +67,8 @@ export interface ISchool {
 export interface ISubject {
   allSubjects: Subject[]
   subMsg: string
+  allSubjectsIds: Subject[]
+  subIdMsg: string
 }
 
 export interface IOrgSchools {

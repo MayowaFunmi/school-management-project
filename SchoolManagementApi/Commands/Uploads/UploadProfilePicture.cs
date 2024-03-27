@@ -12,7 +12,7 @@ namespace SchoolManagementApi.Commands.Uploads
   {
     public class UploadProfilePictureCommand : IRequest<GenericResponse>
     {
-      public required string StaffId { get; set; }
+      public string? StaffId { get; set; }
       public required IFormFile ProfilePicture { get; set; }
     }
 
@@ -27,60 +27,48 @@ namespace SchoolManagementApi.Commands.Uploads
         try
         {
           // check if user profile exist
-          var checkTeacherProfile = await _teachingStaffInterface.TeachingStaffExists(request.StaffId);
-          if (!checkTeacherProfile)
+          var staff = await _context.TeachingStaffs.FirstOrDefaultAsync(t => t.UserId == request.StaffId);
+          if (staff == null)
           {
             return new GenericResponse
             {
-              Status = HttpStatusCode.Forbidden.ToString(),
-              Message = $"Teacher with id {request.StaffId} does not have a profile yet"
+              Status = HttpStatusCode.OK.ToString(),
+              Message = $"User does not have a profile yet"
             };
           }
           else
           {
-            var staff = await _context.TeachingStaffs
-              .Where(t => t.UserId == request.StaffId)
-              //.Select(t => t.ProfilePicture)
-              .FirstOrDefaultAsync(cancellationToken);
-
-            var user = _context.Users.FirstOrDefault(u => u.Id == request.StaffId);          
-            if (user != null && staff != null)
+            if (!string.IsNullOrEmpty(staff.ProfilePicture))
             {
-              if (!string.IsNullOrEmpty(staff.ProfilePicture))
+              return new GenericResponse
               {
-                return new GenericResponse
-                {
-                  Status = HttpStatusCode.BadRequest.ToString(),
-                  Message = $"Teacher with id {request.StaffId} already has a profile picture uploaded"
-                };
-              }
-              else
+                Status = HttpStatusCode.OK.ToString(),
+                Message = $"User already has a profile picture uploaded"
+              };
+            }
+            else
+            {
+              var profilePictureUrl = await _fileService.ProcessFiles(request.ProfilePicture);
+              Console.WriteLine("picture url = "+ profilePictureUrl);
+              var user = _context.Users.FirstOrDefault(u => u.Id == request.StaffId);          
+      
+              if (user != null && !string.IsNullOrEmpty(profilePictureUrl))
               {
-                var profilePictureUrl = await _fileService.ProcessFiles(request.ProfilePicture);
-                if (!string.IsNullOrEmpty(profilePictureUrl))
-                {
-                  staff.ProfilePicture = profilePictureUrl;
-                  user.PercentageCompleted += 10;
-                  await _context.SaveChangesAsync(cancellationToken);
-                  return new GenericResponse
-                  {
-                    Status = HttpStatusCode.OK.ToString(),
-                    Message = "Teacher profile picture uploaded successfully",
-                  };
-                }
+                staff.ProfilePicture = profilePictureUrl;
+                user.PercentageCompleted += 10;
+                await _context.SaveChangesAsync(cancellationToken);
                 return new GenericResponse
                 {
                   Status = HttpStatusCode.OK.ToString(),
-                  Message = "Failed to upload profile picture",
+                  Message = "Profile picture uploaded successfully",
                 };
               }
+              return new GenericResponse
+              {
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Failed to upload profile picture",
+              };
             }
-
-            return new GenericResponse
-            {
-              Status = HttpStatusCode.BadRequest.ToString(),
-              Message = "User or Teacher not found",
-            };
           }
         }
         catch (Exception ex)

@@ -111,14 +111,15 @@ namespace SchoolManagementApi.Services.Profiles
       return [];
     }
 
-    public async Task<bool> TeachingStaffExists(string userId)
+    public async Task<TeachingStaff> TeachingStaffExists(string userId)
     {
       try
       {
-        var teacherExists = await _context.TeachingStaffs.FirstOrDefaultAsync(t => t.UserId == userId);
-        if (teacherExists != null)
-          return true;
-        return false;
+        var teacher = await _context.TeachingStaffs.FirstOrDefaultAsync(t => t.UserId == userId);
+        if (teacher != null)
+          return teacher;
+        else
+          return null;
       }
       catch (Exception ex)
       {

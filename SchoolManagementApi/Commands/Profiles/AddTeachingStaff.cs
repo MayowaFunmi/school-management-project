@@ -60,8 +60,8 @@ namespace SchoolManagementApi.Commands.Profiles
               Message = $"Organization with unique id {request.OrganizationUniqueId} not found"
             };
           }
-          var checkTeacherProfile = await _teachingStaffInterface.TeachingStaffExists(request.UserId);
-          if (checkTeacherProfile)
+          var teacherProfile = await _teachingStaffInterface.TeachingStaffExists(request.UserId);
+          if (teacherProfile != null)
           {
             return new GenericResponse
             {

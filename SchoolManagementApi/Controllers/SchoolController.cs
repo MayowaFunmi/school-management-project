@@ -33,5 +33,27 @@ namespace SchoolManagementApi.Controllers
         Data = schools
       });
     }
+
+    [HttpGet]
+    [Route("get-subjects-by-id")]
+    public async Task<IActionResult> SubjectsById([FromQuery] List<string> subjectIds)
+    {
+      var subjects = await _schoolServices.GetSubjectsByIdList(subjectIds);
+      if (subjects.Count == 0)
+      {
+        return Ok(new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "No Subject Found",
+          Data = null
+        });
+      }
+      return Ok(new GenericResponse
+      {
+        Status = HttpStatusCode.OK.ToString(),
+        Message = "Subjects retrieved from ids successfully",
+        Data = subjects
+      });
+    }
   }
 }
