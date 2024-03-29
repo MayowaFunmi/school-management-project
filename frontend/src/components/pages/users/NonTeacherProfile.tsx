@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
 import { useAuth } from '../../../context/AuthContext';
-import { statesData } from '../../../utils/statesData';
+import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { School, Subject, Zone } from '../../../models/userModel';
-import '../Home.css';
+import { useNavigate } from 'react-router-dom';
+import { School, Zone } from '../../../models/userModel';
+import { createNonTeacherProfile } from '../../../features/teacherSlice';
 import { getOrganizationZonesByUniqueId } from '../../../features/zoneSlice';
 import { getSchoolsInZone } from '../../../features/schoolSlice';
 import { getSchoolsInOrganization } from '../../../features/organizationSlice';
-import { getAllSubjects } from '../../../features/subjectSlice';
-import { createTeacherProfile } from '../../../features/teacherSlice';
-import { useNavigate } from 'react-router-dom';
+import { statesData } from '../../../utils/statesData';
 
-const TeacherProfile: React.FC = () => {
+const NonTeacherProfile: React.FC = () => {
   const { userId } = useAuth();
   const notifyError = (msg: string) => toast.error(msg);
   const notifySuccess = (msg: string) => toast.success(msg);
@@ -22,15 +20,13 @@ const TeacherProfile: React.FC = () => {
 
   const { allZones } = useAppSelector((state) => state.zone);
   const { allSchools, schMsg } = useAppSelector((state) => state.school);
-  const { allSubjects } = useAppSelector((state) => state.subject);
   const { allOrgSch } = useAppSelector((state) => state.organization);
-  const { teacherMsg, msg } = useAppSelector((state) => state.teacher)
+  const { staffMsg, message } = useAppSelector((state) => state.teacher)
 
   const [isFirstPartComplete, setIsFirstPartComplete] = useState<boolean>(false)
   const [zonesList, setZonesList] = useState<Zone[]>([]);
   const [schoolsList, setSchoolsList] = useState<School[]>([]);
   const [orgSchoolsList, setOrgSchoolsList] = useState<School[]>([]);
-  const [subjectsList, setSubjectsList] = useState<Subject[]>([]);
 
   const [title, setTitle] = useState<string>("");
   const [organizationUniqueId, setOrganizationUniqueId] = useState<string>("");
@@ -55,17 +51,6 @@ const TeacherProfile: React.FC = () => {
   const [currentPostingZoneId, setCurrentPostingZoneId] = useState<string>("");
   const [currentPostingSchoolId, setCurrentPostingSchoolId] = useState<string>("");
   const [previousSchoolsIds, setPreviousSchoolsIds] = useState<string[]>([]);
-  const [publishedWork, setPublishedWork] = useState<string>("");
-  const [currentSubjectId, setCurrentSubjectId] = useState<string>("");
-  const [otherSubjects, setOtherSubjects] = useState<string[]>([]);
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData(prevState => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
 
   const handleFirstPart = (e: React.FormEvent) => {
     e.preventDefault()
@@ -84,11 +69,11 @@ const TeacherProfile: React.FC = () => {
     const teacherData = {
       userId, organizationUniqueId, title, middleName, dateOfBirth, gender, age, stateOfOrigin, lgaOfOrigin, address,
       religion, maritalStatus, aboutMe, designation, gradeLevel, step, firstAppointment, yearsInService, qualification, discipline,
-      currentPostingZoneId, currentPostingSchoolId, previousSchoolsIds, publishedWork, currentSubjectId, otherSubjects
+      currentPostingZoneId, currentPostingSchoolId, previousSchoolsIds
     }
-    await dispatch(createTeacherProfile(teacherData))
-    if (teacherData && teacherMsg && msg) {
-      notifySuccess(msg)
+    await dispatch(createNonTeacherProfile(teacherData))
+    if (teacherData && staffMsg && message) {
+      notifySuccess(message)
       //navigate to tearcher profile page
       navigate("/")
     }
@@ -104,18 +89,7 @@ const TeacherProfile: React.FC = () => {
       setPreviousSchoolsIds(prevSelected => prevSelected.filter(id => id !== schoolId));
     }
   }
-
-  const handleSubjectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checkedSubjectId = event.target.value;
   
-    if (event.target.checked) {
-      setOtherSubjects([...otherSubjects, checkedSubjectId]); // Add subject ID
-    } else {
-      setOtherSubjects(otherSubjects.filter((id) => id !== checkedSubjectId)); // Remove subject ID
-    }
-  };
-  
-
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = event.target.value;
     setDateOfBirth(newDate)
@@ -189,14 +163,7 @@ const TeacherProfile: React.FC = () => {
     if (allOrgSch) {
       setOrgSchoolsList(allOrgSch)
     }
-    if (allSubjects) {
-      setSubjectsList(allSubjects)
-    }
-  }, [allZones, allSchools, allOrgSch, allSubjects])
-
-  useEffect(() => {
-    dispatch(getAllSubjects())
-  }, [dispatch])
+  }, [allZones, allSchools, allOrgSch])
 
   return (
     <div className='container'>
@@ -649,62 +616,6 @@ const TeacherProfile: React.FC = () => {
                 </div>
               ))}
             </div>
-
-            <div className="form-floating mb-3">
-              <textarea 
-                name="publishedWork"
-                id="publishedWork"
-                placeholder='If available, describe your published work in few details ...'
-                cols={40}
-                rows={5}
-                value={publishedWork}
-                onChange={(e) => {setPublishedWork(e.target.value)}}
-              >
-              </textarea>
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="currentSubjectId" className="form-label">
-                Select subject you teach
-              </label>
-              <select
-                className="form-select"
-                id="currentSubjectId"
-                name="currentSubjectId"
-                value={currentSubjectId}
-                required
-                onChange={(e) => {
-                  setCurrentSubjectId(e.target.value);
-                }}
-              >
-                <option value="" disabled>Select A Subject</option>
-                {subjectsList?.map((subject) => (
-                  <option key={subject.subjectId} value={subject.subjectId}>
-                    {subject.subjectName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label" htmlFor='otherSubjectsIds'>
-                Select other subjects you have taught
-              </label>
-              {subjectsList?.map(subject => (
-                <div key={subject.subjectId}>
-                  <label>
-                    <input
-                      type="checkbox" 
-                      id="otherSubjectsIds" 
-                      value={subject.subjectId}
-                      checked={otherSubjects.includes(subject.subjectId)} 
-                      onChange={handleSubjectChange}
-                    />
-                    {subject.subjectName}
-                  </label>
-                </div>
-              ))}
-            </div>
           </>
         )}
         
@@ -714,4 +625,4 @@ const TeacherProfile: React.FC = () => {
   )
 }
 
-export default TeacherProfile
+export default NonTeacherProfile

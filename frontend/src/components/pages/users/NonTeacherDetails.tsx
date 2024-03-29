@@ -1,29 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { TeachingStaff } from '../../../models/staffModel'
-import { formatDateOfBirth } from '../../../utils/formatDate';
+import { NonTeachingStaff } from '../../../models/staffModel'
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { getSchoolsByIds } from '../../../features/schoolSlice';
-import { School, Subject } from '../../../models/userModel';
-import { getSubjectsByIds } from '../../../features/subjectSlice';
-import ProfileImage from '../../images/ProfileImage';
-import { uploadProfilePicture } from '../../../features/uploadSlice';
 import { toast } from 'react-toastify';
+import { School } from '../../../models/userModel';
+import { uploadProfilePicture } from '../../../features/uploadSlice';
+import { getSchoolsByIds } from '../../../features/schoolSlice';
+import ProfileImage from '../../images/ProfileImage';
+import { formatDateOfBirth } from '../../../utils/formatDate';
 
-interface TeacherDetailsProps {
-  data: TeachingStaff;
+interface NonTeacherDetailsProps {
+  data: NonTeachingStaff
 }
 
-const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
+const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
   const dispatch = useAppDispatch();
   const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
-  const { allSubjectsIds, subIdMsg } = useAppSelector((state) => state.subject);
   const { status } = useAppSelector((state) => state.upload);
 
   const notifySuccess = (msg: string) => toast.success(msg);
   const notifyError = (msg: string) => toast.error(msg);
 
   const [schoolsList, setSchoolsList] = useState<School[]>([])
-  const [subjectsList, setSubjectsList] = useState<Subject[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
 
@@ -60,20 +57,10 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   }, [data.previousSchoolsIds, dispatch])
 
   useEffect(() => {
-    if (data.OtherSubjects && data.OtherSubjects.length > 0) {
-      dispatch(getSubjectsByIds(data.OtherSubjects));
-    }
-  }, [data.OtherSubjects, dispatch])
-
-  useEffect(() => {
     if (schIdMsg === "success") {
       setSchoolsList(allSchoolIds);
     }
-
-    if (subIdMsg === "success") {
-      setSubjectsList(allSubjectsIds);
-    }
-  }, [allSchoolIds, allSubjectsIds, schIdMsg, subIdMsg])
+  }, [allSchoolIds, schIdMsg])
 
   useEffect(() => {
     if (status === "success") {
@@ -142,25 +129,7 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
           <p><strong>Designation: </strong>{data.designation}</p>
           <p><strong>Present School: </strong>{data.currentPostingSchool.name}</p>
           <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
-          <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>
-          <p><strong>Subject Taught: </strong>{data.currentSubject.subjectName}</p>
-          <p><strong>Other Subjects Previously Taught: </strong></p> 
-          {subjectsList.length > 0 ? (
-            <div>
-            {
-              subjectsList?.map((subject) => (
-                <div key={subject.subjectId}>
-                  <ol>
-                    <li>{subject.subjectName}</li>
-                  </ol>
-                </div>
-              ))
-            }
-          </div>
-          ) : (
-            <p>None</p>
-          )}
-          
+          <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>          
           <p><strong>Grade Level: </strong>Level {data.gradeLevel}, Step {data.step}</p>
           <p><strong>Qualification: </strong>{data.qualification}</p>
           <p><strong>Discipline: </strong>{data.discipline}</p>
@@ -232,4 +201,4 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   )
 }
 
-export default TeacherDetails
+export default NonTeacherDetails

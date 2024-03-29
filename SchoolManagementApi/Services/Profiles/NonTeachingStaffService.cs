@@ -74,14 +74,15 @@ namespace SchoolManagementApi.Services.Profiles
       }
     }
 
-    public async Task<bool> NonTeachingStaffExists(string userId)
+    public async Task<NonTeachingStaff> NonTeachingStaffExists(string userId)
     {
       try
       {
-        var staffExists = await _context.NonTeachingStaffs.FirstOrDefaultAsync(t => t.UserId == userId);
-        if (staffExists != null)
-          return true;
-        return false;
+        var staff = await _context.NonTeachingStaffs.FirstOrDefaultAsync(t => t.UserId == userId);
+        if (staff != null)
+          return staff;
+        else
+          return null;
       }
       catch (Exception ex)
       {
@@ -113,6 +114,14 @@ namespace SchoolManagementApi.Services.Profiles
         WatchLogger.LogError(ex.ToString(), $"Error uploading documents - {ex.Message}");
         throw;
       }
+    }
+
+    public async Task<bool> OrganizationExists(string organizationUniqueId)
+    {
+      var organization = await _context.Organizations.FirstOrDefaultAsync(o => o.OrganizationUniqueId == organizationUniqueId);
+      if (organization != null)
+        return true;
+      return false;
     }
   }
 }

@@ -20,15 +20,6 @@ namespace SchoolManagementApi.Queries.Profiles
       {
         try
         {
-          if (string.IsNullOrEmpty(request.StaffId))
-          {
-            return new GenericResponse
-            {
-              Status = HttpStatusCode.OK.ToString(),
-              Message = "You are not authorized",
-            };
-          }
-
           var teacher = await _teachingStaffInterface.GetTeacherById(request.StaffId);
           if (teacher != null)
           {

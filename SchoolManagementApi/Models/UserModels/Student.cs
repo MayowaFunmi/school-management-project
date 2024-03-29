@@ -28,7 +28,7 @@ namespace SchoolManagementApi.Models.UserModels
     public virtual ClassArms StudentClass { get; set; }
 
     public virtual List<School> PreviousSchools { get; set; }
-    public string ProfilePicture { get; set; }
+    public string? ProfilePicture { get; set; }
     public string Gender { get; set; }
     public DateTime DateOfBirth { get; set; }
     public int Age { get; set; }

@@ -1,5 +1,6 @@
 import { clearUserData } from "../features/adminSlice";
 import { clearOrgSchData } from "../features/organizationSlice";
+import { clearParentData } from "../features/parentSlice";
 import { clearSchoolData } from "../features/schoolSlice";
 import { clearProfileData } from "../features/staffSlice";
 import { initializeStateFromLocalStorage } from "../features/userSlice";
@@ -16,5 +17,6 @@ export const clearState = () => {
     store.dispatch(clearOrgSchData())
     store.dispatch(clearProfileData())
     store.dispatch(clearZoneData())
+    store.dispatch(clearParentData())
   } // make a function
 }

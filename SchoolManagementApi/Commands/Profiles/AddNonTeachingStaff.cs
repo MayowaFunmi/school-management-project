@@ -13,6 +13,7 @@ namespace SchoolManagementApi.Commands.Profiles
     public class AddNonTeachingStaffCommand : IRequest<GenericResponse>
     {
       public required string UserId { get; set; }
+      public required string OrganizationUniqueId { get; set; }
       public string? Title { get; set; }
       public string? MiddleName { get; set; }
       public required string Gender { get; set; }
@@ -26,6 +27,7 @@ namespace SchoolManagementApi.Commands.Profiles
       public required string AboutMe { get; set; }
       public required string Designation { get; set; }
       public required int GradeLevel { get; set; }
+      public required int Step { get; set; }
       public required DateTime FirstAppointment { get; set; }
       public required int YearsInService { get; set; }
       public required string Qualification { get; set; }
@@ -33,7 +35,6 @@ namespace SchoolManagementApi.Commands.Profiles
       public required string CurrentPostingZoneId { get; set; }
       public required string CurrentPostingSchoolId { get; set; }
       public List<string>? PreviousSchoolsIds { get; set; }
-      public bool HasUploads { get; set; } = false;
     }
 
     public class AddNonTeachingStaffHandler(INonTeachingStaffInterface nonTeachingStaffInterface, ApplicationDbContext context) : IRequestHandler<AddNonTeachingStaffCommand, GenericResponse>
@@ -45,47 +46,34 @@ namespace SchoolManagementApi.Commands.Profiles
       {
         try
         {
-          var checkStaffExists = await _nonTeachingStaffInterface.NonTeachingStaffExists(request.UserId);
-          if (checkStaffExists)
+          // check if organization exists
+          var checkOrganization = await _nonTeachingStaffInterface.OrganizationExists(request.OrganizationUniqueId);
+          if (!checkOrganization)
           {
             return new GenericResponse
             {
-              Status = HttpStatusCode.Forbidden.ToString(),
-              Message = $"Profile already exists for staff with id {request.UserId}"
+              Status = HttpStatusCode.OK.ToString(),
+              Message = $"Organization not found"
+            };
+          }
+          var checkStaffExists = await _nonTeachingStaffInterface.NonTeachingStaffExists(request.UserId);
+          if (checkStaffExists != null)
+          {
+            return new GenericResponse
+            {
+              Status = HttpStatusCode.OK.ToString(),
+              Message = $"Profile already exists"
             };
           }
 
-          var staff = new NonTeachingStaff
-          {
-            UserId = request.UserId,
-            Title = TitleMap.TitleDictionary.TryGetValue(request.Title!, out string? value) ? value : "Mr",
-            MiddleName = request.MiddleName!,
-            Gender = TitleMap.GenderDictionary.TryGetValue(request.Gender!, out string? GenderValue) ? GenderValue : "Male",
-            DateOfBirth = request.DateOfBirth,
-            Age = request.Age,
-            StateOfOrigin = request.StateOfOrigin,
-            LgaOfOrigin = request.LgaOfOrigin,
-            Address = request.Address,
-            Religion = TitleMap.ReligionDictionary.TryGetValue(request.Religion!, out string? ReligionValue) ? ReligionValue : "Christianity",
-            MaritalStatus = TitleMap.MaritalDictionary.TryGetValue(request.MaritalStatus!, out string? MaritalValue) ? MaritalValue : "Married",
-            AboutMe = request.AboutMe,
-            Designation = TitleMap.DesignationDictionary.TryGetValue(request.Designation!, out string? DesignationValue) ? DesignationValue : "ClassTeacher",
-            GradeLevel = request.GradeLevel,
-            FirstAppointment = request.FirstAppointment,
-            YearsInService = request.YearsInService,
-            Qualification = TitleMap.QualificationDictionary.TryGetValue(request.Qualification!, out string? QualificationValue) ? QualificationValue : "BEd",
-            Discipline = request.Discipline,
-            CurrentPostingSchoolId = Guid.Parse(request.CurrentPostingSchoolId),
-            PreviousSchoolsIds = request.PreviousSchoolsIds,
-            CurrentPostingZoneId = Guid.Parse(request.CurrentPostingZoneId),
-          };
+          var staff = MapToNonTeachingStaff(request);
           var createdSyaff = await _nonTeachingStaffInterface.AddNonTeachingStaff(staff);
           if (createdSyaff != null)
           {
             var user = _context.Users.FirstOrDefault(u => u.Id == request.UserId);
             if (user != null)
             {
-              user.PercentageCompleted = 70;
+              user.PercentageCompleted += 30;
               await _context.SaveChangesAsync(cancellationToken);
             }
             
@@ -110,6 +98,35 @@ namespace SchoolManagementApi.Commands.Profiles
             Message = $"An internal server error occurred - {ex.Message}",
           };
         }
+      }
+
+      private static NonTeachingStaff MapToNonTeachingStaff(AddNonTeachingStaffCommand request)
+      {
+        return new NonTeachingStaff
+        {
+          UserId = request.UserId,
+          OrganizationUniqueId = request.OrganizationUniqueId,
+          Title = TitleMap.TitleDictionary.TryGetValue(request.Title!, out string? value) ? value : "Mr",
+          MiddleName = request.MiddleName!,
+          Gender = TitleMap.GenderDictionary.TryGetValue(request.Gender!, out string? GenderValue) ? GenderValue : "Male",
+          DateOfBirth = request.DateOfBirth,
+          Age = request.Age,
+          StateOfOrigin = request.StateOfOrigin,
+          LgaOfOrigin = request.LgaOfOrigin,
+          Address = request.Address,
+          Religion = TitleMap.ReligionDictionary.TryGetValue(request.Religion!, out string? ReligionValue) ? ReligionValue : "Christianity",
+          MaritalStatus = TitleMap.MaritalDictionary.TryGetValue(request.MaritalStatus!, out string? MaritalValue) ? MaritalValue : "Married",
+          AboutMe = request.AboutMe,
+          Designation = TitleMap.DesignationDictionary.TryGetValue(request.Designation!, out string? DesignationValue) ? DesignationValue : "ClassTeacher",
+          GradeLevel = request.GradeLevel,
+          FirstAppointment = request.FirstAppointment,
+          YearsInService = request.YearsInService,
+          Qualification = TitleMap.QualificationDictionary.TryGetValue(request.Qualification!, out string? QualificationValue) ? QualificationValue : "BEd",
+          Discipline = request.Discipline,
+          CurrentPostingSchoolId = Guid.Parse(request.CurrentPostingSchoolId),
+          PreviousSchoolsIds = request.PreviousSchoolsIds,
+          CurrentPostingZoneId = Guid.Parse(request.CurrentPostingZoneId),
+        };
       }
     }
   }

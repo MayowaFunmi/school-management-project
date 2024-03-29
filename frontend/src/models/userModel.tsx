@@ -185,6 +185,33 @@ export interface TSProfile {
   otherSubjectsIds: string[]
 }
 
+export interface NonTSProfile {
+  userId: string
+  user: User
+  organizationUniqueId: string
+  title: string
+  middleName: string
+  dateOfBirth: string
+  gender: string
+  age: number
+  stateOfOrigin: string
+  lgaOfOrigin: string
+  address: string
+  religion: string
+  maritalStatus: string
+  aboutMe: string
+  designation: string
+  gradeLevel: number
+  step: number
+  firstAppointment: string
+  yearsInService: number
+  qualification: string
+  discipline: string
+  currentPostingZoneId: string
+  currentPostingSchoolId: string
+  previousSchoolsIds: string[]
+}
+
 export interface TSProfileData {
   userId: string
   organizationUniqueId: string
@@ -214,8 +241,37 @@ export interface TSProfileData {
   otherSubjects: string[]
 }
 
+export interface NonTSProfileData {
+  userId: string
+  organizationUniqueId: string
+  title: string
+  middleName: string
+  dateOfBirth: string
+  gender: string
+  age: number
+  stateOfOrigin: string
+  lgaOfOrigin: string
+  address: string
+  religion: string
+  maritalStatus: string
+  aboutMe: string
+  designation: string
+  gradeLevel: number
+  step: number
+  firstAppointment: string
+  yearsInService: number
+  qualification: string
+  discipline: string
+  currentPostingZoneId: string
+  currentPostingSchoolId: string
+  previousSchoolsIds: string[]
+}
+
 export interface ITeacherProfile {
   teacherData: TSProfile
+  staffData: NonTSProfile
   teacherMsg: string
+  staffMsg: string
   msg: string
+  message: string
 }

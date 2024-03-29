@@ -1,215 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
-import { useAuth } from '../../../context/AuthContext';
-import { statesData } from '../../../utils/statesData';
-import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { School, Subject, Zone } from '../../../models/userModel';
-import '../Home.css';
-import { getOrganizationZonesByUniqueId } from '../../../features/zoneSlice';
-import { getSchoolsInZone } from '../../../features/schoolSlice';
-import { getSchoolsInOrganization } from '../../../features/organizationSlice';
-import { getAllSubjects } from '../../../features/subjectSlice';
-import { createTeacherProfile } from '../../../features/teacherSlice';
-import { useNavigate } from 'react-router-dom';
+import React from 'react'
 
-const TeacherProfile: React.FC = () => {
-  const { userId } = useAuth();
-  const notifyError = (msg: string) => toast.error(msg);
-  const notifySuccess = (msg: string) => toast.success(msg);
-  const dispatch = useAppDispatch();
-
-  const navigate = useNavigate()
-
-  const { allZones } = useAppSelector((state) => state.zone);
-  const { allSchools, schMsg } = useAppSelector((state) => state.school);
-  const { allSubjects } = useAppSelector((state) => state.subject);
-  const { allOrgSch } = useAppSelector((state) => state.organization);
-  const { teacherMsg, msg } = useAppSelector((state) => state.teacher)
-
-  const [isFirstPartComplete, setIsFirstPartComplete] = useState<boolean>(false)
-  const [zonesList, setZonesList] = useState<Zone[]>([]);
-  const [schoolsList, setSchoolsList] = useState<School[]>([]);
-  const [orgSchoolsList, setOrgSchoolsList] = useState<School[]>([]);
-  const [subjectsList, setSubjectsList] = useState<Subject[]>([]);
-
-  const [title, setTitle] = useState<string>("");
-  const [organizationUniqueId, setOrganizationUniqueId] = useState<string>("");
-  const [middleName, setMiddleName] = useState<string>("");
-  const [dateOfBirth, setDateOfBirth] = useState<string>("");
-  const [gender, setGender] = useState<string>("");
-  const [age, setAge] = useState<number>(0);
-  const [stateOfOrigin, setStateOfOrigin] = useState<string>("");
-  const [lgaOfOrigin, setLgaOfOrigin] = useState<string>("");
-  const [lgas, setLgas] = useState<string[]>([]);
-  const [address, setAddress] = useState<string>("");
-  const [religion, setReligion] = useState<string>("");
-  const [maritalStatus, setMaritalStatus] = useState<string>("");
-  const [aboutMe, setAboutMe] = useState<string>("");
-  const [designation, setDesignation] = useState<string>("");
-  const [gradeLevel, setGradeLevel] = useState<number>(0);
-  const [step, setStep] = useState<number>(0);
-  const [firstAppointment, setFirstAppointment] = useState<string>("");
-  const [yearsInService, setYearsInService] = useState<number>(0);
-  const [qualification, setQualification] = useState<string>("");
-  const [discipline, setDiscipline] = useState<string>("");
-  const [currentPostingZoneId, setCurrentPostingZoneId] = useState<string>("");
-  const [currentPostingSchoolId, setCurrentPostingSchoolId] = useState<string>("");
-  const [previousSchoolsIds, setPreviousSchoolsIds] = useState<string[]>([]);
-  const [publishedWork, setPublishedWork] = useState<string>("");
-  const [currentSubjectId, setCurrentSubjectId] = useState<string>("");
-  const [otherSubjects, setOtherSubjects] = useState<string[]>([]);
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData(prevState => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
-
-  const handleFirstPart = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (userId && title && middleName && gender && dateOfBirth && age && stateOfOrigin
-        && lgaOfOrigin && address && religion && maritalStatus && aboutMe
-      ) {
-      setIsFirstPartComplete(true)
-    } else {
-      notifyError("some fields are not field yet")
-      setIsFirstPartComplete(false)
-    }
-  }
-
-  const handleSubmitProfile = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const teacherData = {
-      userId, organizationUniqueId, title, middleName, dateOfBirth, gender, age, stateOfOrigin, lgaOfOrigin, address,
-      religion, maritalStatus, aboutMe, designation, gradeLevel, step, firstAppointment, yearsInService, qualification, discipline,
-      currentPostingZoneId, currentPostingSchoolId, previousSchoolsIds, publishedWork, currentSubjectId, otherSubjects
-    }
-    await dispatch(createTeacherProfile(teacherData))
-    if (teacherData && teacherMsg && msg) {
-      notifySuccess(msg)
-      //navigate to tearcher profile page
-      navigate("/")
-    }
-  }
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const schoolId = event.target.value;
-    const isChecked = event.target.checked;
-
-    if (isChecked) {
-      setPreviousSchoolsIds(prevSelected => [...prevSelected, schoolId]);
-    } else {
-      setPreviousSchoolsIds(prevSelected => prevSelected.filter(id => id !== schoolId));
-    }
-  }
-
-  const handleSubjectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checkedSubjectId = event.target.value;
-  
-    if (event.target.checked) {
-      setOtherSubjects([...otherSubjects, checkedSubjectId]); // Add subject ID
-    } else {
-      setOtherSubjects(otherSubjects.filter((id) => id !== checkedSubjectId)); // Remove subject ID
-    }
-  };
-  
-
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = event.target.value;
-    setDateOfBirth(newDate)
-
-    // calculate age based on the date seleted
-    const today = new Date();
-    const birthDate = new Date(newDate);
-    const ageInYears = Math.floor(today.getFullYear() - birthDate.getFullYear())
-
-    // account for months and days if birthday hasn't passed yet in the current year
-    const birthMonth = birthDate.getMonth()
-    const currentMonth = today.getMonth()
-    const birthDay = birthDate.getDate()
-    const currentDay = today.getDate()
-
-    if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
-      setAge(ageInYears - 1)
-    } else {
-      setAge(ageInYears)
-    }
-  }
-
-  const handleServiceDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = event.target.value;
-    setFirstAppointment(newDate)
-
-    // calculate age based on the date seleted
-    const today = new Date();
-    const startDate = new Date(newDate);
-    const numOfYears = Math.floor(today.getFullYear() - startDate.getFullYear())
-
-    // account for months and days if birthday hasn't passed yet in the current year
-    const startMonth = startDate.getMonth()
-    const currentMonth = today.getMonth()
-    const startDay = startDate.getDate()
-    const currentDay = today.getDate()
-
-    if (currentMonth < startMonth || (currentMonth === startMonth && currentDay < startDay)) {
-      setYearsInService(numOfYears - 1)
-    } else {
-      setYearsInService(numOfYears)
-    }
-  }
-
-  useEffect(() => {
-    if (organizationUniqueId) {
-      dispatch(getOrganizationZonesByUniqueId(organizationUniqueId))
-    }
-  }, [dispatch, organizationUniqueId])
-
-  useEffect(() => {
-    if (currentPostingZoneId !== null) {
-      dispatch(getSchoolsInZone(currentPostingZoneId));
-    }
-  }, [dispatch, currentPostingZoneId])
-
-  useEffect(() => {
-    if (organizationUniqueId && schMsg) {
-      dispatch(getSchoolsInOrganization(organizationUniqueId))
-    }
-  }, [dispatch, organizationUniqueId, schMsg])
-
-  useEffect(() => {
-    if (allZones) {
-      setZonesList(allZones)
-    }
-
-    if (allSchools) {
-      setSchoolsList(allSchools)
-    }
-    if (allOrgSch) {
-      setOrgSchoolsList(allOrgSch)
-    }
-    if (allSubjects) {
-      setSubjectsList(allSubjects)
-    }
-  }, [allZones, allSchools, allOrgSch, allSubjects])
-
-  useEffect(() => {
-    dispatch(getAllSubjects())
-  }, [dispatch])
-
+const ParentProfile: React.FC = () => {
   return (
     <div className='container'>
-      <div className="row">
-        <div className="col text-center">
-          <label style={{ fontWeight: isFirstPartComplete ? 'normal' : 'bold' }}>1. Bio Data</label>
+      <form onSubmit="">
+        <div className="form-floating mb-3">
+          <input
+            type="hidden"
+            className="form-control .custom-placeholder"
+            id="floatingUserId" 
+            name='userId'
+            readOnly
+            value={userId}
+          />
         </div>
-        <div className="col text-center">
-          <label style={{ fontWeight: isFirstPartComplete ? 'bold' : 'bold' }}>2. Official Records</label>
-        </div>
-      </div>
 
-      <form onSubmit={isFirstPartComplete ? handleSubmitProfile : handleFirstPart}>
+        <div className="form-floating mb-3">
+          <input
+            type="text"
+            className="form-control"
+            id="schoolUniqueId" 
+            placeholder="Enter the school id your ward belongs to"
+            name='schoolUniqueId'
+            value={schoolUniqueId}
+            required
+            onChange={(e) => {
+              setSchoolUniqueId(e.target.value);
+            }}
+          />
+          <label htmlFor="schoolUniqueId">School Unique Id</label>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         {!isFirstPartComplete && (
           <>
             <div className="form-floating mb-3">
@@ -714,4 +550,4 @@ const TeacherProfile: React.FC = () => {
   )
 }
 
-export default TeacherProfile
+export default ParentProfile

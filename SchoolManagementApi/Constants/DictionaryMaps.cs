@@ -13,6 +13,17 @@ namespace SchoolManagementApi.Constants
         { "Prof", "Prof" }
       };
 
+      public static readonly Dictionary<string, string> RelationshipDictionary = new()
+      {
+        { "Father", "Father" },
+        { "Mother", "Mother" },
+        { "Guardian", "Guardian" },
+        { "GrandParent", "GrandParent" },
+        { "Brother", "Brother" },
+        { "Sister", "Sister" },
+        { "Others", "Others" },
+      };
+
       public static readonly Dictionary<string, string> DesignationDictionary = new()
       {
         { "Supervisor", "Supervisor" },

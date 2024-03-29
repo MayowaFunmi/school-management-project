@@ -68,7 +68,66 @@ const initialState: Response = {
       subjectName: ""
     },
     profilePicture: ""
-  }
+  },
+  staffData: {
+    userId: "",
+    user: {
+      id: "",
+      userName: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      percentageCompleted: 0,
+      uniqueId: "",
+      createdAt: ""
+    },
+    title: "",
+    middleName: "",
+    dateOfBirth: "",
+    gender: "",
+    age: 0,
+    stateOfOrigin: "",
+    lgaOfOrigin: "",
+    address: "",
+    religion: "",
+    maritalStatus: "",
+    aboutMe: "",
+    designation: "",
+    gradeLevel: 0,
+    step: 0,
+    firstAppointment: "",
+    yearsInService: "",
+    qualification: "",
+    discipline: "",
+    currentPostingZoneId: "",
+    currentPostingZone: {
+      zoneId: "",
+      organizationId: "",
+      name: "",
+      schools: [],
+      localGovtArea: [],
+      createdAt: "",
+      updatedAt: ""
+    },
+    currentPostingSchoolId: "",
+    currentPostingSchool: {
+      schoolId: "",
+      organizationUniqueId: "",
+      schoolUniqueId: "",
+      zoneId: "",
+      name: "",
+      address: "",
+      localGovtArea: "",
+      createdAt: ""
+    },
+    previousSchoolsIds: [],
+    createdDate: "",
+    updatedDate: "",
+    profilePicture: ""
+  },
+  staffStatus: "",
+  staffMessage: ""
 }
 
 export const getTeacherProfile = createAsyncThunk(
@@ -76,6 +135,19 @@ export const getTeacherProfile = createAsyncThunk(
   async (staffId: string, thunkApi) => {
     try {
       const endpoint = `${baseUrl}/api/staff/get-teaching-staff-by-id/${staffId}`
+      const response = await axios.get(endpoint, getAxiosConfig())
+      return response.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+)
+
+export const getNonTeacherProfile = createAsyncThunk(
+  'staff/getNonTeacherProfile',
+  async (staffId: string, thunkApi) => {
+    try {
+      const endpoint = `${baseUrl}/api/staff/get-non-teaching-staff-by-id/${staffId}`
       const response = await axios.get(endpoint, getAxiosConfig())
       return response.data;
     } catch (error: any) {
@@ -112,6 +184,29 @@ const staffSlice = createSlice({
 
           return {
             ...state, message: result.message, data: result.data, status: "rejected"
+          }
+        }
+      })
+
+      builder
+      .addCase(getNonTeacherProfile.pending, (state) => {
+        return { ...state, staffMessage: "Fetching staff profile data", staffStatus: "pending" }
+      })
+      .addCase(getNonTeacherProfile.fulfilled, (state, action: PayloadAction<any>) => {
+        if (action.payload) {
+          const result = action.payload;
+
+          return {
+            ...state, staffMessage: result.message, staffData: result.data, staffStatus: "success"
+          }
+        }
+      })
+      .addCase(getNonTeacherProfile.rejected, (state, action: PayloadAction<any>) => {
+        if (action.payload) {
+          const result = action.payload;
+
+          return {
+            ...state, staffMessage: result.message, staffData: result.data, staffStatus: "rejected"
           }
         }
       })

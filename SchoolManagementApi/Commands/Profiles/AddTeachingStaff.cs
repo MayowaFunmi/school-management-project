@@ -38,7 +38,6 @@ namespace SchoolManagementApi.Commands.Profiles
       public string? PublishedWork { get; set; }
       public required string CurrentSubjectId { get; set; }
       public List<string>? OtherSubjects { get; set; } = [];
-      public bool HasUploads { get; set; } = false;
     }
 
     public class AddTeachingStaffHandler(ITeachingStaffInterface teachingStaffInterface, ApplicationDbContext context) : IRequestHandler<AddTeachingStaffCommand, GenericResponse>
@@ -57,7 +56,7 @@ namespace SchoolManagementApi.Commands.Profiles
             return new GenericResponse
             {
               Status = HttpStatusCode.OK.ToString(),
-              Message = $"Organization with unique id {request.OrganizationUniqueId} not found"
+              Message = $"Organization not found"
             };
           }
           var teacherProfile = await _teachingStaffInterface.TeachingStaffExists(request.UserId);
@@ -65,8 +64,8 @@ namespace SchoolManagementApi.Commands.Profiles
           {
             return new GenericResponse
             {
-              Status = HttpStatusCode.Forbidden.ToString(),
-              Message = $"Profile already exists for Teacher with id {request.UserId}"
+              Status = HttpStatusCode.OK.ToString(),
+              Message = $"Profile already exists"
             };
           }
           var teacher = MapToTeachingStaff(request);
@@ -78,7 +77,6 @@ namespace SchoolManagementApi.Commands.Profiles
             {
               user.PercentageCompleted += 30;
               await _context.SaveChangesAsync(cancellationToken);
-              // add profile picture
             }
             
             return new GenericResponse

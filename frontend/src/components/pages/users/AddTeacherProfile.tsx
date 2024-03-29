@@ -27,7 +27,7 @@ const AddTeacherProfile: React.FC = () => {
 
   return (
     <div>
-      {profileData ? (
+      {/* {profileData ? (
         <TeacherDetails data={data} />
       ) : (
         <>
@@ -35,13 +35,13 @@ const AddTeacherProfile: React.FC = () => {
           <h2>Create teacher profile</h2>
           <TeacherProfile />
         </>
-      )}
+      )} */}
 
       {status === "pending" ? (
         <p>{message}</p>
-      ) : (status === " success" && profileData ? (
+      ) : (status === "success" && profileData ? (
         <TeacherDetails data={data} />
-      ) : (status === " success" && !profileData ? (
+      ) : (status === "success" && !profileData ? (
         <>
           <h2>Create teacher profile</h2>
           <TeacherProfile />
