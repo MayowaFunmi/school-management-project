@@ -70,6 +70,9 @@ const userSlice = createSlice({
           state.message = "You are already logged in"
         }
       },
+      clearAuthState: (state) => {
+        return { ...initialState }
+      }
     },
     extraReducers: (builder) => {
       builder
@@ -134,5 +137,5 @@ const userSlice = createSlice({
     }
 })
 
-export const { initializeStateFromLocalStorage } = userSlice.actions;
+export const { initializeStateFromLocalStorage, clearAuthState } = userSlice.actions;
 export default userSlice.reducer;

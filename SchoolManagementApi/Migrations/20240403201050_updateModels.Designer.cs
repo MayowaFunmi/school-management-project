@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagementApi.Data;
 
@@ -11,9 +12,11 @@ using SchoolManagementApi.Data;
 namespace SchoolManagementApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240403201050_updateModels")]
+    partial class updateModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -638,10 +641,6 @@ namespace SchoolManagementApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganizationUniqueId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
@@ -653,12 +652,16 @@ namespace SchoolManagementApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StateOfOrigin")
+                    b.Property<string>("SchoolId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("StudentSchoolId")
+                    b.Property<Guid>("SchoolId1")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StateOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -672,7 +675,7 @@ namespace SchoolManagementApi.Migrations
 
                     b.HasKey("ParentId");
 
-                    b.HasIndex("StudentSchoolId");
+                    b.HasIndex("SchoolId1");
 
                     b.HasIndex("UserId");
 
@@ -720,10 +723,6 @@ namespace SchoolManagementApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganizationUniqueId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
@@ -737,9 +736,6 @@ namespace SchoolManagementApi.Migrations
                     b.Property<string>("Religion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SchoolZoneId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("StudentClassId")
                         .HasColumnType("uniqueidentifier");
@@ -758,8 +754,6 @@ namespace SchoolManagementApi.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("ParentId");
-
-                    b.HasIndex("SchoolZoneId");
 
                     b.HasIndex("StudentClassId");
 
@@ -1091,9 +1085,9 @@ namespace SchoolManagementApi.Migrations
 
             modelBuilder.Entity("SchoolManagementApi.Models.UserModels.Parent", b =>
                 {
-                    b.HasOne("SchoolManagementApi.Models.School", "StudentSchool")
+                    b.HasOne("SchoolManagementApi.Models.School", "School")
                         .WithMany()
-                        .HasForeignKey("StudentSchoolId")
+                        .HasForeignKey("SchoolId1")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -1103,7 +1097,7 @@ namespace SchoolManagementApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("StudentSchool");
+                    b.Navigation("School");
 
                     b.Navigation("User");
                 });
@@ -1128,12 +1122,6 @@ namespace SchoolManagementApi.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("SchoolManagementApi.Models.Zone", "SchoolZone")
-                        .WithMany()
-                        .HasForeignKey("SchoolZoneId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("SchoolManagementApi.Models.ClassArms", "StudentClass")
                         .WithMany()
                         .HasForeignKey("StudentClassId")
@@ -1151,8 +1139,6 @@ namespace SchoolManagementApi.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Parent");
-
-                    b.Navigation("SchoolZone");
 
                     b.Navigation("StudentClass");
 

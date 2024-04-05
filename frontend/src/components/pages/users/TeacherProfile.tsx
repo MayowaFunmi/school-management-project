@@ -708,7 +708,7 @@ const TeacherProfile: React.FC = () => {
           </>
         )}
         
-        <button type="submit">{isFirstPartComplete ? 'Submit' : 'Continue'}</button>
+        <button className='btn btn-primary' type="submit">{isFirstPartComplete ? 'Submit' : 'Continue'}</button>
       </form>
     </div>
   )

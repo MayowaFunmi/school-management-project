@@ -1,27 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { IParent } from '../../../models/parentModels';
+import { IStudent } from '../../../models/studentModel'
+import ProfileImage from '../../images/ProfileImage';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
 import { toast } from 'react-toastify';
 import { uploadProfilePicture } from '../../../features/uploadSlice';
-import ProfileImage from '../../images/ProfileImage';
 import { formatDateOfBirth } from '../../../utils/formatDate';
+import { School } from '../../../models/userModel';
+import { getSchoolsByIds } from '../../../features/schoolSlice';
 
-interface ParentDetailsProps {
-  data: IParent;
+interface StudentDetailPage {
+  data: IStudent
 }
 
-const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
-  const dispatch = useAppDispatch();
+const StudentDetails: React.FC<StudentDetailPage> = ({ data }) => {
+  const progressWith = `${data.user.percentageCompleted}%`;
+
+   const dispatch = useAppDispatch();
   const { status } = useAppSelector((state) => state.upload);
-  const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
 
   const notifySuccess = (msg: string) => toast.success(msg);
   const notifyError = (msg: string) => toast.error(msg);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
-
-  const progressWith = `${data.user.percentageCompleted}%`;
+  const [schoolsList, setSchoolsList] = useState<School[]>([])
+  const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -54,6 +57,19 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
       notifyError("failed To Upload Profile Picture")
     }
   }, [status])
+
+  useEffect(() => {
+    if (data.previousSchoolsIds.length > 0) {
+      dispatch(getSchoolsByIds(data.previousSchoolsIds));
+    }
+  }, [data.previousSchoolsIds, dispatch])
+
+  useEffect(() => {
+    if (schIdMsg === "success") {
+      setSchoolsList(allSchoolIds);
+    }
+  }, [allSchoolIds, schIdMsg])
+
   
   return (
     <>
@@ -92,35 +108,52 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
         </div>
 
         <div className="col-sm-7">
-          <p><strong>Name: </strong>{data.user.firstName} {data.user.lastName} ({data.title})</p>
+          <p><strong>Name: </strong>{data.user.lastName} {data.user.firstName} {data.middleName}</p>
           <p><strong>Email: </strong>{data.user.email}</p>
           <p><strong>Phone Number: </strong>{data.user.phoneNumber}</p>
           <p><strong>Username: </strong>{data.user.userName}</p>
           <p><strong>Address: </strong>{data.address}</p>
           <p><strong>Date Of Birth: </strong>{formatDateOfBirth(data.dateOfBirth)}</p>
           <p><strong>Age: </strong>{data.age} years</p>
-          <p><strong>Marital Status: </strong>{data.maritalStatus}</p>
-          <p><strong>State Of Origin: </strong>{data.stateOfOrigin}</p>
-          <p><strong>LGA Of Origin: </strong>{data.lgaOfOrigin}</p>
-          <p><strong>LGA Of Residence: </strong>{data.lgaOfResidence}</p>
           <p><strong>Religion: </strong>{data.religion}</p>
           <p><strong>Gender: </strong>{data.gender}</p>
-          <p><strong>Relationship To Student: </strong>{data.relationshipType}</p>
-          <p><strong>Occupation: </strong>{data.occupation}</p>
         </div>
       </div>
       <hr />
 
       <div className='row'>
         <div className="col-sm-5">
-          <p><strong>Organization Unique ID: </strong>{data.organizationUniqueId}</p>
-          <p><strong>Zone: </strong>{data.schoolZone.name}</p>
-          <p><strong>Student School: </strong>{data.studentSchool.name}</p>
-          <p><strong>School Address: </strong>{data.studentSchool.address}</p>
+          <p><strong>Name Of School: </strong>{data.currentSchool.name}</p>
+          <p><strong>Department: </strong>{data.department.name} class</p>
+          <p><strong>Class: </strong>{data.studentClass.name}</p>
+          <p><strong>Admission Number: </strong>{data.admissionNumber}</p>
+          <p><strong>Admission Year: </strong>{data.admissionYear}</p>
+          <p><strong>Parent: </strong>{data.parent.title} {data.parent.user.firstName} {data.parent.user.lastName}</p>
+          {/* add link to parent profile page */}
         </div>
 
         <div className="col-sm-7">
-          
+          <p><strong>Previous Schools Attended: </strong></p>
+          {schoolsList.length > 0 ? (
+            <div>
+            {
+              schoolsList?.map((school) => (
+                <div key={school.schoolId}>
+                  <ol>
+                    <li>
+                      <div>
+                        <strong>School Name:</strong> {school.name}<br />
+                        <small><strong>School Address:</strong> {school.address}</small>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+              ))
+            }
+          </div>
+          ) : (
+            <p>None</p>
+          )}
         </div>
       </div>
 
@@ -161,4 +194,4 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
   )
 }
 
-export default ParentDetails
+export default StudentDetails

@@ -84,6 +84,8 @@ builder.Services.AddScoped<ITeachingStaffInterface, TeachingStaffService>();
 builder.Services.AddScoped<INonTeachingStaffInterface, NonTeachingStaffService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IParentService, ParentService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddCors(options =>
     {

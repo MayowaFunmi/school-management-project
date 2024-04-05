@@ -4,44 +4,6 @@ import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 
 const initialState: ParentState = {
-  parentData: {
-    userId: "",
-    user: {
-      id: "",
-      userName: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      percentageCompleted: 0,
-      uniqueId: "",
-      createdAt: ""
-    },
-    schoolId: "",
-    school: {
-      schoolId: "",
-      organizationUniqueId: "",
-      schoolUniqueId: "",
-      zoneId: "",
-      name: "",
-      address: "",
-      localGovtArea: "",
-      createdAt: ""
-    },
-    title: "",
-    profilePicture: "",
-    address: "",
-    religion: "",
-    maritalStatus: "",
-    stateOfOrigin: "",
-    lgaOfOrigin: "",
-    lgaOfResidence: "",
-    occupation: "",
-    gender: "",
-    relationshipType: "",
-    dateOfBirth: "",
-    age: 0
-  },
   parentMsg: "",
   msg: "",
   getParent: {
@@ -57,17 +19,6 @@ const initialState: ParentState = {
       uniqueId: "",
       createdAt: ""
     },
-    schoolId: "",
-    school: {
-      schoolId: "",
-      organizationUniqueId: "",
-      schoolUniqueId: "",
-      zoneId: "",
-      name: "",
-      address: "",
-      localGovtArea: "",
-      createdAt: ""
-    },
     title: "",
     profilePicture: "",
     address: "",
@@ -80,10 +31,25 @@ const initialState: ParentState = {
     gender: "",
     relationshipType: "",
     dateOfBirth: "",
-    age: 0
+    age: 0,
+    organizationUniqueId: "",
+    studentSchoolId: "",
+    studentSchool: {
+      schoolId: "",
+      organizationUniqueId: "",
+      schoolUniqueId: "",
+      zoneId: "",
+      name: "",
+      address: "",
+      localGovtArea: "",
+      createdAt: ""
+    },
+    parentId: ""
   },
   getMessage: "",
-  getMsg: ""
+  getMsg: "",
+  schParents: [],
+  schParentMsg: ""
 }
 
 export const createParentProfile = createAsyncThunk(
@@ -111,6 +77,19 @@ export const getParentProfile = createAsyncThunk(
   }
 )
 
+export const getSchoolParents = createAsyncThunk(
+  'parent/getSchoolParents',
+  async (schoolId: string, thunkApi) => {
+    try {
+      const endpoint = `${baseUrl}/api/school/get-school-parents/${schoolId}`
+      const response = await axios.get(endpoint)
+      return response.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+)
+
 const parentSlice = createSlice({
   name: "parent",
   initialState,
@@ -128,7 +107,7 @@ const parentSlice = createSlice({
 				if (action.payload !== null) {
 					const profile = action.payload;
 					return {
-						...state, parentData: profile.data, parentMsg: "success", msg: profile.message
+						...state, parentMsg: "success", msg: profile.message
 					}
 				}
 			})
@@ -136,7 +115,7 @@ const parentSlice = createSlice({
 				if (action.payload) {
 					const profile = action.payload;
 					return {
-						...state, parentData: profile.data, parentMsg: "rejected", msg: profile.message
+						...state, parentMsg: "rejected", msg: profile.message
 					}
 				}
 			})
@@ -158,6 +137,26 @@ const parentSlice = createSlice({
 					const profile = action.payload;
 					return {
 						...state, getParent: profile.data, getMessage: "rejected", getMsg: profile.message
+					}
+				}
+			})
+
+    builder
+			.addCase(getSchoolParents.pending, (state) => {
+				return { ...state, schParentMsg: "pending" }
+			})
+			.addCase(getSchoolParents.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload !== null) {
+					const parents = action.payload;
+					return {
+						...state, schParents: parents.data, schParentMsg: "success"					}
+				}
+			})
+			.addCase(getSchoolParents.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const parents = action.payload;
+					return {
+						...state, schParents: parents.data, schParentMsg: "rejected"
 					}
 				}
 			})

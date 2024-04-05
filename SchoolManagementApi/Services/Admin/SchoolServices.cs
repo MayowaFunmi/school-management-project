@@ -127,44 +127,92 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-        public Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<List<School>> GetSchoolByIdList(List<string> schoolIds)
+    public async Task<List<Department>> GetDepartmentsBySchoolId(string schoolId)
+    {
+      try
+      {
+        return await _context.Departments
+          .Where(d => d.SchoolId.ToString() == schoolId)
+          .ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting departments in school - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting department in school - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<School>> GetSchoolByIdList(List<string> schoolIds)
+    {
+      try
+      {
+        return await _context.Schools
+        .Where(s => schoolIds.Contains(s.SchoolId.ToString()))
+        .ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting list of schools - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting list of schools - {ex.Message}");
+        throw;
+      }
+    }
+
+        public async Task<List<Parent>> GetSchoolParents(string schoolId)
         {
           try
           {
-            return await _context.Schools
-            .Where(s => schoolIds.Contains(s.SchoolId.ToString()))
+            return await _context.Parents
+            .Where(d => d.StudentSchoolId.ToString() == schoolId)
             .ToListAsync();
           }
           catch (Exception ex)
           {
-            _logger.LogError($"Error getting list of schools - {ex.Message}");
-            WatchLogger.LogError(ex.ToString(), $"Error getting list of schools - {ex.Message}");
+            _logger.LogError($"Error getting parents in schools - {ex.Message}");
+            WatchLogger.LogError(ex.ToString(), $"Error getting parents in schools - {ex.Message}");
             throw;
           }
         }
 
-        public async Task<List<Subject>> GetSubjectsByIdList(List<string> subjectIds)
-        {
-          try
-          {
-            return await _context.Subjects
-            .Where(s => subjectIds.Contains(s.SubjectId.ToString()))
-            .ToListAsync();
-          }
-          catch (Exception ex)
-          {
-            _logger.LogError($"Error getting list of subjects - {ex.Message}");
-            WatchLogger.LogError(ex.ToString(), $"Error getting list of subjects - {ex.Message}");
-            throw;
-          }
-        }
+        public async Task<List<ClassArms>> GetStudentClassesBySchoolId(string schoolId)
+    {
+      try
+      {
+        return await _context.ClassArms
+          .Where(d => d.SchoolId.ToString() == schoolId)
+          .ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting class arms in school - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting class arms in school - {ex.Message}");
+        throw;
+      }
+    }
 
-        public async Task<List<OrganizationData>> OrganizationData(string organizationUniqueId)
+    public async Task<List<Subject>> GetSubjectsByIdList(List<string> subjectIds)
+    {
+      try
+      {
+        return await _context.Subjects
+        .Where(s => subjectIds.Contains(s.SubjectId.ToString()))
+        .ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting list of subjects - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting list of subjects - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<OrganizationData>> OrganizationData(string organizationUniqueId)
     {
       try
       {

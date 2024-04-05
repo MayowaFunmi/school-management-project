@@ -9,6 +9,7 @@ import subjectReducer from "../features/subjectSlice";
 import teacherReducer from "../features/teacherSlice";
 import uploadReducer from "../features/uploadSlice";
 import parentReducer from "../features/parentSlice";
+import studentReducer from "../features/studentSlice";
 
 const store = configureStore({
     reducer: {
@@ -22,7 +23,8 @@ const store = configureStore({
       subject: subjectReducer,
       teacher: teacherReducer,
       upload: uploadReducer,
-      parent: parentReducer
+      parent: parentReducer,
+      student: studentReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
       immutableCheck: { warnAfter: 128 }, // or false

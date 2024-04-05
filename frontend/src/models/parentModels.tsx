@@ -1,10 +1,12 @@
-import { School, User } from "./userModel"
+import { School, User, Zone } from "./userModel"
 
 export interface IParent {
+  parentId: string
   userId: string
   user: User
-  schoolId: string
-  school: School
+  organizationUniqueId: string
+  studentSchoolId: string
+  studentSchool: School
   title: string
   gender: string
   relationshipType: string
@@ -21,18 +23,24 @@ export interface IParent {
 }
 
 export interface ParentState {
-  parentData: IParent
   parentMsg: string
   msg: string
   getParent: IParent
   getMessage: string
   getMsg: string
+  schParents: IParent[]
+  schParentMsg: string
 }
 
 export interface ParentInput {
   userId: string
-  schoolId: string
+  organizationUniqueId: string
+  studentSchoolId: string
   title: string
+  dateOfBirth: string
+  age: number
+  relationshipType: string
+  gender: string
   address: string
   religion: string
   maritalStatus: string

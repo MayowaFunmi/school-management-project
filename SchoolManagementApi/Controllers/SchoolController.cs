@@ -55,5 +55,71 @@ namespace SchoolManagementApi.Controllers
         Data = subjects
       });
     }
+
+    [HttpGet]
+    [Route("get-school-departments/{schoolId}")]
+    public async Task<IActionResult> SchoolDepartments(string schoolId)
+    {
+      var departments = await _schoolServices.GetDepartmentsBySchoolId(schoolId);
+      if (departments.Count == 0)
+      {
+        return Ok(new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "No Department Found",
+          Data = null
+        });
+      }
+      return Ok(new GenericResponse
+      {
+        Status = HttpStatusCode.OK.ToString(),
+        Message = "Departments in school retrieved successfully",
+        Data = departments
+      });
+    }
+
+    [HttpGet]
+    [Route("get-school-class-list/{schoolId}")]
+    public async Task<IActionResult> SchoolClassArms(string schoolId)
+    {
+      var classes = await _schoolServices.GetStudentClassesBySchoolId(schoolId);
+      if (classes.Count == 0)
+      {
+        return Ok(new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "No Class Arms Found",
+          Data = null
+        });
+      }
+      return Ok(new GenericResponse
+      {
+        Status = HttpStatusCode.OK.ToString(),
+        Message = "Classes in school retrieved successfully",
+        Data = classes
+      });
+    }
+
+    [HttpGet]
+    [Route("get-school-parents/{schoolId}")]
+    public async Task<IActionResult> SchoolParents(string schoolId)
+    {
+      var parents = await _schoolServices.GetSchoolParents(schoolId);
+      if (parents.Count == 0)
+      {
+        return Ok(new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "No parents Found",
+          Data = null
+        });
+      }
+      return Ok(new GenericResponse
+      {
+        Status = HttpStatusCode.OK.ToString(),
+        Message = "Classes in school retrieved successfully",
+        Data = parents
+      });
+    }
   }
 }

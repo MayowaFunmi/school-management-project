@@ -34,7 +34,8 @@ namespace SchoolManagementApi.Services.Profiles
       {
         var parent = await _context.Parents
           .Include(p => p.User)
-          .Include(p => p.School)
+          .Include(p => p.StudentSchool)
+          .Include(p => p.StudentSchool)
           .FirstOrDefaultAsync(p => p.ParentId.ToString() == parentId);
         return parent;
       }

@@ -39,11 +39,11 @@ namespace SchoolManagementApi.Queries.Profiles
         catch (Exception ex)
         {
           _logger.LogError($"Error getting parent by id - {ex.Message}");
-          WatchLogger.LogError(ex.ToString(), $"Error getting teaching staff by id - {ex.Message}");
+          WatchLogger.LogError(ex.ToString(), $"Error getting parent by id - {ex.Message}");
           return new GenericResponse
           {
             Status = HttpStatusCode.InternalServerError.ToString(),
-            Message = $"Error getting tparent by id - {ex.Message}",
+            Message = $"Error getting parent by id - {ex.Message}",
           };
         }
       }

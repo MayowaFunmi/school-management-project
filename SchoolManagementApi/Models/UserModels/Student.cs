@@ -11,12 +11,15 @@ namespace SchoolManagementApi.Models.UserModels
     [ForeignKey("UserId")]
     public string UserId { get; set; }
     public virtual ApplicationUser User { get; set; }
+    public string OrganizationUniqueId { get; set; }
     public string MiddleName { get; set; }
     public string AdmissionNumber { get; set; }
     public string AdmissionYear { get; set; }
-
-    [ForeignKey("SchoolId")]
-    public Guid SchoolId { get; set; }
+    [ForeignKey("SchoolZoneId")]
+    public Guid SchoolZoneId { get; set; }
+    public virtual Zone SchoolZone { get; set; }
+    [ForeignKey("CurrentSchoolId")]
+    public Guid CurrentSchoolId { get; set; }
     public virtual School CurrentSchool { get; set; }
 
     [ForeignKey("DepartmentId")]
@@ -27,7 +30,7 @@ namespace SchoolManagementApi.Models.UserModels
     public Guid StudentClassId { get; set; }
     public virtual ClassArms StudentClass { get; set; }
 
-    public virtual List<School> PreviousSchools { get; set; }
+    public virtual List<string> PreviousSchoolsIds { get; set; }
     public string? ProfilePicture { get; set; }
     public string Gender { get; set; }
     public DateTime DateOfBirth { get; set; }

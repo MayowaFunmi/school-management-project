@@ -8,47 +8,48 @@ using static SchoolManagementApi.Constants.DictionaryMaps;
 
 namespace SchoolManagementApi.Commands.Profiles
 {
-  public class AddParent
+  public class AddStudent
   {
-    public class AddParentCommand : IRequest<GenericResponse>
+    public class AddStudentCommand : IRequest<GenericResponse>
     {
       public required string UserId { get; set; }
       public required string OrganizationUniqueId { get; set; }
-      public required string StudentSchoolId { get; set; }
-      public required string Title { get; set; }
-      public required string Gender { get; set; }
-      public required string RelationshipType { get; set; }
-      public required string Address { get; set; }
+      public required string MiddleName { get; set; }
+      public required string AdmissionNumber { get; set; }
+      public required string AdmissionYear { get; set; }
+      public required string SchoolZoneId { get; set; }
+      public required string CurrentSchoolId { get; set; }
+      public required string DepartmentId { get; set; }
+      public required string StudentClassId { get; set; }
+      public List<string> PreviousSchoolsIds { get; set; } = [];
+      public required string Gender { get; set; }      
       public required DateTime DateOfBirth { get; set; }
       public required int Age { get; set; }
+      public required string Address { get; set; }
       public required string Religion { get; set; }
-      public required string MaritalStatus { get; set; }
-      public required string StateOfOrigin { get; set; }
-      public required string LgaOfOrigin { get; set; }
-      public required string LgaOfResidence { get; set; }
-      public required string Occupation { get; set; }
+      public required string ParentId { get; set; }
     }
 
-    public class AddparentHandler(IParentService parentService, ApplicationDbContext context) : IRequestHandler<AddParentCommand, GenericResponse>
+    public class AddStudentHandler(ApplicationDbContext context, IStudentService studentService) : IRequestHandler<AddStudentCommand, GenericResponse>
     {
-      private readonly IParentService _parentService = parentService;
       private readonly ApplicationDbContext _context = context;
+      private readonly IStudentService _studentService = studentService;
 
-      public async Task<GenericResponse> Handle(AddParentCommand request, CancellationToken cancellationToken)
+      public async Task<GenericResponse> Handle(AddStudentCommand request, CancellationToken cancellationToken)
       {
         try
         {
-          var parent = await _parentService.ParentProfileExists(request.UserId);
-          if (parent)
+          var student = await _studentService.StudentProfileExists(request.UserId);
+          if (student)
           {
             return new GenericResponse
             {
               Status = HttpStatusCode.OK.ToString(),
-              Message = $"parent profile already exists"
+              Message = $"studnet profile already exists"
             };
           }
-          var parentData = MapToParent(request);
-          var profile = await _parentService.AddParentProfile(parentData);
+          var studentData = MapToStudent(request);
+          var profile = await _studentService.AddStudentProfile(studentData);
           if (profile != null)
           {
             var user = _context.Users.FirstOrDefault(u => u.Id == request.UserId);
@@ -61,14 +62,14 @@ namespace SchoolManagementApi.Commands.Profiles
             return new GenericResponse
             {
               Status = HttpStatusCode.OK.ToString(),
-              Message = "Parent profile created sucessfully",
+              Message = "student profile created sucessfully",
               Data = profile
             };
           }
           return new GenericResponse
           {
             Status = HttpStatusCode.BadRequest.ToString(),
-            Message = "Failed to add parent profile",
+            Message = "Failed to add student profile",
           };
         }
         catch (Exception ex)
@@ -81,25 +82,26 @@ namespace SchoolManagementApi.Commands.Profiles
         }
       }
 
-      private static Parent MapToParent(AddParentCommand request)
+      private static Student MapToStudent(AddStudentCommand request)
       {
-        return new Parent 
+        return new Student
         {
           UserId = request.UserId,
           OrganizationUniqueId = request.OrganizationUniqueId,
-          StudentSchoolId = Guid.Parse(request.StudentSchoolId),
-          Title = TitleMap.TitleDictionary.TryGetValue(request.Title!, out string? value) ? value : "Mr",
+          MiddleName = request.MiddleName,
+          AdmissionNumber = request.AdmissionNumber,
+          AdmissionYear = request.AdmissionYear,
+          SchoolZoneId = Guid.Parse(request.SchoolZoneId),
+          CurrentSchoolId = Guid.Parse(request.CurrentSchoolId),
+          DepartmentId = Guid.Parse(request.DepartmentId),
+          StudentClassId = Guid.Parse(request.StudentClassId),
+          PreviousSchoolsIds = request.PreviousSchoolsIds,
           Gender = TitleMap.GenderDictionary.TryGetValue(request.Gender!, out string? GenderValue) ? GenderValue : "Male",
-          RelationshipType = TitleMap.RelationshipDictionary.TryGetValue(request.RelationshipType!, out string? RelationshipValue) ? RelationshipValue : "father",
-          Address = request.Address,
           DateOfBirth = request.DateOfBirth,
+          Address = request.Address,
           Age = request.Age,
           Religion = TitleMap.ReligionDictionary.TryGetValue(request.Religion!, out string? ReligionValue) ? ReligionValue : "Christianity",
-          MaritalStatus = TitleMap.MaritalDictionary.TryGetValue(request.MaritalStatus!, out string? MaritalValue) ? MaritalValue : "Married",
-          StateOfOrigin = request.StateOfOrigin,
-          LgaOfOrigin = request.LgaOfOrigin,
-          LgaOfResidence = request.LgaOfResidence,
-          Occupation = request.Occupation
+          ParentId = Guid.Parse(request.ParentId),
         };
       }
     }

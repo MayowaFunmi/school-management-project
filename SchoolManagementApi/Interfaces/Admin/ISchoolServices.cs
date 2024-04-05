@@ -18,5 +18,8 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize);
     Task<List<School>> GetSchoolByIdList(List<string> schoolIds);
     Task<List<Subject>> GetSubjectsByIdList(List<string> subjectIds);
+    Task<List<Department>> GetDepartmentsBySchoolId(string schoolId);
+    Task<List<ClassArms>> GetStudentClassesBySchoolId(string schoolId);
+    Task<List<Parent>> GetSchoolParents(string schoolId);
   }
 }

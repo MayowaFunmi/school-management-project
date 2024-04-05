@@ -40,8 +40,8 @@ namespace SchoolManagementApi.Queries.Profiles
           }
           return new GenericResponse
           {
-            Status = HttpStatusCode.NotFound.ToString(),
-            Message = $"Staff with Id {request.StaffId} not found",
+            Status = HttpStatusCode.OK.ToString(),
+            Message = $"Non teaching staff not found",
           };
         }
         catch (Exception ex)
