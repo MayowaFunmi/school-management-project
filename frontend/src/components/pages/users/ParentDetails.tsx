@@ -114,7 +114,6 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
       <div className='row'>
         <div className="col-sm-5">
           <p><strong>Organization Unique ID: </strong>{data.organizationUniqueId}</p>
-          <p><strong>Zone: </strong>{data.schoolZone.name}</p>
           <p><strong>Student School: </strong>{data.studentSchool.name}</p>
           <p><strong>School Address: </strong>{data.studentSchool.address}</p>
         </div>

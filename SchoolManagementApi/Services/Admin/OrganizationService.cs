@@ -50,19 +50,21 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-        public Task<List<TeachingStaff>> GetAllTeachersInOrganization(string organizationId, int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<List<TeachingStaff>> GetAllTeachersInOrganization(string organizationId, int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<List<Organization>> RetrieveAdminOrganizations(string adminId)
+    public async Task<List<Organization>> RetrieveAdminOrganizations(string adminId)
     {
       try
       {
         var adminOrgs = await _context.Organizations
           .Include(o => o.Admin)
           .Include(o => o.Zones)
-          .Where(x => x.AdminId == adminId).ToListAsync();
+          .ThenInclude(z => z.Schools)
+          .Where(x => x.AdminId == adminId)
+          .ToListAsync();
         return adminOrgs;
       }
       catch (Exception ex)

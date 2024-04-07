@@ -43,6 +43,7 @@ export const AuthProvider: React.FC<{ children: ReactNode}> = ({ children }) => 
     const [isOwnerExists, setIsOwnerExists] = useState<boolean | null>(null);
     const [isOrganizationAdminExists, setIsOrganizationAdminExists] = useState<boolean | null>(null);
     const [isTeachingStaffExists, setIsTeachingStaffExists] = useState<boolean | null>(null);
+    const [isOrgAdminTeachingStaffExists, setIsOrgAdminTeachingStaffExists] = useState<boolean | null>(null);
     const [isNonTeachingStaffExists, setIsNonTeachingStaffExists] = useState<boolean | null>(null);
     const [isParentExists, setIsParentExists] = useState<boolean | null>(null);
     const [isStudentExists, setIsStudentExists] = useState<boolean | null>(null);
@@ -62,6 +63,7 @@ export const AuthProvider: React.FC<{ children: ReactNode}> = ({ children }) => 
         setIsNonTeachingStaffExists(null);
         setIsParentExists(null);
         setIsStudentExists(null);
+        setIsOrgAdminTeachingStaffExists(null);
         dispatch(logoutUser());
       };
     }, [dispatch, isExpired])

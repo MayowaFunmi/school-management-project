@@ -37,7 +37,7 @@ namespace SchoolManagementApi.Services.RoleServices
       return false;
     }
 
-    public List<IdentityRole> GetRoleList()
+    public async Task<List<IdentityRole>> GetRoleList()
     {
       List<IdentityRole> roles = [];
       foreach (var role in _roleManager.Roles)
@@ -47,7 +47,7 @@ namespace SchoolManagementApi.Services.RoleServices
       return roles;
     }
 
-    public List<IdentityRole> GetSelectedRoleList()
+    public async Task<List<IdentityRole>> GetSelectedRoleList()
     {
       List<string> outRole = ["TeachingStaff", "NonTeachingStaff", "Parent", "Student"];
       List<IdentityRole> roles = [];

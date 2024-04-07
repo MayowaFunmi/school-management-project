@@ -9,7 +9,7 @@ namespace SchoolManagementApi.Queries.Admin
 {
   public class GetOrganizationZones
   {
-    public record GetOrganizationZonesQuery(string OrganizationUniqueId) : IRequest<GenericResponse>;
+    public record GetOrganizationZonesQuery(string OrganizationId) : IRequest<GenericResponse>;
 
     public class GetOrganizationZonesHandler(IZoneService zoneService, ILoggerManager logger) : IRequestHandler<GetOrganizationZonesQuery, GenericResponse>
     {
@@ -20,7 +20,7 @@ namespace SchoolManagementApi.Queries.Admin
       {
         try
         {
-          var zones = await _zoneService.AllOrganizationZones(request.OrganizationUniqueId);  // this uses organization Id. not unique id
+          var zones = await _zoneService.AllOrganizationZones(request.OrganizationId);  // this uses organization Id. not unique id
           if (zones.Count == 0)
           {
             return new GenericResponse

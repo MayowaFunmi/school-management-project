@@ -3,18 +3,19 @@ import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector'
 import { useAuth } from '../../context/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createOrganization, getAdminOrganizations, getOrganizationZones } from '../../features/adminSlice';
+import { createOrganization, getAdminOrganizations } from '../../features/adminSlice';
 import { OrgData as UserOrganization } from '../../models/userModel';
 
 const Organization = () => {
 
-  const { orgMsg, orgStatus, organizations } = useAppSelector((state) => state.admin);
-  const { isAuthenticated, isAdminRoleExists, userId } = useAuth();
+  const { orgMsg, orgStatus, organizations, checkOrgs } = useAppSelector((state) => state.admin);
+  const { isAuthenticated, isOrganizationAdminExists, userId } = useAuth();
   const dispatch = useAppDispatch();
 
   const [organizationName, setOrganizationName] = useState("")
   const [orgUniqueId, setOrgUniqueId] = useState("")
   const [organizationDetails, setOrganizationDetails] = useState<UserOrganization | null>(null);
+  const [organizationsList, setOrganizationsList] = useState<UserOrganization[] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const notifyError = (msg: string) => toast.error(msg);
@@ -22,17 +23,27 @@ const Organization = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isAuthenticated && !isOrganizationAdminExists) {
+      navigate('/')
+    }  
+  }, [isAuthenticated, isOrganizationAdminExists, navigate])
+
+  useEffect(() => {
     if (orgStatus === "success") {
       notifySuccess(orgMsg)
     } else if (orgStatus === "rejected") {
       notifyError(orgMsg)
     }
-    dispatch(getAdminOrganizations(userId));
-  }, [dispatch, orgMsg, orgStatus, userId])
+    if (checkOrgs === "success") {
+      setOrganizationsList(organizations)
+    }
+  }, [checkOrgs, orgMsg, orgStatus, organizations])
 
-  if (!isAuthenticated && !isAdminRoleExists) {
-    return <Navigate to='/' />
-  }
+  useEffect(() => {
+    if (userId || orgStatus === "success") {
+      dispatch(getAdminOrganizations(userId));
+    }
+  }, [dispatch, orgStatus, userId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +56,7 @@ const Organization = () => {
 
   const getZones = async (id: string) => {
     try {
-      await dispatch(getOrganizationZones(id));
+      //await dispatch(getOrganizationZones(id));
     } catch (error) {
       console.error('Error fetching organization zones:', error);
     }
@@ -97,6 +108,9 @@ const Organization = () => {
       </div>
       <hr />
       <h3>Your Organizations</h3>
+      {checkOrgs === "pending" && <div className="alert alert-info" role="alert">
+        Fetching list of your organizations. Please wait ...
+      </div>}
 
       {organizations !== null ? (
         <>

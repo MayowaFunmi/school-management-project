@@ -3,14 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAppDispatch } from '../hooks/useTypedSelector';
 import { logoutUser } from '../features/userSlice';
-import SuperAdminDropdown from './SuperAdminDropdown';
-import AdminDropdown from './AdminDropdown';
+import SuperAdminDropdown from './admin/SuperAdminDropdown';
+import AdminDropdown from './admin/AdminDropdown';
 import { clearState } from '../utils/clearState';
+import OrganizationAdmin from './admin/OrganizationAdmin';
+import OwnerDropdown from './admin/OwnerDropdown';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isAuthenticated, isSuperAdminRoleExists, isAdminRoleExists } = useAuth();
+  const { isAuthenticated, isSuperAdminRoleExists, isAdminRoleExists, isOrganizationAdminExists, isOwnerExists } = useAuth();
 
   const logOutUser = async () => {
     try {
@@ -28,7 +30,9 @@ const Navbar: React.FC = () => {
 				<Link className="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" to="#">School Management App</Link>
 
 				{isAuthenticated && isSuperAdminRoleExists && <SuperAdminDropdown />}
-				{isAuthenticated && isAdminRoleExists && <AdminDropdown />}
+				{isAuthenticated && isOrganizationAdminExists && <AdminDropdown />}
+				{/* {isAuthenticated && isOrganizationAdminExists && <OrganizationAdmin />} */}
+				{isAuthenticated && isOwnerExists && <OwnerDropdown />}
 
 				<nav className="nav ms-auto">
 					{isAuthenticated ? (

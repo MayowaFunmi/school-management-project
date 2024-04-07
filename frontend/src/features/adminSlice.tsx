@@ -104,19 +104,6 @@ export const createZone = createAsyncThunk(
 	}
 )
 
-export const getOrganizationZones = createAsyncThunk(
-    'admin/getOrganizationZones',
-    async (organizationId: string, thunkApi) => {
-      try {
-        const endpoint = `${baseUrl}/api/admin/get-all-organization-zones/${organizationId}`;
-        const response = await axios.get(endpoint, getAxiosConfig());
-        return response.data;
-      } catch (error: any) {
-        return thunkApi.rejectWithValue(error.message);
-      }
-    }
-);
-
 export const getAdminOrganizations = createAsyncThunk(
 	'admin/getAdminOrganizations',
 	async(userId: string, thunkApi) => {
@@ -292,27 +279,6 @@ const adminSlice = createSlice({
 					const zoneData = action.payload;
 					return {
 						...state, zone: zoneData.data, zoneMsg: zoneData.message
-					}
-				}
-			})
-
-		builder
-			.addCase(getOrganizationZones.pending, (state) => {
-				return { ...state, allZoneMsg: "pending" }
-			})
-			.addCase(getOrganizationZones.fulfilled, (state, action: PayloadAction<any>) => {
-				if (action.payload) {
-					const zoneData = action.payload;
-					return {
-						...state, allZones: zoneData.data, allZoneMsg: "success"
-					}
-				}
-			})
-			.addCase(getOrganizationZones.rejected, (state, action: PayloadAction<any>) => {
-				if (action.payload) {
-					const zoneData = action.payload;
-					return {
-						...state, allZones: zoneData.data, allZoneMsg: "rejected"
 					}
 				}
 			})

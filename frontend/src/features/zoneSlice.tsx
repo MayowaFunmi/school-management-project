@@ -4,9 +4,24 @@ import { baseUrl, getAxiosConfig } from "../config/Config";
 import axios from "axios";
 
 const initialState: IZone = {
-  allZones: [],
-  allZoneMsg: ""
+	allZones: [],
+	allZoneMsg: "",
+	orgZones: [],
+	orgZonesMsg: ""
 }
+
+export const getOrganizationZones = createAsyncThunk(
+	'admin/getOrganizationZones',
+	async (organizationId: string, thunkApi) => {
+		try {
+			const endpoint = `${baseUrl}/api/admin/get-all-organization-zones/${organizationId}`;
+			const response = await axios.get(endpoint, getAxiosConfig());
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+);
 
 export const getOrganizationZonesByUniqueId = createAsyncThunk(
 	'zone/getOrganizationZonesByUniqueId',
@@ -28,6 +43,10 @@ const zoneSlice = createSlice({
     clearZoneData: (state) => {
 			return { ...initialState };
 		},
+		resetAllOrgZones: (state) => {
+			state.orgZones = [];
+			state.orgZonesMsg = ""
+		}
   },
   extraReducers: (builder) => {
     builder
@@ -50,8 +69,29 @@ const zoneSlice = createSlice({
 					}
 				}
 			})
+
+		builder
+			.addCase(getOrganizationZones.pending, (state) => {
+				return { ...state, orgZonesMsg: "pending" }
+			})
+			.addCase(getOrganizationZones.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const zoneData = action.payload;
+					return {
+						...state, orgZones: zoneData.data, orgZonesMsg: "success"
+					}
+				}
+			})
+			.addCase(getOrganizationZones.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const zoneData = action.payload;
+					return {
+						...state, orgZones: zoneData.data, orgZonesMsg: "rejected"
+					}
+				}
+			})
   }
 })
 
-export const { clearZoneData } = zoneSlice.actions;
+export const { clearZoneData, resetAllOrgZones } = zoneSlice.actions;
 export default zoneSlice.reducer;

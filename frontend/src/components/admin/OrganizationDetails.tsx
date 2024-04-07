@@ -1,26 +1,25 @@
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { getOrganizationZones } from '../../features/adminSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector';
 import GetZonesModal from '../../modals/GetZonesModal';
-import { Organization, Zone } from '../../models/userModel';
+import { OrgData, Organization, Zone } from '../../models/userModel';
 import AddZoneModal from '../../modals/AddZoneModal';
 import store from '../../store/store';
+import { getOrganizationZones, resetAllOrgZones } from '../../features/zoneSlice';
 
 const OrganizationDetails = () => {
   const location = useLocation();
-  const org = location.state.org;
+  const org: OrgData = location.state.org;
   const dispatch = useAppDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { zoneMsg } = useAppSelector((state) => state.admin);
-  const { allZones } = useAppSelector((state) => state.zone);
+  const { orgZones, orgZonesMsg } = useAppSelector((state) => state.zone);
 
-  const getZones = async (id: string) => {
-    //store.dispatch(resetAllZones());
+  const getZones = async (organizationId: string) => {
+    store.dispatch(resetAllOrgZones());
     try {
-      await dispatch(getOrganizationZones(id));
+      await dispatch(getOrganizationZones(organizationId));
       setIsModalOpen(true)
     } catch (error) {
       console.error('Error fetching organization zones:', error);
@@ -28,7 +27,7 @@ const OrganizationDetails = () => {
   };
 
   const addZone = async (id: string) => {
-    //store.dispatch(resetAllZones());
+    store.dispatch(resetAllOrgZones());
     try {
       setIsModalOpen(true);
     } catch (error) {
@@ -55,9 +54,9 @@ const OrganizationDetails = () => {
         <GetZonesModal
         isModalOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
-        allZones={allZones as Zone[]}
-        zoneMsg={zoneMsg}
-        org={org as Organization}
+        allZones={orgZones as Zone[]}
+        zoneMsg={orgZonesMsg}
+        org={org}
       />
       )}
 

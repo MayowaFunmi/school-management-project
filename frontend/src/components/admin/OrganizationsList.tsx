@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector';
-import { getAllOrganizations, getOrganizationZones } from '../../features/adminSlice';
+import { getAllOrganizations } from '../../features/adminSlice';
 import { toast } from 'react-toastify';
 import { OrgData as UserOrganization } from '../../models/userModel';
 import store from '../../store/store';
@@ -37,13 +37,13 @@ const OrganizationsList: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const getZones = async (id: string) => {
-    try {
-      await dispatch(getOrganizationZones(id));
-    } catch (error) {
-      console.error('Error fetching organization zones:', error);
-    }
-  };
+  // const getZones = async (id: string) => {
+  //   try {
+  //     await dispatch(getOrganizationZones(id));
+  //   } catch (error) {
+  //     console.error('Error fetching organization zones:', error);
+  //   }
+  // };
 
   if (!isAuthenticated && !isSuperAdminRoleExists) {
     return <Navigate to="/" />;

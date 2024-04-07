@@ -6,11 +6,16 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import { initializeStateFromLocalStorage } from './features/userSlice';
-import { clearSchoolData } from './features/schoolSlice';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const storedToken = localStorage.getItem("user");
+
+if (storedToken) {
+  store.dispatch(initializeStateFromLocalStorage(storedToken));
+}
 
 root.render(
   <React.StrictMode>

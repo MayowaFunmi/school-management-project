@@ -7,7 +7,7 @@ namespace SchoolManagementApi.Intefaces.Roles
     Task<bool> AddRole(string roleName);
     Task<bool> EditRole(string roleName, string editedRole);
     Task<bool> DeleteRole(string roleName);
-    List<IdentityRole> GetRoleList();
-    List<IdentityRole> GetSelectedRoleList();
+    Task<List<IdentityRole>> GetRoleList();
+    Task<List<IdentityRole>> GetSelectedRoleList();
   }
 }

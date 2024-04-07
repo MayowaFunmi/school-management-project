@@ -55,6 +55,8 @@ export interface Subject {
 export interface IZone {
   allZones: Zone[]
 	allZoneMsg: string
+  orgZones: Zone[]
+  orgZonesMsg: string
 }
 
 export interface ISchool {
@@ -133,7 +135,7 @@ export interface OrganizationZonesModalProps {
   closeModal: React.MouseEventHandler;
   allZones: Zone[];
   zoneMsg: string;
-  org: Organization;
+  org: OrgData;
 }
 
 export interface AddZoneModalProps {

@@ -13,7 +13,7 @@ const GetZonesModal: React.FC<OrganizationZonesModalProps> = ({ isModalOpen, clo
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Organization Zones For {org.organizationName}</h5>
+                <h5 className="modal-title">Organization Zones For {org.name}</h5>
                 <button type="button" className="close" onClick={closeModal} aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -25,14 +25,32 @@ const GetZonesModal: React.FC<OrganizationZonesModalProps> = ({ isModalOpen, clo
                     <p>{allZones?.length} {allZones?.length === 1 ? 'zone' : 'zones'}:</p>
                     <hr />
                     {allZones?.map((zone) => (
-                      <>
                         <div key={zone.zoneId}>
                           <p>Zone Name: {zone.name}</p>
-                          <p>Organization Id: {zone.organizationId}</p>
+                          <p>Schools: </p>
+                          {zone.schools.length > 0 ? (
+                            <>
+                              {zone.schools?.map((school) => (
+                                <div key={school.schoolId}>
+                                  <ol>
+                                    <li>
+                                      <div>
+                                        <strong>School Name:</strong> {school.name}<br />
+                                        <small><strong>School Address:</strong> {school.address}</small><br />
+                                        <strong>School ID:</strong> {school.schoolUniqueId}<br />
+                                      </div>
+                                    </li>
+                                  </ol>
+                                </div>
+                              ))}
+                            </>
+                          ) : (
+                            <p>No School Found</p>
+                          )}
                           <p>Time Added: {formatDate(zone.createdAt.toString())}</p>
+                          <hr />
+                          <hr />
                         </div>
-                        <hr />
-                      </>
                     ))}
                   </>
                 )}

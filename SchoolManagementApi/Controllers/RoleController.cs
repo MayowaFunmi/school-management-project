@@ -48,9 +48,9 @@ namespace SchoolManagementApi.Controllers
 		[HttpGet]
 		[Route("get-all-roles")]
 		[Authorize]
-		public GenericResponse GetAllRoles()
+		public async Task<GenericResponse> GetAllRoles()
 		{
-			var result = _roleService.GetRoleList();
+			var result = await _roleService.GetRoleList();
 			if (result.Count > 0)
 			{
 				return new GenericResponse()
@@ -73,9 +73,9 @@ namespace SchoolManagementApi.Controllers
 
 		[HttpGet]
 		[Route("get-selected-roles")]
-		public GenericResponse GetSelectedRoles()
+		public async Task<GenericResponse> GetSelectedRoles()
 		{
-			var result = _roleService.GetSelectedRoleList();
+			var result = await _roleService.GetSelectedRoleList();
 			if (result.Count > 0)
 			{
 				return new GenericResponse()

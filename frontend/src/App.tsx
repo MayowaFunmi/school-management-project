@@ -24,7 +24,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />}>
             <Route index element={<CheckUserStatus />} />
             <Route path="add-role-to-user" element={<UpdateUserRole />} />
-            <Route path='create-organization' element={<Organization />} />
+            <Route path='show-admin-organizations' element={<Organization />} />
             <Route path='show-all-organizations' element={<OrganizationsList />} />
             <Route path='/organization-details/:organizationId' element={<OrganizationDetails />} />
             <Route path='get-user-profile' element={<UserProfile />} />

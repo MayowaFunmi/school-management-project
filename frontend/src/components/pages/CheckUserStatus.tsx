@@ -8,10 +8,7 @@ import AddParentProfile from './users/AddParentProfile';
 const CheckUserStatus: React.FC = () => {
   const {
     isAuthenticated,
-    isAdminRoleExists,
     isNonTeachingStaffExists,
-    isOrganizationAdminExists,
-    isOwnerExists,
     isParentExists,
     isStudentExists,
     isTeachingStaffExists,
