@@ -87,6 +87,11 @@ namespace SchoolManagementApi.Data
         .HasForeignKey(ca => ca.StudentClassId)
         .OnDelete(DeleteBehavior.Cascade);
 
+      modelBuilder.Entity<School>()
+        .HasOne(s => s.Zone)
+        .WithMany(z => z.Schools)
+        .OnDelete(DeleteBehavior.NoAction);
+
       // modelBuilder.Entity<Department>()
       //   .HasOne(d => d.School)
       //   .WithMany(s => s.Departments)

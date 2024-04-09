@@ -1,15 +1,18 @@
 import React from 'react'
 import { AddZoneModalProps } from '../models/userModel'
 import Zones from '../components/admin/Zones'
+import './modals.css';
+import { useAppSelector } from '../hooks/useTypedSelector';
+import { toast } from 'react-toastify';
 
 const AddZoneModal: React.FC<AddZoneModalProps> = ({ isModalOpen, closeModal, org}) => {
   return (
     <>
       <div className={`modal ${isModalOpen ? 'show' : ''}`} tabIndex={-1} role="dialog" style={{ display: isModalOpen ? 'block' : 'none' }}>
-          <div className="modal-dialog" role="document">
+          <div className="modal-dialog custom-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Add New zone to {org.organizationName}</h5>
+                <h5 className="modal-title">Add New zone to {org.name}</h5>
                 <button type="button" className="close" onClick={closeModal} aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>

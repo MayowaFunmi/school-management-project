@@ -11,7 +11,9 @@ namespace SchoolManagementApi.Commands.Admin
     {
       public string? AdminId { get; set; }
       public string? OrganizationUniqueId { get; set; }
-      public string? ZoneName { get; set; }
+      public string? Name { get; set; }
+      public string? State { get; set; }
+      public List<string>? LocalGovtAreas { get; set; }
     }
 
     public class CreateZoneHandler(IZoneService zoneService) : IRequestHandler<CreateZoneCommand, GenericResponse>
@@ -33,7 +35,10 @@ namespace SchoolManagementApi.Commands.Admin
         var zone = new Models.Zone
         {
           OrganizationId = Guid.Parse(organizationId),
-          Name = request.ZoneName!,
+          Name = request.Name!,
+          AdminId = request.AdminId!,
+          State = request.State!,
+          LocalGovtAreas = request.LocalGovtAreas
         };
         var response = await _zoneService.CreateZone(zone);
         if (response != null)

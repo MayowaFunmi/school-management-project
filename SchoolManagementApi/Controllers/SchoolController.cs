@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Admin;
+using SchoolManagementApi.Queries.Admin;
 
 namespace SchoolManagementApi.Controllers
 {
@@ -120,6 +121,25 @@ namespace SchoolManagementApi.Controllers
         Message = "Classes in school retrieved successfully",
         Data = parents
       });
+    }
+
+    [HttpGet]
+    [Route("search-school-by-param/{searchParam}")]
+    [Authorize]
+    public async Task<IActionResult> GetSchoolFromSearch(string searchParam)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(searchParam))
+          return BadRequest("search parameter cannot be empty");
+        var response = await _mediator.Send(new SearchSchool.SearchSchoolQuery(searchParam));
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
     }
   }
 }

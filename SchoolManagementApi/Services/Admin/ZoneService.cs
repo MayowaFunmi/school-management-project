@@ -47,19 +47,17 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-        public Task<List<TeachingStaff>> GetAllTeachersInZone(string zoneId, int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<List<TeachingStaff>> GetAllTeachersInZone(string zoneId, int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<string> OrganizationExists(string organizationUniqueId, string adminId)
+    public async Task<string> OrganizationExists(string organizationUniqueId, string adminId)
     {
       try
       {
         var orgId = string.Empty;
         var organizationExists = await _context.Organizations
-          .Include(o => o.Admin)
-          .Include(o => o.Zones)
           .FirstOrDefaultAsync(x => x.OrganizationUniqueId == organizationUniqueId);
         if (organizationExists != null && organizationExists.AdminId == adminId)
         {

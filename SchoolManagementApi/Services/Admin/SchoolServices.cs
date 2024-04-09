@@ -164,23 +164,23 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-        public async Task<List<Parent>> GetSchoolParents(string schoolId)
-        {
-          try
-          {
-            return await _context.Parents
-            .Where(d => d.StudentSchoolId.ToString() == schoolId)
-            .ToListAsync();
-          }
-          catch (Exception ex)
-          {
-            _logger.LogError($"Error getting parents in schools - {ex.Message}");
-            WatchLogger.LogError(ex.ToString(), $"Error getting parents in schools - {ex.Message}");
-            throw;
-          }
-        }
+    public async Task<List<Parent>> GetSchoolParents(string schoolId)
+    {
+      try
+      {
+        return await _context.Parents
+        .Where(d => d.StudentSchoolId.ToString() == schoolId)
+        .ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting parents in schools - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting parents in schools - {ex.Message}");
+        throw;
+      }
+    }
 
-        public async Task<List<ClassArms>> GetStudentClassesBySchoolId(string schoolId)
+    public async Task<List<ClassArms>> GetStudentClassesBySchoolId(string schoolId)
     {
       try
       {
@@ -251,6 +251,27 @@ namespace SchoolManagementApi.Services.Admin
       {
         _logger.LogError($"Error checking if organization exists - {ex.Message}");
         WatchLogger.LogError(ex.ToString(), $"Error checking if organization exists - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<School>> SearchSchool(string searchString)
+    {
+      try
+      {
+        var searchParam = searchString.ToLower();
+        return await _context.Schools
+          .Include(s => s.Zone)
+          .Include(s => s.Departments)
+          .Include(s => s.StudentClasses)
+          .Where(s => s.Name.ToLower().Contains(searchParam) 
+            || s.Address.ToLower().Contains(searchParam) || s.LocalGovtArea.ToLower().Contains(searchParam))
+            .ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error searching for schools - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error searching for schools - {ex.Message}");
         throw;
       }
     }

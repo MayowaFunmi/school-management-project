@@ -42,7 +42,7 @@ namespace SchoolManagementApi.Queries.Admin
           }
           return new GenericResponse
           {
-            Status = HttpStatusCode.NotFound.ToString(),
+            Status = HttpStatusCode.OK.ToString(),
             Message = $"No school has been registered",
           };
         }

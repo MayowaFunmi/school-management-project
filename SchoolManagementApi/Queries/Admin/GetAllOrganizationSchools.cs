@@ -24,7 +24,9 @@ namespace SchoolManagementApi.Queries.Admin
         int totalPages = 1;
         if (request.Page != 0 || request.PageSize != 0)
           totalPages = (int)Math.Ceiling((double)totalSchoolCount / request.PageSize);
-          
+        
+        request.Page = Math.Min(Math.Max(request.Page, 1), totalPages);
+
         try
         {
           var schools = await _schoolServices.AllOrganizationScchools(request.OrganizationUniqueId!, request.Page, request.PageSize);
@@ -46,8 +48,9 @@ namespace SchoolManagementApi.Queries.Admin
           }
           return new GenericResponse
           {
-            Status = HttpStatusCode.NotFound.ToString(),
+            Status = HttpStatusCode.OK.ToString(),
             Message = $"No school found for organization with id {request.OrganizationUniqueId}",
+            Data = null
           };
         }
         catch (Exception ex)

@@ -21,5 +21,6 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<List<Department>> GetDepartmentsBySchoolId(string schoolId);
     Task<List<ClassArms>> GetStudentClassesBySchoolId(string schoolId);
     Task<List<Parent>> GetSchoolParents(string schoolId);
+    Task<List<School>> SearchSchool(string searchString);
   }
 }

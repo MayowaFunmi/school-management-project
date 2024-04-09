@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SchoolManagementApi.Models
 {
@@ -13,6 +14,8 @@ namespace SchoolManagementApi.Models
     [ForeignKey("ZoneId")]
     [Required]
     public Guid ZoneId { get; set; }
+    [JsonIgnore]
+    public virtual Zone Zone { get; set; }
     public string Name { get; set; }
     public string Address { get; set; }
     public string LocalGovtArea { get; set; }

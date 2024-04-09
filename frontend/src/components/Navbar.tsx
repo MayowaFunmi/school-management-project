@@ -6,13 +6,12 @@ import { logoutUser } from '../features/userSlice';
 import SuperAdminDropdown from './admin/SuperAdminDropdown';
 import AdminDropdown from './admin/AdminDropdown';
 import { clearState } from '../utils/clearState';
-import OrganizationAdmin from './admin/OrganizationAdmin';
 import OwnerDropdown from './admin/OwnerDropdown';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isAuthenticated, isSuperAdminRoleExists, isAdminRoleExists, isOrganizationAdminExists, isOwnerExists } = useAuth();
+  const { isAuthenticated, isSuperAdminRoleExists, isOrganizationAdminExists, isOwnerExists } = useAuth();
 
   const logOutUser = async () => {
     try {

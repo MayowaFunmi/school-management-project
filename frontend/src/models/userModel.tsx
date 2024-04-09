@@ -59,11 +59,22 @@ export interface IZone {
   orgZonesMsg: string
 }
 
+export interface PaginationResponse {
+  schools: School[]
+  totalPages: number
+  currentPage: number
+  pagesLeft: number
+}
+
 export interface ISchool {
   allSchools: School[]
   schMsg: string
   allSchoolIds: School[]
   schIdMsg: string
+  pageSchools: PaginationResponse
+  currentPage: number
+  totalPages: number
+  status: string
 }
 
 export interface ISubject {
@@ -128,6 +139,7 @@ export interface Data {
 	allOrgsMsg: string
 	zone: Zone
 	zoneMsg: string
+  zoneStatus: string
 }
 
 export interface OrganizationZonesModalProps {
@@ -141,7 +153,7 @@ export interface OrganizationZonesModalProps {
 export interface AddZoneModalProps {
   isModalOpen: boolean;
   closeModal: React.MouseEventHandler;
-  org: Organization;
+  org: OrgData;
 }
 
 export interface RoleData {
@@ -154,9 +166,16 @@ export interface Role {
     data: RoleData[]
 }
 export interface Values { uniqueId: string, roleName: string }
-export interface SchoolSearch { zoneId: string, page: number, pageSize: number }
+export interface SchoolSearch { organizationId: string, page: number, pageSize?: number }
 export interface Values2 { uniqueId: string, roleName2: string }
-export interface ZoneValues { organizationUniqueId: string, zoneName: string }
+export interface ZoneValues {
+  adminId: string
+  organizationUniqueId: string
+  name: string
+  state: string
+  localGovtAreas: string[]
+}
+
 export interface TSProfile {
   userId: string
   user: User

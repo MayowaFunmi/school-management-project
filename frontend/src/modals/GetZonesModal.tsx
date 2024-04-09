@@ -1,5 +1,6 @@
 import React from 'react'
-import { Organization, OrganizationZonesModalProps, Zone } from '../models/userModel';
+import { OrganizationZonesModalProps } from '../models/userModel';
+import './modals.css';
 
 const GetZonesModal: React.FC<OrganizationZonesModalProps> = ({ isModalOpen, closeModal, allZones, zoneMsg, org }) => {
 
@@ -10,7 +11,7 @@ const GetZonesModal: React.FC<OrganizationZonesModalProps> = ({ isModalOpen, clo
   return (
     <>
       <div className={`modal ${isModalOpen ? 'show' : ''}`} tabIndex={-1} role="dialog" style={{ display: isModalOpen ? 'block' : 'none' }}>
-          <div className="modal-dialog" role="document">
+          <div className="modal-dialog custom-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Organization Zones For {org.name}</h5>
@@ -26,13 +27,13 @@ const GetZonesModal: React.FC<OrganizationZonesModalProps> = ({ isModalOpen, clo
                     <hr />
                     {allZones?.map((zone) => (
                         <div key={zone.zoneId}>
-                          <p>Zone Name: {zone.name}</p>
+                          <h3><strong> Zone Name: {zone.name}</strong></h3>
                           <p>Schools: </p>
                           {zone.schools.length > 0 ? (
                             <>
-                              {zone.schools?.map((school) => (
+                              {zone.schools?.map((school, index) => (
                                 <div key={school.schoolId}>
-                                  <ol>
+                                  <ol start={index + 1}>
                                     <li>
                                       <div>
                                         <strong>School Name:</strong> {school.name}<br />

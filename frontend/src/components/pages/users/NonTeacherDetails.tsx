@@ -143,9 +143,9 @@ const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
           {schoolsList.length > 0 ? (
             <div>
             {
-              schoolsList?.map((school) => (
+              schoolsList?.map((school, index) => (
                 <div key={school.schoolId}>
-                  <ol>
+                  <ol start={index + 1}>
                     <li>
                       <div>
                         <strong>School Name:</strong> {school.name}<br />

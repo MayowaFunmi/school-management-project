@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ISchool } from "../models/userModel";
+import { ISchool, SchoolSearch } from "../models/userModel";
 import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 
@@ -7,7 +7,16 @@ const initialState: ISchool= {
 	allSchools: [],
 	schMsg: "",
 	allSchoolIds: [],
-	schIdMsg: ""
+	schIdMsg: "",
+	currentPage: 0,
+	totalPages: 0,
+	status: "",
+	pageSchools: {
+		schools: [],
+		totalPages: 0,
+		currentPage: 0,
+		pagesLeft: 0
+	}
 }
 
 export const getSchoolsInZone = createAsyncThunk(
@@ -17,6 +26,22 @@ export const getSchoolsInZone = createAsyncThunk(
 			const response = await axios.get(`${baseUrl}/api/admin/get-schools-in-zone/${data}`, getAxiosConfig())
 			return response.data;
 		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getOrganizationSchools = createAsyncThunk(
+	'school/getOrganizationSchools',
+	async (searchData: SchoolSearch, thunkApi) => {
+		try {
+      const { organizationId, page, pageSize } = searchData;
+      const response = await axios.get(`${baseUrl}/api/admin/get-schools-in-organization/${organizationId}`, {
+        params: { page, pageSize },
+        ...getAxiosConfig()
+      });
+      return response.data;
+    }  catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
 		}
 	}
@@ -83,6 +108,33 @@ const schoolSlice = createSlice({
 					const schData = action.payload;
 					return {
 						...state, allSchoolIds: schData.data, schIdMsg: "rejected"
+					}
+				}
+			})
+
+		builder
+			.addCase(getOrganizationSchools.pending, (state) => {
+				return { ...state, staus: "pending" }
+			})
+			.addCase(getOrganizationSchools.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload.data !== null) {
+					const schData = action.payload.data;
+					state.pageSchools = schData;
+					state.status = "success";
+					if (schData !== null) {
+						state.currentPage = schData.currentPage;
+						state.totalPages = schData.totalPages;
+					}
+					// return {
+					// 	...state, pageSchools: schData, status: "success", currentPage: schData.currentPage, totalPages: schData.totalPages
+					// }
+				}
+			})
+			.addCase(getOrganizationSchools.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload.status === "notFound") {
+					const schData = action.payload;
+					return {
+						...state, pageSchools: schData, status: "rejected", currentPage: 0, totalPages: 0
 					}
 				}
 			})

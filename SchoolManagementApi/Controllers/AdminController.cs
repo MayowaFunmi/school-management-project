@@ -124,14 +124,14 @@ namespace SchoolManagementApi.Controllers
     {
       try
       {
-        if (string.IsNullOrEmpty(request.OrganizationUniqueId) && string.IsNullOrEmpty(request.ZoneName))
+        if (string.IsNullOrEmpty(request.OrganizationUniqueId) && string.IsNullOrEmpty(request.Name) && string.IsNullOrEmpty(request.AdminId) && string.IsNullOrEmpty(request.State))
         {
-            return BadRequest("Zone Name and Organization Unique Id cannot be empty");
+          return BadRequest("Some fields cannot be empty");
         }
 
         if (string.IsNullOrEmpty(CurrentUserId))
         {
-            return Unauthorized("You are not an admin");
+          return Unauthorized("You are not an admin");
         }
         request.AdminId = CurrentUserId!;
         var response = await _mediator.Send(request);
@@ -279,24 +279,26 @@ namespace SchoolManagementApi.Controllers
     [HttpGet]
     [Route("get-schools-in-organization/{organizationUniqueId}")]
     [Authorize]
-    public async Task<IActionResult> GetSchoolsInOrganization(string organizationUniqueId)
+    public async Task<IActionResult> GetSchoolsInOrganization(string organizationUniqueId, [FromQuery] GetAllOrganizationSchools.GetAllOrganizationSchoolsQuery request)
     {
-      // bool pageSpecified = request.Page != default;
-      // bool pageSizeSpecified = request.PageSize != default;
-
       if (string.IsNullOrEmpty(organizationUniqueId))
         return BadRequest("Organization Unique Id must be specified.");
 
+      // Check if both page and pageSize are specified
+      if (request.Page == default || request.PageSize == default)
+        return BadRequest("Both Page and PageSize must be specified.");
+
+      if (request.Page <= 0 || request.PageSize <= 0)
+        return BadRequest("Page and PageSize must be greater than zero.");
+
+      // Set the organizationId in the request object
+      request.OrganizationUniqueId = organizationUniqueId;
       try
       {
-        var request = new GetAllOrganizationSchools.GetAllOrganizationSchoolsQuery
-        {
-          OrganizationUniqueId = organizationUniqueId
-        };
-      
         var response = await _mediator.Send(request);
         return response.Status == HttpStatusCode.OK.ToString()
-          ? Ok(response) : BadRequest(response);
+          ? Ok(response)
+          : BadRequest(response);
       }
       catch (Exception ex)
       {

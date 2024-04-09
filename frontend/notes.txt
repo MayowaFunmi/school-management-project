@@ -1,0 +1,3 @@
+in the organization details page,
+> display all schools in the organization
+> implement search for school, the result to clear all the schools and replaced with the search result

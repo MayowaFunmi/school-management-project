@@ -41,6 +41,7 @@ const initialState: Data = {
 		localGovtArea: []
 	},
 	zoneMsg: "",
+	zoneStatus: ""
 };
 
 export const getUserDetails = createAsyncThunk(
@@ -264,13 +265,13 @@ const adminSlice = createSlice({
 
 		builder
 			.addCase(createZone.pending, (state) => {
-				return { ...state, zoneMsg: "pending" }
+				return { ...state, zoneStatus: "pending" }
 			})
 			.addCase(createZone.fulfilled, (state, action: PayloadAction<any>) => {
 				if (action.payload) {
 					const zoneData = action.payload;
 					return {
-						...state, zone: zoneData.data, zoneMsg: zoneData.message
+						...state, zone: zoneData.data, zoneMsg: zoneData.message, zoneStatus: "success"
 					}
 				}
 			})
@@ -278,7 +279,7 @@ const adminSlice = createSlice({
 				if (action.payload) {
 					const zoneData = action.payload;
 					return {
-						...state, zone: zoneData.data, zoneMsg: zoneData.message
+						...state, zone: zoneData.data, zoneMsg: zoneData.message, zoneStatus: "rejected"
 					}
 				}
 			})
