@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAppSelector, useAppDispatch } from "../../hooks/useTypedSelector";
-import { addRoleToUser, getUserDetails, removeRoleFromUser } from '../../features/adminSlice';
-import Spinner from '../../spinner/Spinner';
-import { Users } from '../../models/userModel';
+import { addRoleToUser, removeRoleFromUser } from '../../features/adminSlice';
+//import Spinner from '../../spinner/Spinner';
+import { UserDetails, UserWithRoles, Users } from '../../models/userModel';
+import { getUserDetails } from '../../features/userSlice';
 
 const UpdateUserRole: React.FC = () => {
 
   const { isAuthenticated, isSuperAdminRoleExists, roles } = useAuth();
   const [uniqueId, setUniqueid] = useState('');
-  const [userDetails, setUserDetails] = useState<Users | undefined>(undefined);
+  const [userDetails, setUserDetails] = useState<UserWithRoles | null>(null);
   const [userId, setUserId] = useState("");
   const [roleName, setRoleName] = useState("");
   const [userId2, setUserId2] = useState("");
@@ -19,22 +20,26 @@ const UpdateUserRole: React.FC = () => {
 
   const notifyError = (msg: string) => toast.error(msg);
   const notifySuccess = (msg: string) => toast.success(msg);
+  const navigate = useNavigate()
 
   const dispatch = useAppDispatch();
-  const { loading, data, status, roleMsg } = useAppSelector((state) => state.admin);
+  //const { loading, data, status, roleMsg } = useAppSelector((state) => state.admin);
+  const { userRoleStatus, userWithRoles } = useAppSelector((state) => state.user)
+  const { roleMsg } = useAppSelector((state) => state.admin)
 
   useEffect(() => {
-    if (!loading) {
-      setUserDetails(data);
+  if (!isAuthenticated && !isSuperAdminRoleExists)
+    navigate('/')
+  }, [isAuthenticated, isSuperAdminRoleExists, navigate])
+
+  useEffect(() => {
+    if (userRoleStatus === "success") {
+      setUserDetails(userWithRoles);
     }
     if (roleMsg) {
       notifySuccess(roleMsg)
     }
-  }, [data, loading, roleMsg])
-
-  if (!isAuthenticated && !isSuperAdminRoleExists) {
-    return <Navigate to="/" />;
-  }
+  }, [roleMsg, userRoleStatus, userWithRoles])
 
   const handleGetUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +48,8 @@ const UpdateUserRole: React.FC = () => {
       notifyError("Unique ID of user cannot be empty");
       return;
     }
-    await dispatch(getUserDetails(uniqueId));
+    const userData: UserDetails = { uniqueId, roleName: "" };
+    await dispatch(getUserDetails(userData));
   };
 
   const handleUpdateUserRoles = async (e: React.FormEvent) => {
@@ -67,7 +73,6 @@ const UpdateUserRole: React.FC = () => {
   return (
     <>
       <div className="container">
-		    <Spinner loading={loading} />
         <form onSubmit={handleGetUser}>
           <div className="form-floating mb-3">
             <input
@@ -85,15 +90,15 @@ const UpdateUserRole: React.FC = () => {
           </div>
 
           <div className="col-12">
-            {status === "" && <button type='submit' className="btn btn-primary">Get User Details</button>}
-            {status === "pending" && <button type='submit' className="btn btn-primary" disabled>Please wait ...</button>}
-            {(status === "success" || status === "rejected") && null}
+            {userRoleStatus === "" && <button type='submit' className="btn btn-primary">Get User Details</button>}
+            {userRoleStatus === "pending" && <button type='submit' className="btn btn-primary" disabled>Please wait ...</button>}
+            {(userRoleStatus === "success" || userRoleStatus === "rejected") && null}
           </div>
         </form>
 
         {/* user data */}
         <h2>User Details</h2>
-        {userDetails ? (
+        {userDetails?.user ? (
           <>
             <p>Id: {userDetails.user.id}</p>
             <p>Unique Id: {userDetails.user.uniqueId}</p>
@@ -106,13 +111,13 @@ const UpdateUserRole: React.FC = () => {
             <p>Roles:</p>
             <ul>
               {userDetails.userRoles.map((role, index) => (
-                <li key={index}>{role.name}</li>
+                <li key={index}>{role}</li>
               ))}
             </ul>
           </>
         ) : null}
 
-        {status === "success" && 
+        {userRoleStatus === "success" && 
           <>
             <div className='row'>
               <div className='col'>

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using SchoolManagementApi.Models.UserModels;
 
 namespace SchoolManagementApi.Models
 {
@@ -8,9 +9,11 @@ namespace SchoolManagementApi.Models
   {
     [Key]
     public Guid SchoolId { get; set; }
+    [ForeignKey("AdminId")]
+    public string? AdminId { get; set; }
+    public ApplicationUser Admin { get; set; }
     public string OrganizationUniqueId { get; set; }
     public string SchoolUniqueId { get; set; }
-
     [ForeignKey("ZoneId")]
     [Required]
     public Guid ZoneId { get; set; }
@@ -18,6 +21,7 @@ namespace SchoolManagementApi.Models
     public virtual Zone Zone { get; set; }
     public string Name { get; set; }
     public string Address { get; set; }
+    public string? State { get; set; }
     public string LocalGovtArea { get; set; }
     public List<Department> Departments { get; set; }
     public List<StudentClass> StudentClasses { get; set; }

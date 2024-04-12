@@ -62,7 +62,20 @@ const initialState: Response = {
       name: "",
       address: "",
       localGovtArea: "",
-      createdAt: ""
+      createdAt: "",
+      adminId: "",
+      admin: {
+        id: "",
+        userName: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        percentageCompleted: 0,
+        uniqueId: "",
+        createdAt: ""
+      },
+      state: ""
     },
     currentSubject: {
       subjectName: ""
@@ -119,7 +132,20 @@ const initialState: Response = {
       name: "",
       address: "",
       localGovtArea: "",
-      createdAt: ""
+      createdAt: "",
+      adminId: "",
+      admin: {
+        id: "",
+        userName: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        percentageCompleted: 0,
+        uniqueId: "",
+        createdAt: ""
+      },
+      state: ""
     },
     previousSchoolsIds: [],
     createdDate: "",

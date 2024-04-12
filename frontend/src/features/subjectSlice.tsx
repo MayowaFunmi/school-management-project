@@ -40,7 +40,10 @@ const subjectSlice = createSlice({
   name: "subject",
   initialState,
   reducers: {
-
+		clearSubjectsByIds: (state) => {
+			state.allSubjectsIds = []
+			state.subIdMsg = ""
+		}
   },
   extraReducers: (builder) => {
     builder
@@ -87,4 +90,5 @@ const subjectSlice = createSlice({
   }
 })
 
+export const { clearSubjectsByIds } = subjectSlice.actions;
 export default subjectSlice.reducer;

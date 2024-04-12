@@ -13,6 +13,7 @@ import OrganizationsList from './components/admin/OrganizationsList';
 import OrganizationDetails from './components/admin/OrganizationDetails';
 import UserProfile from './components/pages/users/UserProfile';
 import CheckUserStatus from './components/pages/CheckUserStatus';
+import SchoolHomePage from './components/pages/school/SchoolHomePage';
 
 const App: React.FC = () => {
 
@@ -27,6 +28,7 @@ const App: React.FC = () => {
             <Route path='show-admin-organizations' element={<Organization />} />
             <Route path='show-all-organizations' element={<OrganizationsList />} />
             <Route path='/organization-details/:organizationId' element={<OrganizationDetails />} />
+            <Route path='/school-home-page/:schoolId' element={<SchoolHomePage />} />
             <Route path='get-user-profile' element={<UserProfile />} />
           </Route>
           <Route path='/signup' element={<SignUp />} />

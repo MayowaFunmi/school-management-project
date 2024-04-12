@@ -44,18 +44,18 @@ const initialState: Data = {
 	zoneStatus: ""
 };
 
-export const getUserDetails = createAsyncThunk(
-    'admin/getUserDetails',
-    async (data: string, thunkApi) => {
-      try {
-        const endpoint = `${baseUrl}/api/admin/get-user-by-unique-id/${data}`;
-        const response = await axios.get(endpoint, getAxiosConfig());
-        return response.data;
-      } catch (error: any) {
-        return thunkApi.rejectWithValue(error.message);
-      }
-    }
-);
+// export const getUserDetails = createAsyncThunk(
+//     'admin/getUserDetails',
+//     async (data: string, thunkApi) => {
+//       try {
+//         const endpoint = `${baseUrl}/api/admin/get-user-by-unique-id/${data}`;
+//         const response = await axios.get(endpoint, getAxiosConfig());
+//         return response.data;
+//       } catch (error: any) {
+//         return thunkApi.rejectWithValue(error.message);
+//       }
+//     }
+// );
 
 export const addRoleToUser = createAsyncThunk(
 	'admin/addRoleToUser',
@@ -138,28 +138,28 @@ const adminSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		builder
-			.addCase(getUserDetails.pending, (state) => {
-				return { ...state, loading: true, status: "pending" }
-			})
-			.addCase(getUserDetails.fulfilled, (state, action: PayloadAction<any>) => {
-				if (action.payload) {
-					const dataRes = action.payload;
+		// builder
+		// 	.addCase(getUserDetails.pending, (state) => {
+		// 		return { ...state, loading: true, status: "pending" }
+		// 	})
+		// 	.addCase(getUserDetails.fulfilled, (state, action: PayloadAction<any>) => {
+		// 		if (action.payload) {
+		// 			const dataRes = action.payload;
 
-					return {
-						...state, loading: false, data: dataRes.data, status: "success"
-					}
-				}
-			})
-			.addCase(getUserDetails.rejected, (state, action: PayloadAction<any>) => {
-				if (action.payload) {
-					const dataRes = action.payload;
+		// 			return {
+		// 				...state, loading: false, data: dataRes.data, status: "success"
+		// 			}
+		// 		}
+		// 	})
+		// 	.addCase(getUserDetails.rejected, (state, action: PayloadAction<any>) => {
+		// 		if (action.payload) {
+		// 			const dataRes = action.payload;
 
-					return {
-						...state, loading: false, message: dataRes.message, status: "rejected"
-					}
-				}
-			})
+		// 			return {
+		// 				...state, loading: false, message: dataRes.message, status: "rejected"
+		// 			}
+		// 		}
+		// 	})
 		builder
 			.addCase(addRoleToUser.pending, (state) => {
 				return { ...state, }

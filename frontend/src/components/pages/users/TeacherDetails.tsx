@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { TeachingStaff } from '../../../models/staffModel'
 import { formatDateOfBirth } from '../../../utils/formatDate';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { getSchoolsByIds } from '../../../features/schoolSlice';
+import { getSchoolsByIds, resetSchoolsById } from '../../../features/schoolSlice';
 import { School, Subject } from '../../../models/userModel';
-import { getSubjectsByIds } from '../../../features/subjectSlice';
+import { clearSubjectsByIds, getSubjectsByIds } from '../../../features/subjectSlice';
 import ProfileImage from '../../images/ProfileImage';
-import { uploadProfilePicture } from '../../../features/uploadSlice';
+import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
 import { toast } from 'react-toastify';
+import store from '../../../store/store';
 
 interface TeacherDetailsProps {
   data: TeachingStaff;
@@ -52,6 +53,12 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
       dispatch(uploadProfilePicture(formData));
     }
   }
+
+  useEffect(() => {
+    store.dispatch(clearUploadStatus());
+    store.dispatch(resetSchoolsById());
+    store.dispatch(clearSubjectsByIds());
+  }, [])
 
   useEffect(() => {
     if (data.previousSchoolsIds.length > 0) {

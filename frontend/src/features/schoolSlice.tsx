@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ISchool, SchoolSearch } from "../models/userModel";
+import { ISchool, SchoolSearch, UserSearch } from "../models/userModel";
 import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 
@@ -16,7 +16,40 @@ const initialState: ISchool= {
 		totalPages: 0,
 		currentPage: 0,
 		pagesLeft: 0
-	}
+	},
+	pageUsers: {
+		users: [],
+		totalPages: 0,
+		currentPage: 0,
+		pagesLeft: 0
+	},
+	userCurrentPage: 0,
+	userTotalPages: 0,
+	userStatus: "",
+	organizationSChool: {
+		schoolId: "",
+		adminId: "",
+		admin: {
+			id: "",
+			userName: "",
+			firstName: "",
+			lastName: "",
+			email: "",
+			phoneNumber: "",
+			percentageCompleted: 0,
+			uniqueId: "",
+			createdAt: ""
+		},
+		organizationUniqueId: "",
+		schoolUniqueId: "",
+		zoneId: "",
+		name: "",
+		address: "",
+		state: "",
+		localGovtArea: "",
+		createdAt: ""
+	},
+	orgSchMsg: ""
 }
 
 export const getSchoolsInZone = createAsyncThunk(
@@ -47,6 +80,23 @@ export const getOrganizationSchools = createAsyncThunk(
 	}
 )
 
+export const getOrganizationUsersByRole = createAsyncThunk(
+	'school/getOrganizationUsersByRole',
+	async (searchData: UserSearch, thunkApi) => {
+		try {
+      const { organizationId, roleName, page, userPageSize } = searchData;
+			const pageSize = userPageSize;
+      const response = await axios.get(`${baseUrl}/api/admin/get-organization-users-by-role/${organizationId}`, {
+        params: { roleName, page, pageSize },
+        ...getAxiosConfig()
+      });
+      return response.data;
+    }  catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
 export const getSchoolsByIds = createAsyncThunk(
 	'school/getSchoolsByIds',
 	async (schoolIds: string[], thunkApi) => {
@@ -61,6 +111,18 @@ export const getSchoolsByIds = createAsyncThunk(
 	}
 )
 
+export const getSchoolDetails = createAsyncThunk(
+	'school/getSchoolDetails',
+	async (schoolId: string, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/school/get-school-by-id/${schoolId}`, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
 const schoolSlice = createSlice({
   name: "school",
   initialState,
@@ -68,6 +130,36 @@ const schoolSlice = createSlice({
     clearSchoolData: (state) => {
 			return { ...initialState };
 		},
+		resetOranizationSchool: (state) => {
+			state.currentPage = 0;
+			state.totalPages = 0;
+			state.status ="";
+			state.pageSchools = {
+				schools: [],
+				totalPages: 0,
+				currentPage: 0,
+				pagesLeft: 0
+			}
+		},
+		resetOranizationUsers: (state) => {
+			state.userCurrentPage = 0;
+			state.userTotalPages = 0;
+			state.userStatus ="";
+			state.pageUsers = {
+				users: [],
+				totalPages: 0,
+				currentPage: 0,
+				pagesLeft: 0
+			}
+		},
+		resetSchoolsById: (state) => {
+			state.allSchoolIds = []
+			state.schIdMsg = ""
+		},
+		resetOrganizationSchool: (state) => {
+			state.organizationSChool = null
+			state.orgSchMsg = ""
+		}
   },
   extraReducers: (builder) => {
     builder
@@ -125,9 +217,6 @@ const schoolSlice = createSlice({
 						state.currentPage = schData.currentPage;
 						state.totalPages = schData.totalPages;
 					}
-					// return {
-					// 	...state, pageSchools: schData, status: "success", currentPage: schData.currentPage, totalPages: schData.totalPages
-					// }
 				}
 			})
 			.addCase(getOrganizationSchools.rejected, (state, action: PayloadAction<any>) => {
@@ -138,8 +227,53 @@ const schoolSlice = createSlice({
 					}
 				}
 			})
+
+		builder
+			.addCase(getOrganizationUsersByRole.pending, (state) => {
+				return { ...state, userStatus: "pending" }
+			})
+			.addCase(getOrganizationUsersByRole.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload.data !== null) {
+					const userData = action.payload.data;
+					state.pageUsers = userData;
+					state.userStatus = "success";
+					if (userData !== null) {
+						state.userCurrentPage = userData.currentPage;
+						state.userTotalPages = userData.totalPages;
+					}
+				}
+			})
+			.addCase(getOrganizationUsersByRole.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload.status === "notFound") {
+					const schData = action.payload;
+					return {
+						...state, pageUsers: schData, userStatus: "rejected", userCurrentPage: 0, userTotalPages: 0
+					}
+				}
+			})
+
+		builder
+			.addCase(getSchoolDetails.pending, (state) => {
+				return { ...state, orgSchMsg: "pending" }
+			})
+			.addCase(getSchoolDetails.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload !== null) {
+					const schData = action.payload;
+					state.organizationSChool = schData.data
+					state.orgSchMsg = "success"
+				}
+			})
+			.addCase(getSchoolDetails.rejected, (state, action: PayloadAction<any>) => {
+				state.orgSchMsg = "rejected"
+			})
   }
 })
 
-export const { clearSchoolData } = schoolSlice.actions;
+export const { 
+	clearSchoolData,
+	resetOranizationSchool,
+	resetOranizationUsers,
+	resetSchoolsById,
+	resetOrganizationSchool 
+} = schoolSlice.actions;
 export default schoolSlice.reducer;

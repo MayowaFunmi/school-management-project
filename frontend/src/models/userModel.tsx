@@ -1,3 +1,7 @@
+import { IParent } from "./parentModels";
+import { NonTeachingStaff, TeachingStaff } from "./staffModel";
+import { IStudent } from "./studentModel";
+
 export type UserLogin = {
     message: string;
     data: string
@@ -38,11 +42,14 @@ export interface Zone {
 
 export interface School {
   schoolId: string
+  adminId: string
+  admin: User
   organizationUniqueId: string
   schoolUniqueId: string
   zoneId: string
   name: string
   address: string
+  state: string
   localGovtArea: string
   createdAt: string
 }
@@ -66,6 +73,13 @@ export interface PaginationResponse {
   pagesLeft: number
 }
 
+export interface UserPaginationResponse {
+  users: User[]
+  totalPages: number
+  currentPage: number
+  pagesLeft: number
+}
+
 export interface ISchool {
   allSchools: School[]
   schMsg: string
@@ -75,6 +89,12 @@ export interface ISchool {
   currentPage: number
   totalPages: number
   status: string
+  pageUsers: UserPaginationResponse
+  userCurrentPage: number
+  userTotalPages: number
+  userStatus: string
+  organizationSChool: School | null
+  orgSchMsg: string
 }
 
 export interface ISubject {
@@ -88,17 +108,7 @@ export interface IOrgSchools {
   allOrgSch: School[]
   orgSchs: string
 }
-// export interface Users {
-// 	id: string
-// 	username: string
-// 	firstName: string
-// 	lastName: string
-// 	email: string
-// 	phoneNumber: string
-// 	roles: { roleName: string }[]
-// 	uniqueId: string
-// 	createdAt: string
-// }
+
 export interface User 
   {
     id: string
@@ -150,6 +160,13 @@ export interface OrganizationZonesModalProps {
   org: OrgData;
 }
 
+export interface UserDetailsProps {
+  isModalOpen: boolean;
+  closeModal: React.MouseEventHandler;
+  user: UserWithRoles | null
+  roleName: string
+}
+
 export interface AddZoneModalProps {
   isModalOpen: boolean;
   closeModal: React.MouseEventHandler;
@@ -167,6 +184,7 @@ export interface Role {
 }
 export interface Values { uniqueId: string, roleName: string }
 export interface SchoolSearch { organizationId: string, page: number, pageSize?: number }
+export interface UserSearch { organizationId: string, roleName: string, page: number, userPageSize?: number }
 export interface Values2 { uniqueId: string, roleName2: string }
 export interface ZoneValues {
   adminId: string
@@ -295,4 +313,29 @@ export interface ITeacherProfile {
   staffMsg: string
   msg: string
   message: string
+}
+
+export interface SchoolData {
+  adminId: string
+  organizationUniqueId: string
+  zoneId: string
+  name: string
+  address: string
+  state: string
+  localGovtArea: string
+}
+
+export interface UserWithRoles {
+  user: User
+  userRoles: string[]
+  teacherProfile: TeachingStaff
+  nonTeacherProfile: NonTeachingStaff
+  adminTeacher: TeachingStaff
+  adminNonTeacher: NonTeachingStaff
+  parentProfile: IParent
+  studentProfile: IStudent
+}
+
+export interface UserDetails {
+  uniqueId: string, roleName: string | ""
 }

@@ -20,7 +20,6 @@ namespace SchoolManagementApi.Services.Admin
       {
         var organizations = await _context.Organizations
           .Include(o => o.Admin)
-          .ThenInclude(a => a.Roles)
           .Include(o => o.Zones)
           .ToListAsync();
 

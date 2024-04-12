@@ -49,7 +49,7 @@ namespace SchoolManagementApi.Services.RoleServices
 
     public async Task<List<IdentityRole>> GetSelectedRoleList()
     {
-      List<string> outRole = ["TeachingStaff", "NonTeachingStaff", "Parent", "Student"];
+      List<string> outRole = ["OrganizationAdmin, Admin, TeachingStaff", "NonTeachingStaff", "Parent", "Student"];
       List<IdentityRole> roles = [];
       foreach (var role in _roleManager.Roles)
       {

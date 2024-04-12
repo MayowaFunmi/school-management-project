@@ -27,7 +27,11 @@ export const uploadProfilePicture = createAsyncThunk(
 const uploadSlice = createSlice({
   name: 'upload',
   initialState,
-  reducers: {},
+  reducers: {
+    clearUploadStatus: (state) => {
+      return { ...state }
+    } 
+  },
   extraReducers: (builder) => {
     builder
       .addCase(uploadProfilePicture.pending, (state) => {
@@ -42,4 +46,5 @@ const uploadSlice = createSlice({
   },
 });
 
+export const { clearUploadStatus } = uploadSlice.actions;
 export default uploadSlice.reducer;

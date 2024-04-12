@@ -29,10 +29,6 @@ namespace SchoolManagementApi.Data
 
       modelBuilder.Entity<IdentityUserRole<string>>().HasKey(ur => new { ur.UserId, ur.RoleId });
 
-      modelBuilder.Entity<ApplicationUser>()
-        .HasMany(u => u.Roles)
-        .WithMany();
-
       modelBuilder.Entity<Organization>()
         .HasIndex(o => o.OrganizationUniqueId)
         .IsUnique();

@@ -40,7 +40,20 @@ const initialState: StudentState = {
       name: "",
       address: "",
       localGovtArea: "",
-      createdAt: ""
+      createdAt: "",
+      adminId: "",
+      admin: {
+        id: "",
+        userName: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        percentageCompleted: 0,
+        uniqueId: "",
+        createdAt: ""
+      },
+      state: ""
     },
     departmentId: "",
     department: {
@@ -86,7 +99,20 @@ const initialState: StudentState = {
         name: "",
         address: "",
         localGovtArea: "",
-        createdAt: ""
+        createdAt: "",
+        adminId: "",
+        admin: {
+          id: "",
+          userName: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          phoneNumber: "",
+          percentageCompleted: 0,
+          uniqueId: "",
+          createdAt: ""
+        },
+        state: ""
       },
       title: "",
       gender: "",

@@ -47,8 +47,10 @@ namespace SchoolManagementApi.Services.Admin
           .Where(s => s.OrganizationUniqueId == OrganizationUniqueId)
           .Include(s => s.Departments)
           .Include(s => s.StudentClasses)
+          .Include(s => s.Zone)
           .Skip((page - 1) * pageSize)
           .Take(pageSize)
+          .OrderBy(s => s.Name)
           .ToListAsync();
         }
         return schools;
@@ -75,6 +77,7 @@ namespace SchoolManagementApi.Services.Admin
           .Include(s => s.StudentClasses)
           .Skip((page - 1) * pageSize)
           .Take(pageSize)
+          .OrderBy(s => s.Name)
           .ToListAsync();
         return schools;
       }
@@ -115,6 +118,7 @@ namespace SchoolManagementApi.Services.Admin
           .Include(s => s.StudentClasses)
           .Skip((page - 1) * pageSize)
           .Take(pageSize)
+          .OrderBy(s => s.Name)
           .ToListAsync();
         }
         return schools;
@@ -148,11 +152,34 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
+    public async Task<School> GetSchoolById(string schoolId)
+    {
+      try
+      {
+        var school = await _context.Schools
+          .Include(s => s.Admin)
+          .Include(s => s.Zone)
+          .Include(s => s.Departments)
+          .Include(s => s.StudentClasses)
+          .ThenInclude(c => c.ClassArms)
+          .Include(s => s.Subjects)
+          .FirstOrDefaultAsync(s => s.SchoolId.ToString() == schoolId);
+        return school;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting school - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting school - {ex.Message}");
+        throw;
+      }
+    }
+
     public async Task<List<School>> GetSchoolByIdList(List<string> schoolIds)
     {
       try
       {
         return await _context.Schools
+          .OrderBy(s => s.Name)
         .Where(s => schoolIds.Contains(s.SchoolId.ToString()))
         .ToListAsync();
       }
@@ -265,8 +292,8 @@ namespace SchoolManagementApi.Services.Admin
           .Include(s => s.Departments)
           .Include(s => s.StudentClasses)
           .Where(s => s.Name.ToLower().Contains(searchParam) 
-            || s.Address.ToLower().Contains(searchParam) || s.LocalGovtArea.ToLower().Contains(searchParam))
-            .ToListAsync();
+            || s.Address.ToLower().Contains(searchParam) || s.LocalGovtArea.ToLower().Contains(searchParam) || s.State.ToLower().Contains(searchParam))
+          .ToListAsync();
       }
       catch (Exception ex)
       {

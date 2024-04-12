@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementApi.Data;
 using SchoolManagementApi.DTOs;
-using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.Roles;
 using SchoolManagementApi.Models.UserModels;
 
@@ -247,7 +246,7 @@ namespace SchoolManagementApi.Controllers
 				return new GenericResponse()
 				{
 						Status = HttpStatusCode.BadRequest.ToString(),
-						Message = "User not found",
+						Message = "Role not found",
 						Data = null
 				};
 			}

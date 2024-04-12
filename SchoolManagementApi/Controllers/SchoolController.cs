@@ -15,7 +15,7 @@ namespace SchoolManagementApi.Controllers
 
     [HttpGet]
     [Route("get-schools-by-id")]
-    public async Task<IActionResult> SchoolById([FromQuery] List<string> schoolIds)
+    public async Task<IActionResult> SchoolsById([FromQuery] List<string> schoolIds)
     {
       var schools = await _schoolServices.GetSchoolByIdList(schoolIds);
       if (schools.Count == 0)
@@ -33,6 +33,25 @@ namespace SchoolManagementApi.Controllers
         Message = "Schools retrieved from ids successfully",
         Data = schools
       });
+    }
+
+    [HttpGet]
+    [Route("get-school-by-id/{schoolId}")]
+    [Authorize]
+    public async Task<IActionResult> GetSchool(string schoolId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(schoolId))
+          return BadRequest("School Id cannot be null");
+        var response = await _mediator.Send(new GetSchoolDepartments.GetSchoolDepartmentsQuery(schoolId));
+          return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
     }
 
     [HttpGet]

@@ -232,13 +232,9 @@ namespace SchoolManagementApi.Controllers
       try
       {
         if (string.IsNullOrEmpty(CurrentUserId))
-        {
-            return Unauthorized("You are not an admin");
-        }
-        if (string.IsNullOrEmpty(request.OrganizationUniqueId) || string.IsNullOrEmpty(request.ZoneId) || string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Address) || string.IsNullOrEmpty(request.LocalGovtArea))
-        {
+          return Unauthorized("You are not an admin");
+        if (string.IsNullOrEmpty(request.OrganizationUniqueId) || string.IsNullOrEmpty(request.ZoneId) || string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Address) || string.IsNullOrEmpty(request.State) || string.IsNullOrEmpty(request.LocalGovtArea))
           return BadRequest("All fields are required");
-        }
         request.AdminId = CurrentUserId;
         var response = await _mediator.Send(request);
         return response.Status == HttpStatusCode.OK.ToString()
@@ -305,6 +301,36 @@ namespace SchoolManagementApi.Controllers
         return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
       }
     }
+
+    // get organization users with specified roles
+		[HttpGet]
+		[Route("get-organization-users-by-role/{organizationId}")]
+		[Authorize]
+		public async Task<IActionResult> OrganizationUsersByRoles(string organizationId, [FromQuery] GetOrganizationUsersByRole.GetOrganizationUsersByRoleQuery request)
+		{
+			if (string.IsNullOrEmpty(organizationId) || string.IsNullOrEmpty(request.RoleName))
+				return BadRequest("Organization Id or roleName must be specified.");
+
+			// Check if both page and pageSize are specified
+			if (request.Page == default || request.PageSize == default)
+				return BadRequest("Both Page and PageSize must be specified.");
+
+			if (request.Page <= 0 || request.PageSize <= 0)
+				return BadRequest("Page and PageSize must be greater than zero.");
+      
+      request.OrganizationId = organizationId;
+			try
+			{
+				var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response)
+          : BadRequest(response);
+			}
+			catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+		}
 
     [HttpGet]
     [Route("get-all-schools")]
@@ -505,33 +531,20 @@ namespace SchoolManagementApi.Controllers
     [HttpGet]
     [Route("get-user-by-unique-id/{uniqueId}")]
     [Authorize]
-    public async Task<GenericResponse> GetUserDetails(string uniqueId)
+    public async Task<IActionResult> GetUserDetails(string uniqueId, [FromQuery] GetUserByUniqueId.GetUserByUniqueIdQuery request)
     {
       try
       {
-        var user = await _adminService.GetUserByUniqueId(uniqueId);
-        if (user == null)
-        {
-          return new GenericResponse
-          {
-            Status = HttpStatusCode.NotFound.ToString(),
-            Message = $"User with unique id {uniqueId} not found"
-          };
-        }
-        return new GenericResponse
-        {
-          Status = HttpStatusCode.OK.ToString(),
-          Message = "User details found",
-          Data = user
-        };
+        if (string.IsNullOrEmpty(uniqueId))
+          return BadRequest("unique id cannot be empty");
+        request.UniqueId = uniqueId;
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
       }
       catch (Exception ex)
       {
-        return new GenericResponse
-        {
-          Status = HttpStatusCode.InternalServerError.ToString(),
-          Message = $"Internal server error occured - {ex.Message}",
-        };
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
       }
     }
   }

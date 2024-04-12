@@ -16,6 +16,7 @@ namespace SchoolManagementApi.Commands.Admin
       public string? ZoneId { get; set; }
       public string? Name { get; set; }
       public string? Address { get; set; }
+      public string? State { get; set; }
       public string? LocalGovtArea { get; set; }
     }
 
@@ -41,6 +42,7 @@ namespace SchoolManagementApi.Commands.Admin
           ZoneId = Guid.Parse(request.ZoneId!),
           Name = request.Name!,
           Address = request.Address!,
+          State = request.State,
           LocalGovtArea = request.LocalGovtArea!
         };
         var schoolCreated = await _schoolServices.AddSchool(school);
