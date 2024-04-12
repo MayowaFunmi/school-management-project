@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Queries.Admin;
+using SchoolManagementApi.Queries.School;
 
 namespace SchoolManagementApi.Controllers
 {
@@ -44,7 +45,7 @@ namespace SchoolManagementApi.Controllers
       {
         if (string.IsNullOrEmpty(schoolId))
           return BadRequest("School Id cannot be null");
-        var response = await _mediator.Send(new GetSchoolDepartments.GetSchoolDepartmentsQuery(schoolId));
+        var response = await _mediator.Send(new GetSchoolById.GetSchoolByIdQuery(schoolId));
           return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);
       }
@@ -158,6 +159,114 @@ namespace SchoolManagementApi.Controllers
       catch (Exception ex)
       {
         return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("school-teaching-staff-count/{schoolId}")]
+    [Authorize]
+    public async Task<GenericResponse> TeachingStaffCount(string schoolId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(schoolId))
+          throw new ArgumentException("school id cannot be empty");
+        var schoolCount = await _schoolServices.GetAllTeachersInSchoolCount(schoolId);
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "number of teachers in school retrieved successfully",
+          Data = schoolCount
+        };
+      }
+      catch (Exception ex)
+      {
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.InsufficientStorage.ToString(),
+          Message = $"An internal server error occured - {ex.Message}",
+        };
+      }
+    }
+
+    [HttpGet]
+    [Route("school-non-teaching-staff-count/{schoolId}")]
+    [Authorize]
+    public async Task<GenericResponse> NonTeachingStaffCount(string schoolId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(schoolId))
+          throw new ArgumentException("school id cannot be empty");
+        var schoolCount = await _schoolServices.GetNonTeachersInSchoolCount(schoolId);
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "number of non teachers in school retrieved successfully",
+          Data = schoolCount
+        };
+      }
+      catch (Exception ex)
+      {
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.InsufficientStorage.ToString(),
+          Message = $"An internal server error occured - {ex.Message}",
+        };
+      }
+    }
+
+    [HttpGet]
+    [Route("school-parents-count/{schoolId}")]
+    [Authorize]
+    public async Task<GenericResponse> SchoolParentsCount(string schoolId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(schoolId))
+          throw new ArgumentException("school id cannot be empty");
+        var schoolCount = await _schoolServices.GetParentsInSchoolCount(schoolId);
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "number of parents in school retrieved successfully",
+          Data = schoolCount
+        };
+      }
+      catch (Exception ex)
+      {
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.InsufficientStorage.ToString(),
+          Message = $"An internal server error occured - {ex.Message}",
+        };
+      }
+    }
+
+    [HttpGet]
+    [Route("school-students-count/{schoolId}")]
+    [Authorize]
+    public async Task<GenericResponse> SchoolStudentsCount(string schoolId)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(schoolId))
+          throw new ArgumentException("school id cannot be empty");
+        var schoolCount = await _schoolServices.GetStudentsInSchoolCount(schoolId);
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.OK.ToString(),
+          Message = "number of students in school retrieved successfully",
+          Data = schoolCount
+        };
+      }
+      catch (Exception ex)
+      {
+        return new GenericResponse
+        {
+          Status = HttpStatusCode.InsufficientStorage.ToString(),
+          Message = $"An internal server error occured - {ex.Message}",
+        };
       }
     }
   }

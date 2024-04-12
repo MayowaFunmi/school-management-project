@@ -49,7 +49,15 @@ const initialState: ISchool= {
 		localGovtArea: "",
 		createdAt: ""
 	},
-	orgSchMsg: ""
+	orgSchMsg: "",
+	teachersCount: 0,
+	nonTeachersCount: 0,
+	parentsCount: 0,
+	studentsCount: 0,
+	teachersCountMsg: "",
+	nonTeachersCountMsg: "",
+	parentsCountMsg: "",
+	studentsCountMsg: ""
 }
 
 export const getSchoolsInZone = createAsyncThunk(
@@ -116,6 +124,54 @@ export const getSchoolDetails = createAsyncThunk(
 	async (schoolId: string, thunkApi) => {
 		try {
 			const response = await axios.get(`${baseUrl}/api/school/get-school-by-id/${schoolId}`, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getSchoolTeachersCount = createAsyncThunk(
+	'school/getSchoolTeachersCount',
+	async (schoolId: string, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/school/school-teaching-staff-count/${schoolId}`, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getSchoolNonTeachersCount = createAsyncThunk(
+	'school/getSchoolNonTeachersCount',
+	async (schoolId: string, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/school/school-non-teaching-staff-count/${schoolId}`, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getSchoolParentsCount = createAsyncThunk(
+	'school/getSchoolParentsCount',
+	async (schoolId: string, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/school/school-parents-count/${schoolId}`, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getSchoolStudentsCount = createAsyncThunk(
+	'school/getSchoolStudentsCount',
+	async (schoolId: string, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/school/school-students-count/${schoolId}`, getAxiosConfig())
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -265,6 +321,66 @@ const schoolSlice = createSlice({
 			})
 			.addCase(getSchoolDetails.rejected, (state, action: PayloadAction<any>) => {
 				state.orgSchMsg = "rejected"
+			})
+
+		builder
+			.addCase(getSchoolTeachersCount.pending, (state) => {
+				state.teachersCountMsg = "pending"
+			})
+			.addCase(getSchoolTeachersCount.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload !== null) {
+					const schData = action.payload;
+					state.teachersCount = schData.data
+					state.teachersCountMsg = "success"
+				}
+			})
+			.addCase(getSchoolTeachersCount.rejected, (state, action: PayloadAction<any>) => {
+				state.teachersCountMsg = "rejected"
+			})
+
+		builder
+			.addCase(getSchoolNonTeachersCount.pending, (state) => {
+				state.nonTeachersCountMsg = "pending"
+			})
+			.addCase(getSchoolNonTeachersCount.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload !== null) {
+					const schData = action.payload;
+					state.nonTeachersCount = schData.data
+					state.nonTeachersCountMsg = "success"
+				}
+			})
+			.addCase(getSchoolNonTeachersCount.rejected, (state, action: PayloadAction<any>) => {
+				state.nonTeachersCountMsg = "rejected"
+			})
+
+		builder
+			.addCase(getSchoolParentsCount.pending, (state) => {
+				state.parentsCountMsg = "pending"
+			})
+			.addCase(getSchoolParentsCount.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload !== null) {
+					const schData = action.payload;
+					state.parentsCount = schData.data
+					state.parentsCountMsg = "success"
+				}
+			})
+			.addCase(getSchoolParentsCount.rejected, (state, action: PayloadAction<any>) => {
+				state.parentsCountMsg = "rejected"
+			})
+
+		builder
+			.addCase(getSchoolStudentsCount.pending, (state) => {
+				state.studentsCountMsg = "pending"
+			})
+			.addCase(getSchoolStudentsCount.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload !== null) {
+					const schData = action.payload;
+					state.studentsCount = schData.data
+					state.studentsCountMsg = "success"
+				}
+			})
+			.addCase(getSchoolStudentsCount.rejected, (state, action: PayloadAction<any>) => {
+				state.studentsCountMsg = "rejected"
 			})
   }
 })

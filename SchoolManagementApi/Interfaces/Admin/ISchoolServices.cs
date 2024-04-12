@@ -17,6 +17,13 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<List<OrganizationData>> OrganizationData(string organizationUniqueId);
     Task<List<School>> AllZoneScchools(string ZoneId, int page, int pageSize);
     Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize);
+    Task<List<NonTeachingStaff>> GetNonTeachersInSchool(string schoolId, int page, int pageSize);
+    Task<List<Parent>> GetParentsInSchool(string schoolId, int page, int pageSize);
+    Task<List<Student>> GetStudentsInSchool(string schoolId, int page, int pageSize);
+    Task<int> GetAllTeachersInSchoolCount(string schoolId);
+    Task<int> GetNonTeachersInSchoolCount(string schoolId);
+    Task<int> GetParentsInSchoolCount(string schoolId);
+    Task<int> GetStudentsInSchoolCount(string schoolId);
     Task<List<School>> GetSchoolByIdList(List<string> schoolIds);
     Task<List<Subject>> GetSubjectsByIdList(List<string> subjectIds);
     Task<List<Department>> GetDepartmentsBySchoolId(string schoolId);

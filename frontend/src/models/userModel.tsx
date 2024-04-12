@@ -95,6 +95,14 @@ export interface ISchool {
   userStatus: string
   organizationSChool: School | null
   orgSchMsg: string
+  teachersCount: number
+  teachersCountMsg: string
+  nonTeachersCount: number
+  nonTeachersCountMsg: string
+  parentsCount: number
+  parentsCountMsg: string
+  studentsCount: number
+  studentsCountMsg: string
 }
 
 export interface ISubject {

@@ -136,6 +136,11 @@ namespace SchoolManagementApi.Services.Admin
         throw new NotImplementedException();
     }
 
+    public async Task<int> GetAllTeachersInSchoolCount(string schoolId)
+    {
+      return await _context.TeachingStaffs.Where(t => t.CurrentPostingSchoolId.ToString() == schoolId).CountAsync();
+    }
+
     public async Task<List<Department>> GetDepartmentsBySchoolId(string schoolId)
     {
       try
@@ -150,6 +155,26 @@ namespace SchoolManagementApi.Services.Admin
         WatchLogger.LogError(ex.ToString(), $"Error getting department in school - {ex.Message}");
         throw;
       }
+    }
+
+    public Task<List<NonTeachingStaff>> GetNonTeachersInSchool(string schoolId, int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> GetNonTeachersInSchoolCount(string schoolId)
+    {
+      return await _context.NonTeachingStaffs.Where(t => t.CurrentPostingSchoolId.ToString() == schoolId).CountAsync();
+    }
+
+    public Task<List<Parent>> GetParentsInSchool(string schoolId, int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> GetParentsInSchoolCount(string schoolId)
+    {
+      return await _context.Parents.Where(t => t.StudentSchoolId.ToString() == schoolId).CountAsync();
     }
 
     public async Task<School> GetSchoolById(string schoolId)
@@ -221,6 +246,16 @@ namespace SchoolManagementApi.Services.Admin
         WatchLogger.LogError(ex.ToString(), $"Error getting class arms in school - {ex.Message}");
         throw;
       }
+    }
+
+    public Task<List<Student>> GetStudentsInSchool(string schoolId, int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> GetStudentsInSchoolCount(string schoolId)
+    {
+      return await _context.Students.Where(t => t.CurrentSchoolId.ToString() == schoolId).CountAsync();
     }
 
     public async Task<List<Subject>> GetSubjectsByIdList(List<string> subjectIds)
