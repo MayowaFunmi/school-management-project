@@ -131,9 +131,30 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-    public Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize)
+    public async Task<List<TeachingStaff>> GetAllTeachersInSchool(string schoolId, int page, int pageSize)
     {
-        throw new NotImplementedException();
+      try
+      {
+        var teacher = await _context.TeachingStaffs
+          .Where(t => t.CurrentPostingSchoolId.ToString() == schoolId)
+          .Include(t => t.User)
+          .Include(t => t.CurrentPostingZone)
+          .Include(t => t.CurrentPostingSchool)
+          .Include(t => t.Documents)
+          .Include(t => t.CurrentSubject)
+          .Skip((page - 1) * pageSize)
+          .Take(pageSize)
+          .OrderBy(s => s.User.LastName)
+          .ToListAsync();
+
+        return teacher;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting list of all teachers in school - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting list of all teachers in school - {ex.Message}");
+        throw;
+      }
     }
 
     public async Task<int> GetAllTeachersInSchoolCount(string schoolId)
@@ -157,9 +178,29 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-    public Task<List<NonTeachingStaff>> GetNonTeachersInSchool(string schoolId, int page, int pageSize)
+    public async Task<List<NonTeachingStaff>> GetNonTeachersInSchool(string schoolId, int page, int pageSize)
     {
-        throw new NotImplementedException();
+      try
+      {
+        var staff = await _context.NonTeachingStaffs
+          .Where(t => t.CurrentPostingSchoolId.ToString() == schoolId)
+          .Include(t => t.User)
+          .Include(t => t.CurrentPostingZone)
+          .Include(t => t.CurrentPostingSchool)
+          .Include(t => t.Documents)
+          .Skip((page - 1) * pageSize)
+          .Take(pageSize)
+          .OrderBy(s => s.User.LastName)
+          .ToListAsync();
+
+        return staff;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting list of all non teachers in school - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting list of all non teachers in school - {ex.Message}");
+        throw;
+      }
     }
 
     public async Task<int> GetNonTeachersInSchoolCount(string schoolId)
@@ -167,9 +208,27 @@ namespace SchoolManagementApi.Services.Admin
       return await _context.NonTeachingStaffs.Where(t => t.CurrentPostingSchoolId.ToString() == schoolId).CountAsync();
     }
 
-    public Task<List<Parent>> GetParentsInSchool(string schoolId, int page, int pageSize)
+    public async Task<List<Parent>> GetParentsInSchool(string schoolId, int page, int pageSize)
     {
-        throw new NotImplementedException();
+      try
+      {
+        var parents = await _context.Parents
+          .Where(t => t.StudentSchoolId.ToString() == schoolId)
+          .Include(t => t.User)
+          .Include(t => t.StudentSchool)
+          .Skip((page - 1) * pageSize)
+          .Take(pageSize)
+          .OrderBy(s => s.User.LastName)
+          .ToListAsync();
+
+        return parents;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting list of all parents in school - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting list of all parents in school - {ex.Message}");
+        throw;
+      }
     }
 
     public async Task<int> GetParentsInSchoolCount(string schoolId)
@@ -248,9 +307,31 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-    public Task<List<Student>> GetStudentsInSchool(string schoolId, int page, int pageSize)
+    public async Task<List<Student>> GetStudentsInSchool(string schoolId, int page, int pageSize)
     {
-        throw new NotImplementedException();
+      try
+      {
+        var students = await _context.Students
+          .Where(t => t.CurrentSchoolId.ToString() == schoolId)
+          .Include(t => t.User)
+          .Include(t => t.SchoolZone)
+          .Include(t => t.Department)
+          .Include(t => t.StudentClass)
+          .Include(t => t.Documents)
+          .Include(t => t.Parent)
+          .Skip((page - 1) * pageSize)
+          .Take(pageSize)
+          .OrderBy(s => s.User.LastName)
+          .ToListAsync();
+
+        return students;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting list of all students in school - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting list of all students in school - {ex.Message}");
+        throw;
+      }
     }
 
     public async Task<int> GetStudentsInSchoolCount(string schoolId)

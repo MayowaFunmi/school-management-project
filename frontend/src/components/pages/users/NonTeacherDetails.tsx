@@ -3,10 +3,12 @@ import { NonTeachingStaff } from '../../../models/staffModel'
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
 import { toast } from 'react-toastify';
 import { School } from '../../../models/userModel';
-import { uploadProfilePicture } from '../../../features/uploadSlice';
-import { getSchoolsByIds } from '../../../features/schoolSlice';
+import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
+import { clearSchoolUsers, getSchoolsByIds, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
 import ProfileImage from '../../images/ProfileImage';
 import { formatDateOfBirth } from '../../../utils/formatDate';
+import store from '../../../store/store';
+import { useNavigate } from 'react-router-dom';
 
 interface NonTeacherDetailsProps {
   data: NonTeachingStaff
@@ -14,6 +16,8 @@ interface NonTeacherDetailsProps {
 
 const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
   const { status } = useAppSelector((state) => state.upload);
 
@@ -50,6 +54,12 @@ const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
     }
   }
 
+  const schoolDetails = (schoolId: string) => {
+    store.dispatch(resetOrganizationSchool())
+    store.dispatch(clearSchoolUsers())
+    navigate(`/school-home-page/${schoolId}`);
+  }
+
   useEffect(() => {
     if (data.previousSchoolsIds.length > 0) {
       dispatch(getSchoolsByIds(data.previousSchoolsIds));
@@ -69,6 +79,11 @@ const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
       notifyError("failed To Upload Profile Picture")
     }
   }, [status])
+
+  useEffect(() => {
+    store.dispatch(clearUploadStatus());
+    store.dispatch(resetSchoolsById());
+  }, [])
   
   return (
     <>
@@ -80,11 +95,11 @@ const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
         <p>About me: {data.aboutMe}</p>
         <div className="col-sm-5">
           {data.profilePicture ? (
-            <ProfileImage imageUrl={data.profilePicture} size='200px' />
+            <ProfileImage imageUrl={data.profilePicture} size='200px' borderRadius="50%" classVal='' />
           ) : (
             data.gender === "Male" ? (
             <>
-              <ProfileImage imageUrl="/male_avatar.jpeg" size='200px' />
+              <ProfileImage imageUrl="/male_avatar.jpeg" size='200px' borderRadius="50%" classVal='' />
               <button 
                 className="btn btn-primary"
                 onClick={handleUpload}
@@ -94,7 +109,7 @@ const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
             </>
             ) : (
             <>
-              <ProfileImage imageUrl="female_avatar.png" size='200px' />
+              <ProfileImage imageUrl="female_avatar.png" size='200px' borderRadius="50%" classVal='' />
               <button 
                 className="btn btn-primary"
                 onClick={handleUpload}
@@ -127,13 +142,15 @@ const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
       <div className='row'>
         <div className="col-sm-5">
           <p><strong>Designation: </strong>{data.designation}</p>
-          <p><strong>Present School: </strong>{data.currentPostingSchool.name}</p>
+          <div>
+            <p><strong>Present School: </strong>{data.currentPostingSchool.name}</p>
+            <button className='btn btn-info' onClick={() => schoolDetails(data.currentPostingSchoolId)}>Go To School Page</button>
+          </div>
           <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
           <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>          
           <p><strong>Grade Level: </strong>Level {data.gradeLevel}, Step {data.step}</p>
           <p><strong>Qualification: </strong>{data.qualification}</p>
           <p><strong>Discipline: </strong>{data.discipline}</p>
-
         </div>
 
         <div className="col-sm-7">
@@ -147,8 +164,9 @@ const NonTeacherDetails: React.FC<NonTeacherDetailsProps> = ({ data }) => {
                 <div key={school.schoolId}>
                   <ol start={index + 1}>
                     <li>
-                      <div>
+                      <div onClick={() => schoolDetails(school.schoolId)} style={{ cursor: "pointer"}}>
                         <strong>School Name:</strong> {school.name}<br />
+                        <strong>School ID:</strong> {school.schoolUniqueId}<br />
                         <small><strong>School Address:</strong> {school.address}</small>
                       </div>
                     </li>

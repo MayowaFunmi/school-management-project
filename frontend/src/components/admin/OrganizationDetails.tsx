@@ -105,7 +105,6 @@ const OrganizationDetails = () => {
     }
     dispatch(getUserDetails(userData))
       .then((result) => {
-        console.log("result = ", result)
         // const payload = result.payload;
         if (userRoleStatus === "success") {
           setUserModalOpen(true)
@@ -117,7 +116,6 @@ const OrganizationDetails = () => {
   }
 
   const schoolDetails = (schoolId: string) => {
-    // clear school data
     store.dispatch(resetOrganizationSchool())
     navigate(`/school-home-page/${schoolId}`);
   }

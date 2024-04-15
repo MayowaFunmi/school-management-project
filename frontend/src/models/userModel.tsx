@@ -103,6 +103,22 @@ export interface ISchool {
   parentsCountMsg: string
   studentsCount: number
   studentsCountMsg: string
+  teachersList: TeachingStaff[]
+  nonTeachersList: NonTeachingStaff[]
+  parentsList: IParent[]
+  studentsList: IStudent[]
+  teachersListMsg: string
+  nonTeachersListMsg: string
+  parentsListMsg: string
+  studentsListMsg: string
+  tCurrentPage: number
+  nCurrentPage: number
+  pCurrentPage: number
+  sCurrentPage: number
+  tTotalPages: number
+  nTotalPages: number
+  pTotalPages: number
+  sTotalPages: number
 }
 
 export interface ISubject {
@@ -192,6 +208,7 @@ export interface Role {
 }
 export interface Values { uniqueId: string, roleName: string }
 export interface SchoolSearch { organizationId: string, page: number, pageSize?: number }
+export interface UserList { schoolId: string, page: number, pageSize?: number }
 export interface UserSearch { organizationId: string, roleName: string, page: number, userPageSize?: number }
 export interface Values2 { uniqueId: string, roleName2: string }
 export interface ZoneValues {

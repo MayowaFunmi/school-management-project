@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './Home.css';
-import { Link, Navigate, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const Home = () => {
+const Home: React.FC = () => {
 	const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		if (!isAuthenticated)
+			navigate('/login')
+	}, [isAuthenticated, navigate])
+  
   return (
     <>
 			<svg xmlns="http://www.w3.org/2000/svg" className="d-none">
@@ -26,7 +30,7 @@ const Home = () => {
 				</symbol>
 			</svg>
 			{/* start toggle theme */}
-      <div className="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+      {/* <div className="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
 				<button className="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
 								id="bd-theme"
 								type="button"
@@ -59,7 +63,7 @@ const Home = () => {
 						</button>
 					</li>
 				</ul>
-			</div>
+			</div> */}
 			{/* start toggle theme */}
 
 			<svg xmlns="http://www.w3.org/2000/svg" className="d-none">
@@ -215,7 +219,7 @@ const Home = () => {
 					</div>
 
 					<main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-						<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+						{/* <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 							<h1 className="h2">Dashboard</h1>
 							<div className="btn-toolbar mb-2 mb-md-0">
 								<div className="btn-group me-2">
@@ -227,7 +231,7 @@ const Home = () => {
 									This week
 								</button>
 							</div>
-						</div>
+						</div> */}
 
 						{/* main content here */}
 						<Outlet />

@@ -1,33 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { TeachingStaff } from '../../../models/staffModel'
-import { formatDateOfBirth } from '../../../utils/formatDate';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { NonTeachingStaff } from '../../../models/staffModel';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { clearSchoolUsers, getSchoolsByIds, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
-import { School, Subject } from '../../../models/userModel';
-import { clearSubjectsByIds, getSubjectsByIds } from '../../../features/subjectSlice';
-import ProfileImage from '../../images/ProfileImage';
-import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
-import { toast } from 'react-toastify';
 import store from '../../../store/store';
-import { useNavigate } from 'react-router-dom';
+import { clearSchoolUsers, getSchoolsByIds, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
+import { toast } from 'react-toastify';
+import { School } from '../../../models/userModel';
+import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
+import ProfileImage from '../../images/ProfileImage';
+import { formatDateOfBirth } from '../../../utils/formatDate';
 
-interface TeacherDetailsProps {
-  data: TeachingStaff;
-}
-
-const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
+const NonTeacherPage: React.FC = () => {
+  const location = useLocation();
+  const data: NonTeachingStaff = location.state.user;
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  
+  const navigate = useNavigate()
+
   const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
-  const { allSubjectsIds, subIdMsg } = useAppSelector((state) => state.subject);
   const { status } = useAppSelector((state) => state.upload);
 
   const notifySuccess = (msg: string) => toast.success(msg);
   const notifyError = (msg: string) => toast.error(msg);
 
   const [schoolsList, setSchoolsList] = useState<School[]>([])
-  const [subjectsList, setSubjectsList] = useState<Subject[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
 
@@ -64,32 +59,16 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   }
 
   useEffect(() => {
-    store.dispatch(clearUploadStatus());
-    store.dispatch(resetSchoolsById());
-    store.dispatch(clearSubjectsByIds());
-  }, [])
-
-  useEffect(() => {
     if (data.previousSchoolsIds.length > 0) {
       dispatch(getSchoolsByIds(data.previousSchoolsIds));
     }
   }, [data.previousSchoolsIds, dispatch])
 
   useEffect(() => {
-    if (data.OtherSubjects && data.OtherSubjects.length > 0) {
-      dispatch(getSubjectsByIds(data.OtherSubjects));
-    }
-  }, [data.OtherSubjects, dispatch])
-
-  useEffect(() => {
     if (schIdMsg === "success") {
       setSchoolsList(allSchoolIds);
     }
-
-    if (subIdMsg === "success") {
-      setSubjectsList(allSubjectsIds);
-    }
-  }, [allSchoolIds, allSubjectsIds, schIdMsg, subIdMsg])
+  }, [allSchoolIds, schIdMsg])
 
   useEffect(() => {
     if (status === "success") {
@@ -98,7 +77,12 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
       notifyError("failed To Upload Profile Picture")
     }
   }, [status])
-  
+
+  useEffect(() => {
+    store.dispatch(clearUploadStatus());
+    store.dispatch(resetSchoolsById());
+  }, [])
+
   return (
     <>
       <div className='row'>
@@ -123,7 +107,7 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
             </>
             ) : (
             <>
-              <ProfileImage imageUrl="female_avatar.png" size='200px' borderRadius="50%" classVal=''/>
+              <ProfileImage imageUrl="female_avatar.png" size='200px' borderRadius="50%" classVal='' />
               <button 
                 className="btn btn-primary"
                 onClick={handleUpload}
@@ -158,32 +142,13 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
           <p><strong>Designation: </strong>{data.designation}</p>
           <div>
             <p><strong>Present School: </strong>{data.currentPostingSchool.name}</p>
-            <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
             <button className='btn btn-info' onClick={() => schoolDetails(data.currentPostingSchoolId)}>Go To School Page</button>
           </div>
-          <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>
-          <p><strong>Subject Taught: </strong>{data.currentSubject.subjectName}</p>
-          <p><strong>Other Subjects Previously Taught: </strong></p> 
-          {subjectsList.length > 0 ? (
-            <div>
-            {
-              subjectsList?.map((subject) => (
-                <div key={subject.subjectId}>
-                  <ol>
-                    <li>{subject.subjectName}</li>
-                  </ol>
-                </div>
-              ))
-            }
-          </div>
-          ) : (
-            <p>None</p>
-          )}
-          
+          <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
+          <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>          
           <p><strong>Grade Level: </strong>Level {data.gradeLevel}, Step {data.step}</p>
           <p><strong>Qualification: </strong>{data.qualification}</p>
           <p><strong>Discipline: </strong>{data.discipline}</p>
-
         </div>
 
         <div className="col-sm-7">
@@ -252,4 +217,4 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   )
 }
 
-export default TeacherDetails
+export default NonTeacherPage

@@ -1,10 +1,10 @@
 import React from 'react'
 
-const ProfileImage: React.FC<{ imageUrl: string; size: string}> = ({ imageUrl, size }) => {
+const ProfileImage: React.FC<{ imageUrl: string; size: string, borderRadius: string, classVal: string | ""}> = ({ imageUrl, size, borderRadius, classVal }) => {
   const containerStyle: React.CSSProperties = {
     width: size,
     height: size,
-    borderRadius: '50%',
+    borderRadius: borderRadius,
     overflow: 'hidden'
   }
 
@@ -15,7 +15,7 @@ const ProfileImage: React.FC<{ imageUrl: string; size: string}> = ({ imageUrl, s
   }
   return (
     <div style={containerStyle}>
-      <img src={imageUrl} alt="Profile" style={imageStyle} />
+      <img src={imageUrl} alt="Profile pic" style={imageStyle} className={classVal} />
     </div>
   )
 }

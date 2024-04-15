@@ -1,37 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { TeachingStaff } from '../../../models/staffModel'
-import { formatDateOfBirth } from '../../../utils/formatDate';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { clearSchoolUsers, getSchoolsByIds, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
-import { School, Subject } from '../../../models/userModel';
-import { clearSubjectsByIds, getSubjectsByIds } from '../../../features/subjectSlice';
-import ProfileImage from '../../images/ProfileImage';
-import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
 import { toast } from 'react-toastify';
+import { School } from '../../../models/userModel';
+import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
 import store from '../../../store/store';
-import { useNavigate } from 'react-router-dom';
+import { clearSchoolUsers, getSchoolsByIds, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
+import { clearSubjectsByIds } from '../../../features/subjectSlice';
+import { IStudent } from '../../../models/studentModel';
+import ProfileImage from '../../images/ProfileImage';
+import { formatDateOfBirth } from '../../../utils/formatDate';
 
-interface TeacherDetailsProps {
-  data: TeachingStaff;
-}
-
-const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
+const StudentPage = () => {
+  const location = useLocation();
+  const data: IStudent = location.state.user;
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  
-  const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
-  const { allSubjectsIds, subIdMsg } = useAppSelector((state) => state.subject);
+  const navigate = useNavigate()
+  const progressWith = `${data.user.percentageCompleted}%`;
+
   const { status } = useAppSelector((state) => state.upload);
 
   const notifySuccess = (msg: string) => toast.success(msg);
   const notifyError = (msg: string) => toast.error(msg);
 
-  const [schoolsList, setSchoolsList] = useState<School[]>([])
-  const [subjectsList, setSubjectsList] = useState<Subject[]>([])
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
-
-  const progressWith = `${data.user.percentageCompleted}%`;
+  const [schoolsList, setSchoolsList] = useState<School[]>([])
+  const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -64,10 +59,12 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   }
 
   useEffect(() => {
-    store.dispatch(clearUploadStatus());
-    store.dispatch(resetSchoolsById());
-    store.dispatch(clearSubjectsByIds());
-  }, [])
+    if (status === "success") {
+      notifySuccess("Profile Picture uploaded successfully")
+    } else if (status === "failed") {
+      notifyError("failed To Upload Profile Picture")
+    }
+  }, [status])
 
   useEffect(() => {
     if (data.previousSchoolsIds.length > 0) {
@@ -76,28 +73,16 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   }, [data.previousSchoolsIds, dispatch])
 
   useEffect(() => {
-    if (data.OtherSubjects && data.OtherSubjects.length > 0) {
-      dispatch(getSubjectsByIds(data.OtherSubjects));
-    }
-  }, [data.OtherSubjects, dispatch])
-
-  useEffect(() => {
     if (schIdMsg === "success") {
       setSchoolsList(allSchoolIds);
     }
-
-    if (subIdMsg === "success") {
-      setSubjectsList(allSubjectsIds);
-    }
-  }, [allSchoolIds, allSubjectsIds, schIdMsg, subIdMsg])
+  }, [allSchoolIds, schIdMsg])
 
   useEffect(() => {
-    if (status === "success") {
-      notifySuccess("Profile Picture uploaded successfully")
-    } else if (status === "failed") {
-      notifyError("failed To Upload Profile Picture")
-    }
-  }, [status])
+    store.dispatch(clearUploadStatus());
+    store.dispatch(resetSchoolsById());
+    store.dispatch(clearSubjectsByIds());
+  }, [])
   
   return (
     <>
@@ -106,7 +91,6 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
         <div className="progress" role="progressbar" aria-label="Basic example" aria-valuenow={data.user.percentageCompleted} aria-valuemin={0} aria-valuemax={100}>
           <div className="progress-bar" style={{ width: progressWith }}></div>
         </div>
-        <p>About me: {data.aboutMe}</p>
         <div className="col-sm-5">
           {data.profilePicture ? (
             <ProfileImage imageUrl={data.profilePicture} size='200px' borderRadius="50%" classVal='' />
@@ -123,7 +107,7 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
             </>
             ) : (
             <>
-              <ProfileImage imageUrl="female_avatar.png" size='200px' borderRadius="50%" classVal=''/>
+              <ProfileImage imageUrl="female_avatar.png" size='200px' borderRadius="50%" classVal='' />
               <button 
                 className="btn btn-primary"
                 onClick={handleUpload}
@@ -137,65 +121,42 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
         </div>
 
         <div className="col-sm-7">
-          <p><strong>Name: </strong>{data.user.firstName} {data.middleName} {data.user.lastName} ({data.title})</p>
+          <p><strong>Name: </strong>{data.user.lastName} {data.user.firstName} {data.middleName}</p>
           <p><strong>Email: </strong>{data.user.email}</p>
           <p><strong>Phone Number: </strong>{data.user.phoneNumber}</p>
           <p><strong>Username: </strong>{data.user.userName}</p>
           <p><strong>Address: </strong>{data.address}</p>
           <p><strong>Date Of Birth: </strong>{formatDateOfBirth(data.dateOfBirth)}</p>
           <p><strong>Age: </strong>{data.age} years</p>
-          <p><strong>Marital Status: </strong>{data.maritalStatus}</p>
-          <p><strong>State Of Origin: </strong>{data.stateOfOrigin}</p>
-          <p><strong>LGA Of Origin: </strong>{data.lgaOfOrigin}</p>
           <p><strong>Religion: </strong>{data.religion}</p>
-
+          <p><strong>Gender: </strong>{data.gender}</p>
         </div>
       </div>
       <hr />
 
       <div className='row'>
         <div className="col-sm-5">
-          <p><strong>Designation: </strong>{data.designation}</p>
           <div>
-            <p><strong>Present School: </strong>{data.currentPostingSchool.name}</p>
-            <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
-            <button className='btn btn-info' onClick={() => schoolDetails(data.currentPostingSchoolId)}>Go To School Page</button>
+            <p><strong>Name Of School: </strong>{data.currentSchool.name}</p>
+            <p><strong>School Address: </strong>{data.currentSchool.address}</p>
+            <button className='btn btn-info' onClick={() => schoolDetails(data.currentSchoolId)}>Go To School Page</button>
           </div>
-          <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>
-          <p><strong>Subject Taught: </strong>{data.currentSubject.subjectName}</p>
-          <p><strong>Other Subjects Previously Taught: </strong></p> 
-          {subjectsList.length > 0 ? (
-            <div>
-            {
-              subjectsList?.map((subject) => (
-                <div key={subject.subjectId}>
-                  <ol>
-                    <li>{subject.subjectName}</li>
-                  </ol>
-                </div>
-              ))
-            }
-          </div>
-          ) : (
-            <p>None</p>
-          )}
-          
-          <p><strong>Grade Level: </strong>Level {data.gradeLevel}, Step {data.step}</p>
-          <p><strong>Qualification: </strong>{data.qualification}</p>
-          <p><strong>Discipline: </strong>{data.discipline}</p>
-
+          <p><strong>Department: </strong>{data.department.name} class</p>
+          <p><strong>Class: </strong>{data.studentClass.name}</p>
+          <p><strong>Admission Number: </strong>{data.admissionNumber}</p>
+          <p><strong>Admission Year: </strong>{data.admissionYear}</p>
+          <p><strong>Parent: </strong>{data.parent.title} {data.parent.user.firstName} {data.parent.user.lastName}</p>
+          {/* add link to parent profile page */}
         </div>
 
         <div className="col-sm-7">
-          <p><strong>Date Of First Appointment: </strong>{formatDateOfBirth(data.firstAppointment)}</p>
-          <p><strong>Number of Years In Service: </strong>{data.yearsInService}</p>
-          <p><strong>Previous Schools Posted: </strong></p>
+          <p><strong>Previous Schools Attended: </strong></p>
           {schoolsList.length > 0 ? (
             <div>
             {
-              schoolsList?.map((school, index) => (
+              schoolsList?.map((school) => (
                 <div key={school.schoolId}>
-                  <ol start={index + 1}>
+                  <ol>
                     <li>
                       <div onClick={() => schoolDetails(school.schoolId)} style={{ cursor: "pointer"}}>
                         <strong>School Name:</strong> {school.name}<br />
@@ -211,7 +172,6 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
           ) : (
             <p>None</p>
           )}
-          
         </div>
       </div>
 
@@ -252,4 +212,4 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   )
 }
 
-export default TeacherDetails
+export default StudentPage

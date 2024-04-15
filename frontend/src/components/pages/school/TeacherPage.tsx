@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { TeachingStaff } from '../../../models/staffModel'
-import { formatDateOfBirth } from '../../../utils/formatDate';
+import { TeachingStaff } from '../../../models/staffModel';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { clearSchoolUsers, getSchoolsByIds, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
-import { School, Subject } from '../../../models/userModel';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { clearSubjectsByIds, getSubjectsByIds } from '../../../features/subjectSlice';
-import ProfileImage from '../../images/ProfileImage';
+import { clearSchoolUsers, getSchoolsByIds, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
 import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
-import { toast } from 'react-toastify';
 import store from '../../../store/store';
-import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { School, Subject } from '../../../models/userModel';
+import ProfileImage from '../../images/ProfileImage';
+import { formatDateOfBirth } from '../../../utils/formatDate';
 
-interface TeacherDetailsProps {
-  data: TeachingStaff;
-}
-
-const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
+const TeacherPage: React.FC = () => {
+  const location = useLocation();
+  const data: TeachingStaff = location.state.user;
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  
+  const navigate = useNavigate()
+
   const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
   const { allSubjectsIds, subIdMsg } = useAppSelector((state) => state.subject);
   const { status } = useAppSelector((state) => state.upload);
@@ -158,9 +156,9 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
           <p><strong>Designation: </strong>{data.designation}</p>
           <div>
             <p><strong>Present School: </strong>{data.currentPostingSchool.name}</p>
-            <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
             <button className='btn btn-info' onClick={() => schoolDetails(data.currentPostingSchoolId)}>Go To School Page</button>
           </div>
+          <p><strong>School Address: </strong>{data.currentPostingSchool.address}</p>
           <p><strong>Zone: </strong>{data.currentPostingZone.name}</p>
           <p><strong>Subject Taught: </strong>{data.currentSubject.subjectName}</p>
           <p><strong>Other Subjects Previously Taught: </strong></p> 
@@ -252,4 +250,4 @@ const TeacherDetails: React.FC<TeacherDetailsProps> = ({ data }) => {
   )
 }
 
-export default TeacherDetails
+export default TeacherPage

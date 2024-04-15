@@ -14,6 +14,9 @@ import OrganizationDetails from './components/admin/OrganizationDetails';
 import UserProfile from './components/pages/users/UserProfile';
 import CheckUserStatus from './components/pages/CheckUserStatus';
 import SchoolHomePage from './components/pages/school/SchoolHomePage';
+import TeacherPage from './components/pages/school/TeacherPage';
+import NonTeacherPage from './components/pages/school/NonTeacherPage';
+import ParentPage from './components/pages/school/ParentPage';
 
 const App: React.FC = () => {
 
@@ -30,6 +33,9 @@ const App: React.FC = () => {
             <Route path='/organization-details/:organizationId' element={<OrganizationDetails />} />
             <Route path='/school-home-page/:schoolId' element={<SchoolHomePage />} />
             <Route path='get-user-profile' element={<UserProfile />} />
+            <Route path='/teacher-details' element={<TeacherPage />} />
+            <Route path='/non-teacher-details' element={<NonTeacherPage />} />
+            <Route path='/parent-details' element={<ParentPage />} />
           </Route>
           <Route path='/signup' element={<SignUp />} />
           <Route path='/login' element={<Login />} />

@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ISchool, SchoolSearch, UserSearch } from "../models/userModel";
+import { ISchool, SchoolSearch, UserList, UserSearch } from "../models/userModel";
 import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 
@@ -57,7 +57,23 @@ const initialState: ISchool= {
 	teachersCountMsg: "",
 	nonTeachersCountMsg: "",
 	parentsCountMsg: "",
-	studentsCountMsg: ""
+	studentsCountMsg: "",
+	teachersList: [],
+	nonTeachersList: [],
+	parentsList: [],
+	studentsList: [],
+	teachersListMsg: "",
+	nonTeachersListMsg: "",
+	parentsListMsg: "",
+	studentsListMsg: "",
+	tCurrentPage: 0,
+	nCurrentPage: 0,
+	pCurrentPage: 0,
+	sCurrentPage: 0,
+	tTotalPages: 0,
+	nTotalPages: 0,
+	pTotalPages: 0,
+	sTotalPages: 0
 }
 
 export const getSchoolsInZone = createAsyncThunk(
@@ -78,6 +94,70 @@ export const getOrganizationSchools = createAsyncThunk(
 		try {
       const { organizationId, page, pageSize } = searchData;
       const response = await axios.get(`${baseUrl}/api/admin/get-schools-in-organization/${organizationId}`, {
+        params: { page, pageSize },
+        ...getAxiosConfig()
+      });
+      return response.data;
+    }  catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const teachersInSchool = createAsyncThunk(
+	'school/teachersInSchool',
+	async (userData: UserList, thunkApi) => {
+		try {
+      const { schoolId, page, pageSize } = userData;
+      const response = await axios.get(`${baseUrl}/api/school/get-teachers-in-school/${schoolId}`, {
+        params: { page, pageSize },
+        ...getAxiosConfig()
+      });
+      return response.data;
+    }  catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const nonTeachersInSchool = createAsyncThunk(
+	'school/nonTeachersInSchool',
+	async (userData: UserList, thunkApi) => {
+		try {
+      const { schoolId, page, pageSize } = userData;
+      const response = await axios.get(`${baseUrl}/api/school/get-non-teachers-in-school/${schoolId}`, {
+        params: { page, pageSize },
+        ...getAxiosConfig()
+      });
+      return response.data;
+    }  catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const parentsInSchool = createAsyncThunk(
+	'school/parentsInSchool',
+	async (userData: UserList, thunkApi) => {
+		try {
+      const { schoolId, page, pageSize } = userData;
+      const response = await axios.get(`${baseUrl}/api/school/get-parents-in-school/${schoolId}`, {
+        params: { page, pageSize },
+        ...getAxiosConfig()
+      });
+      return response.data;
+    }  catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const studentsInSchool = createAsyncThunk(
+	'school/studentsInSchool',
+	async (userData: UserList, thunkApi) => {
+		try {
+      const { schoolId, page, pageSize } = userData;
+      const response = await axios.get(`${baseUrl}/api/school/get-students-in-school/${schoolId}`, {
         params: { page, pageSize },
         ...getAxiosConfig()
       });
@@ -215,6 +295,24 @@ const schoolSlice = createSlice({
 		resetOrganizationSchool: (state) => {
 			state.organizationSChool = null
 			state.orgSchMsg = ""
+		},
+		clearSchoolUsers: (state) => {
+			state.teachersList = []
+			state.nonTeachersList = []
+			state.parentsList = []
+			state.studentsList = []
+			state.teachersListMsg = ""
+			state.nonTeachersListMsg = ""
+			state.parentsListMsg = ""
+			state.studentsListMsg = ""
+			state.tCurrentPage = 0
+			state.nCurrentPage = 0
+			state.pCurrentPage = 0
+			state.sCurrentPage = 0
+			state.tTotalPages = 0
+			state.nTotalPages = 0
+			state.pTotalPages = 0
+			state.sTotalPages = 0
 		}
   },
   extraReducers: (builder) => {
@@ -382,6 +480,102 @@ const schoolSlice = createSlice({
 			.addCase(getSchoolStudentsCount.rejected, (state, action: PayloadAction<any>) => {
 				state.studentsCountMsg = "rejected"
 			})
+
+		builder
+			.addCase(teachersInSchool.pending, (state) => {
+				return { ...state, teachersListMsg: "pending" }
+			})
+			.addCase(teachersInSchool.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload.data !== null) {
+					const userData = action.payload.data;
+					state.teachersList = userData.teachers;
+					state.teachersListMsg = "success";
+					if (userData !== null) {
+						state.tCurrentPage = userData.currentPage;
+						state.tTotalPages = userData.totalPages;
+					}
+				}
+			})
+			.addCase(teachersInSchool.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const userData = action.payload;
+					return {
+						...state, teachersList: userData, teachersListMsg: "rejected"
+					}
+				}
+			})
+
+		builder
+			.addCase(nonTeachersInSchool.pending, (state) => {
+				return { ...state, nonTeachersListMsg: "pending" }
+			})
+			.addCase(nonTeachersInSchool.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload.data !== null) {
+					const userData = action.payload.data;
+					state.nonTeachersList = userData.nonTeachers;
+					state.nonTeachersListMsg = "success";
+					if (userData !== null) {
+						state.nCurrentPage = userData.currentPage;
+						state.nTotalPages = userData.totalPages;
+					}
+				}
+			})
+			.addCase(nonTeachersInSchool.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const userData = action.payload;
+					return {
+						...state, nonTeachersList: userData, nonTeachersListMsg: "rejected"
+					}
+				}
+			})
+
+		builder
+			.addCase(parentsInSchool.pending, (state) => {
+				return { ...state, parentsListMsg: "pending" }
+			})
+			.addCase(parentsInSchool.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload.data !== null) {
+					const userData = action.payload.data;
+					state.parentsList = userData.parents;
+					state.parentsListMsg = "success";
+					if (userData !== null) {
+						state.pCurrentPage = userData.currentPage;
+						state.pTotalPages = userData.totalPages;
+					}
+				}
+			})
+			.addCase(parentsInSchool.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const userData = action.payload;
+					return {
+						...state, parentsList: userData, parentsListMsg: "rejected"
+					}
+				}
+			})
+
+		builder
+			.addCase(studentsInSchool.pending, (state) => {
+				return { ...state, studentsListMsg: "pending" }
+			})
+			.addCase(studentsInSchool.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload.data !== null) {
+					const userData = action.payload.data;
+					state.studentsList = userData.students;
+					state.studentsListMsg = "success";
+					if (userData !== null) {
+						state.sCurrentPage = userData.currentPage;
+						state.sTotalPages = userData.totalPages;
+					}
+				}
+			})
+			.addCase(studentsInSchool.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const userData = action.payload;
+					return {
+						...state, studentsList: userData, studentsListMsg: "rejected"
+					}
+				}
+			})
   }
 })
 
@@ -390,6 +584,7 @@ export const {
 	resetOranizationSchool,
 	resetOranizationUsers,
 	resetSchoolsById,
-	resetOrganizationSchool 
+	resetOrganizationSchool,
+	clearSchoolUsers
 } = schoolSlice.actions;
 export default schoolSlice.reducer;

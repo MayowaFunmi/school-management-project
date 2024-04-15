@@ -138,7 +138,7 @@ namespace SchoolManagementApi.Controllers
       return Ok(new GenericResponse
       {
         Status = HttpStatusCode.OK.ToString(),
-        Message = "Classes in school retrieved successfully",
+        Message = "Parents in school retrieved successfully",
         Data = parents
       });
     }
@@ -267,6 +267,126 @@ namespace SchoolManagementApi.Controllers
           Status = HttpStatusCode.InsufficientStorage.ToString(),
           Message = $"An internal server error occured - {ex.Message}",
         };
+      }
+    }
+
+    [HttpGet]
+    [Route("get-teachers-in-school/{schoolId}")]
+    [Authorize]
+    public async Task<IActionResult> TeachersInSchool(string schoolId, [FromQuery] GetTeachingStaff.GetTeachingStaffQuery request)
+    {
+      if (string.IsNullOrEmpty(schoolId))
+        return BadRequest("school Id must be specified.");
+
+      // Check if both page and pageSize are specified
+      if (request.Page == default || request.PageSize == default)
+        return BadRequest("Both Page and PageSize must be specified.");
+
+      if (request.Page <= 0 || request.PageSize <= 0)
+        return BadRequest("Page and PageSize must be greater than zero.");
+
+      // Set the organizationId in the request object
+      request.SchoolId = schoolId;
+      try
+      {
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response)
+          : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-non-teachers-in-school/{schoolId}")]
+    [Authorize]
+    public async Task<IActionResult> NonTeachersInSchool(string schoolId, [FromQuery] GetNonTeachingStaff.GetNonTeachingStaffQuery request)
+    {
+      if (string.IsNullOrEmpty(schoolId))
+        return BadRequest("school Id must be specified.");
+
+      // Check if both page and pageSize are specified
+      if (request.Page == default || request.PageSize == default)
+        return BadRequest("Both Page and PageSize must be specified.");
+
+      if (request.Page <= 0 || request.PageSize <= 0)
+        return BadRequest("Page and PageSize must be greater than zero.");
+
+      // Set the organizationId in the request object
+      request.SchoolId = schoolId;
+      try
+      {
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response)
+          : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-parents-in-school/{schoolId}")]
+    [Authorize]
+    public async Task<IActionResult> ParentsInSchool(string schoolId, [FromQuery] GetParents.GetParentsQuery request)
+    {
+      if (string.IsNullOrEmpty(schoolId))
+        return BadRequest("school Id must be specified.");
+
+      // Check if both page and pageSize are specified
+      if (request.Page == default || request.PageSize == default)
+        return BadRequest("Both Page and PageSize must be specified.");
+
+      if (request.Page <= 0 || request.PageSize <= 0)
+        return BadRequest("Page and PageSize must be greater than zero.");
+
+      // Set the organizationId in the request object
+      request.SchoolId = schoolId;
+      try
+      {
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response)
+          : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-students-in-school/{schoolId}")]
+    [Authorize]
+    public async Task<IActionResult> StudentsInSchool(string schoolId, [FromQuery] GetStudents.GetStudentsQuery request)
+    {
+      if (string.IsNullOrEmpty(schoolId))
+        return BadRequest("school Id must be specified.");
+
+      // Check if both page and pageSize are specified
+      if (request.Page == default || request.PageSize == default)
+        return BadRequest("Both Page and PageSize must be specified.");
+
+      if (request.Page <= 0 || request.PageSize <= 0)
+        return BadRequest("Page and PageSize must be greater than zero.");
+
+      // Set the organizationId in the request object
+      request.SchoolId = schoolId;
+      try
+      {
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response)
+          : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
       }
     }
   }

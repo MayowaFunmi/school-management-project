@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { IParent } from '../../../models/parentModels';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
 import { toast } from 'react-toastify';
-import { uploadProfilePicture } from '../../../features/uploadSlice';
+import { clearUploadStatus, uploadProfilePicture } from '../../../features/uploadSlice';
 import ProfileImage from '../../images/ProfileImage';
 import { formatDateOfBirth } from '../../../utils/formatDate';
+import { clearSchoolUsers, resetOrganizationSchool, resetSchoolsById } from '../../../features/schoolSlice';
+import store from '../../../store/store';
+import { useNavigate } from 'react-router-dom';
 
 interface ParentDetailsProps {
   data: IParent;
@@ -12,8 +15,9 @@ interface ParentDetailsProps {
 
 const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const { status } = useAppSelector((state) => state.upload);
-  const { allSchoolIds, schIdMsg } = useAppSelector((state) => state.school);
 
   const notifySuccess = (msg: string) => toast.success(msg);
   const notifyError = (msg: string) => toast.error(msg);
@@ -31,6 +35,12 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
     setIsModalOpen(true);
   }
 
+  const schoolDetails = (schoolId: string) => {
+    store.dispatch(resetOrganizationSchool())
+    store.dispatch(clearSchoolUsers())
+    navigate(`/school-home-page/${schoolId}`);
+  }
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
@@ -54,6 +64,11 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
       notifyError("failed To Upload Profile Picture")
     }
   }, [status])
+
+  useEffect(() => {
+    store.dispatch(clearUploadStatus());
+    store.dispatch(resetSchoolsById());
+  }, [])
   
   return (
     <>
@@ -64,11 +79,11 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
         </div>
         <div className="col-sm-5">
           {data.profilePicture ? (
-            <ProfileImage imageUrl={data.profilePicture} size='200px' />
+            <ProfileImage imageUrl={data.profilePicture} size='200px' borderRadius="50%" classVal='' />
           ) : (
             data.gender === "Male" ? (
             <>
-              <ProfileImage imageUrl="/male_avatar.jpeg" size='200px' />
+              <ProfileImage imageUrl="/male_avatar.jpeg" size='200px' borderRadius="50%" classVal='' />
               <button 
                 className="btn btn-primary"
                 onClick={handleUpload}
@@ -78,7 +93,7 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
             </>
             ) : (
             <>
-              <ProfileImage imageUrl="female_avatar.png" size='200px' />
+              <ProfileImage imageUrl="female_avatar.png" size='200px' borderRadius="50%" classVal='' />
               <button 
                 className="btn btn-primary"
                 onClick={handleUpload}
@@ -114,8 +129,11 @@ const ParentDetails: React.FC<ParentDetailsProps> = ({ data }) => {
       <div className='row'>
         <div className="col-sm-5">
           <p><strong>Organization Unique ID: </strong>{data.organizationUniqueId}</p>
-          <p><strong>Student School: </strong>{data.studentSchool.name}</p>
-          <p><strong>School Address: </strong>{data.studentSchool.address}</p>
+          <div>
+            <p><strong>Student School: </strong>{data.studentSchool.name}</p>
+            <p><strong>School Address: </strong>{data.studentSchool.address}</p>
+            <button className='btn btn-info' onClick={() => schoolDetails(data.studentSchoolId)}>Go To School Page</button>
+          </div>
         </div>
 
         <div className="col-sm-7">
