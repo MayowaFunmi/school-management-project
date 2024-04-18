@@ -1,6 +1,6 @@
 import { IParent } from "./parentModels";
 import { NonTeachingStaff, TeachingStaff } from "./staffModel";
-import { IStudent } from "./studentModel";
+import { ClassArms, IStudent } from "./studentModel";
 
 export type UserLogin = {
     message: string;
@@ -195,6 +195,12 @@ export interface AddZoneModalProps {
   isModalOpen: boolean;
   closeModal: React.MouseEventHandler;
   org: OrgData;
+}
+
+export interface AddClassProps {
+  isModalOpen: boolean;
+  closeModal: React.MouseEventHandler;
+  schoolId: string | undefined
 }
 
 export interface RoleData {

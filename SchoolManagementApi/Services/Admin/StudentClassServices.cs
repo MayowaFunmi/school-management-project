@@ -3,6 +3,7 @@ using SchoolManagementApi.Data;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
 using SchoolManagementApi.Models;
+using SchoolManagementApi.Models.UserModels;
 using WatchDog;
 
 namespace SchoolManagementApi.Services.Admin
@@ -88,6 +89,53 @@ namespace SchoolManagementApi.Services.Admin
       {
         _logger.LogError($"Error getting all school's classes - {ex.Message}");
         WatchLogger.LogError(ex.ToString(), $"Error getting all school's classes - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<Student>> StudentsByClassArm(string StudentClassId)
+    {
+      try
+      {
+        var students = await _context.Students
+          .Where(s => s.StudentClassId.ToString() == StudentClassId)
+          .Include(s => s.User)
+          .Include(s => s.SchoolZone)
+          .Include(s => s.CurrentSchool)
+          .Include(s => s.Department)
+          .Include(s => s.Parent)
+          .Include(s => s.Documents)
+          .ToListAsync();
+        return students;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting students in the same class arm - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting students in the same class arm- {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<Student>> StudentsByClass(string classId)
+    {
+      try
+      {
+        var students = await _context.Students
+          .Include(s => s.StudentClass)
+          .Include(s => s.User)
+          .Include(s => s.SchoolZone)
+          .Include(s => s.CurrentSchool)
+          .Include(s => s.Department)
+          .Include(s => s.Parent)
+          .Include(s => s.Documents)
+          .Where(s => s.StudentClass.StudentClassId.ToString() == classId)
+          .ToListAsync();
+        return students;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting students in the same class - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting - {ex.Message}");
         throw;
       }
     }

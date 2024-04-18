@@ -359,7 +359,7 @@ namespace SchoolManagementApi.Controllers
     }
 
     [HttpGet]
-    [Route("get-all-school-departments/{schoolId}")]
+    [Route("get-school-departments/{schoolId}")]
     [Authorize]
     public async Task<IActionResult> GetDepartmentsInSchool(string schoolId)
     {
@@ -380,23 +380,19 @@ namespace SchoolManagementApi.Controllers
     }
 
     [HttpPost]
-    [Route("add-school-department")]
+    [Route("add-school-department/{schoolId}")]
     [Authorize(Policy = "AdminOrganizationAdmin")]
-    public async Task<IActionResult> AddDepartment(CreateDepartment.CreateDepartmentCommand request)
+    public async Task<IActionResult> AddDepartment(string schoolId, [FromBody] CreateDepartment.CreateDepartmentCommand request)
     {
       try
       {
         if (string.IsNullOrEmpty(CurrentUserId))
-        {
           return Unauthorized("You are not an admin");
-        }
-
-        if (string.IsNullOrEmpty(request.SchoolId) || string.IsNullOrEmpty(request.Name))
-        {
+        if (string.IsNullOrEmpty(schoolId) || string.IsNullOrEmpty(request.Name))
           return BadRequest("All fields are required");
-        }
         
         request.AdminId = CurrentUserId;
+        request.SchoolId = schoolId;
         var response = await _mediator.Send(request);
           return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);
@@ -408,9 +404,9 @@ namespace SchoolManagementApi.Controllers
     }
 
     [HttpPost]
-    [Route("add-student-class")]
+    [Route("add-student-class/{schoolId}")]
     [Authorize(Policy = "Admin")]
-    public async Task<IActionResult> AddStudentClass(CreateStudentClass.CreateStudentClassCommand request)
+    public async Task<IActionResult> AddStudentClass(string schoolId, [FromBody] CreateStudentClass.CreateStudentClassCommand request)
     {
       try
       {
@@ -421,8 +417,10 @@ namespace SchoolManagementApi.Controllers
         if (request.Arm < 1)
           return BadRequest("Class Arm must not be less than 1");
 
-        if (string.IsNullOrEmpty(request.SchoolId) || string.IsNullOrEmpty(request.Name))
+        if (string.IsNullOrEmpty(schoolId) || string.IsNullOrEmpty(request.Name))
           return BadRequest("School Id or Name must be set");
+
+        request.SchoolId = schoolId;
         var response = await _mediator.Send(request);
           return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);

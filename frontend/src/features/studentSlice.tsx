@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Department, StudentInput, StudentState } from "../models/studentModel";
+import { StudentInput, StudentState } from "../models/studentModel";
 import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 
@@ -170,7 +170,7 @@ export const getSchoolDepatments = createAsyncThunk(
 	'student/getSchoolDepatments',
 	async (schoolId: string, thunkApi) => {
 		try {
-			const response = await axios.get(`${baseUrl}/api/student/get-school-departments/${schoolId}`)
+			const response = await axios.get(`${baseUrl}/api/admin/get-school-departments/${schoolId}`)
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -182,7 +182,7 @@ export const getSchoolClasses = createAsyncThunk(
 	'student/getSchoolClasses',
 	async (schoolId: string, thunkApi) => {
 		try {
-			const response = await axios.get(`${baseUrl}/api/student/get-school-class-list/${schoolId}`)
+			const response = await axios.get(`${baseUrl}/api/admin/get-claases-in-school/${schoolId}`)
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -196,6 +196,10 @@ const studentSlice = createSlice({
   reducers: {
     clearStudentData: (state) => {
       return { ...initialState }
+    },
+    resetDepartment: (state) => {
+      state.departments = []
+      state.getDept = ""
     }
   },
   extraReducers: (builder) => {
@@ -285,5 +289,5 @@ const studentSlice = createSlice({
   }
 })
 
-export const { clearStudentData } = studentSlice.actions;
+export const { clearStudentData, resetDepartment } = studentSlice.actions;
 export default studentSlice.reducer;

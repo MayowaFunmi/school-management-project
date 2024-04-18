@@ -3,7 +3,7 @@ import { ISchool, SchoolSearch, UserList, UserSearch } from "../models/userModel
 import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 
-const initialState: ISchool= {
+const initialState: ISchool = {
 	allSchools: [],
 	schMsg: "",
 	allSchoolIds: [],

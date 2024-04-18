@@ -71,3 +71,22 @@ export interface StudentInput {
   religion: string
   parentId: string
 }
+
+export interface IClass {
+  classArms: ClassArms[]
+  classMsg: string
+  addClass: ClassArms
+  addClassMsg: string
+  addDeptMsg: string
+  msg: string
+  getStdentClass: IStudent[]
+  getStdentClassMsg: string
+}
+
+export interface ClassValues {
+  schoolId: string, name: string, arm: number
+}
+
+export interface SchoolDept {
+  schoolId: string, name: string
+}

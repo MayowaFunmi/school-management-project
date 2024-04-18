@@ -2,8 +2,6 @@ import React from 'react'
 import { AddZoneModalProps } from '../models/userModel'
 import Zones from '../components/admin/Zones'
 import './modals.css';
-import { useAppSelector } from '../hooks/useTypedSelector';
-import { toast } from 'react-toastify';
 
 const AddZoneModal: React.FC<AddZoneModalProps> = ({ isModalOpen, closeModal, org}) => {
   return (

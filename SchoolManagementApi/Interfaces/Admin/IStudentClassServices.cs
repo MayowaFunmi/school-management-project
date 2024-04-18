@@ -1,4 +1,5 @@
 using SchoolManagementApi.Models;
+using SchoolManagementApi.Models.UserModels;
 
 namespace SchoolManagementApi.Intefaces.Admin
 {
@@ -8,6 +9,7 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<bool> GenerateClassArms(StudentClass studentClass);
     Task<List<StudentClass>> GetAllClasses(string schoolId);
     Task<List<ClassArms>> GetAllClassArms(string schoolId, string classId);
-    // add class arms later
+    Task<List<Student>> StudentsByClassArm(string StudentClassId);
+    Task<List<Student>> StudentsByClass(string classId);
   }
 }

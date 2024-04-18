@@ -23,6 +23,15 @@ namespace SchoolManagementApi.Commands.Admin
       {
         try
         {
+          var checkDept = await _departmentServices.DepartmentExists(request.Name!);
+          if (!checkDept)
+          {
+            return new GenericResponse
+            {
+              Status = HttpStatusCode.BadRequest.ToString(),
+              Message = $"{request.Name} Department already exists",
+            };
+          }
           var department = new Department
           {
             SchoolId = Guid.Parse(request.SchoolId!),

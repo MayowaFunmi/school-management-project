@@ -29,6 +29,23 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
+    public async Task<bool> DepartmentExists(string departmentName)
+    {
+      try
+      {
+        var dept = await _context.Departments.FirstOrDefaultAsync(d => d.Name == departmentName);
+        if (dept != null)
+          return true;
+        return false;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error scheccking school departments- {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error chcking school departments - {ex.Message}");
+        throw;
+      }
+    }
+
     public async Task<List<Department>> GetSchoolDepartments(string schoolId)
     {
       try
