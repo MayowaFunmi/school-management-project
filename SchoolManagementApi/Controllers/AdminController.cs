@@ -363,6 +363,7 @@ namespace SchoolManagementApi.Controllers
     [Authorize]
     public async Task<IActionResult> GetDepartmentsInSchool(string schoolId)
     {
+      Console.WriteLine("school id = " + schoolId);
       try
       {
         if (string.IsNullOrEmpty(schoolId))

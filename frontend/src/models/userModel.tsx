@@ -214,6 +214,7 @@ export interface Role {
 }
 export interface Values { uniqueId: string, roleName: string }
 export interface SchoolSearch { organizationId: string, page: number, pageSize?: number }
+export interface GetClassStudents { studentClassId: string, page: number, pageSize?: number }
 export interface UserList { schoolId: string, page: number, pageSize?: number }
 export interface UserSearch { organizationId: string, roleName: string, page: number, userPageSize?: number }
 export interface Values2 { uniqueId: string, roleName2: string }

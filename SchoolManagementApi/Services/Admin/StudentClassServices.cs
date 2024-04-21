@@ -93,18 +93,38 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
-    public async Task<List<Student>> StudentsByClassArm(string StudentClassId)
+    public async Task<int> StudentsByClassArmCount(string studentClassId)
+    {
+      try
+      {
+        var studentCount = await _context.Students
+          .Where(s => s.StudentClassId.ToString() == studentClassId)
+          .CountAsync();
+        return studentCount;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting number of students in the same class arm - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting number of students in the same class arm- {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<Student>> StudentsByClassArm(string studentClassId, int page, int pageSize)
     {
       try
       {
         var students = await _context.Students
-          .Where(s => s.StudentClassId.ToString() == StudentClassId)
+          .Where(s => s.StudentClassId.ToString() == studentClassId)
           .Include(s => s.User)
           .Include(s => s.SchoolZone)
           .Include(s => s.CurrentSchool)
           .Include(s => s.Department)
           .Include(s => s.Parent)
           .Include(s => s.Documents)
+          .Skip((page - 1) * pageSize)
+          .Take(pageSize)
+          .OrderBy(s => s.User.LastName)
           .ToListAsync();
         return students;
       }

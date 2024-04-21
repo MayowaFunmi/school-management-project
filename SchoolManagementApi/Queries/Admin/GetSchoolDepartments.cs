@@ -18,6 +18,7 @@ namespace SchoolManagementApi.Queries.Admin
         try
         {
           var departments = await _departmentServices.GetSchoolDepartments(request.SchoolId);
+          Console.WriteLine("departments = " + departments.Count);
           if (departments.Count != 0)
           {
             return new GenericResponse
@@ -35,6 +36,7 @@ namespace SchoolManagementApi.Queries.Admin
         }
         catch (Exception ex)
         {
+          Console.WriteLine("error = " + ex.Message);
           return new GenericResponse
           {
             Status = HttpStatusCode.InternalServerError.ToString(),

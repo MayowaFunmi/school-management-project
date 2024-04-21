@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ClassValues, IClass, SchoolDept } from "../models/studentModel";
 import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
+import { GetClassStudents } from "../models/userModel";
 
 const initialState: IClass = {
 	classArms: [],
@@ -17,7 +18,9 @@ const initialState: IClass = {
 	addDeptMsg: "",
 	msg: "",
 	getStdentClass: [],
-	getStdentClassMsg: ""
+	getStdentClassMsg: "",
+	studentCurrentPage: 0,
+	studentTotalPages: 0
 }
 
 // copy in student slice
@@ -52,7 +55,6 @@ export const addSchoolDepartment = createAsyncThunk(
 		try {
 			const { schoolId, name } = deptData;
 			const response = await axios.post(`${baseUrl}/api/admin/add-school-department/${schoolId}`, {name}, getAxiosConfig())
-			console.log("add dept = ", response.data)
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -62,9 +64,14 @@ export const addSchoolDepartment = createAsyncThunk(
 
 export const studentsInClassArm = createAsyncThunk(
 	'studentclass/studentsInClassArm',
-	async (studentClassId: string, thunkApi) => {
+	async (classData: GetClassStudents
+		, thunkApi) => {
 		try {
-			const response = await axios.get(`${baseUrl}/api/student/get-students-in-class-arm/${studentClassId}`, getAxiosConfig())
+			const { studentClassId, page, pageSize } = classData
+			const response = await axios.get(`${baseUrl}/api/student/get-students-in-class-arm/${studentClassId}`, {
+				params: { page, pageSize },
+				...getAxiosConfig()
+			})
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -92,7 +99,13 @@ const studentclassSlice = createSlice({
 		},
 		resetAddDept: (state) => {
 			state.addDeptMsg = ""
-		}
+		},
+		resetClassArm: (state) => {
+			state.getStdentClass = []
+			state.getStdentClassMsg = ""
+			state.studentCurrentPage = 0
+			state.studentTotalPages = 0
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -160,9 +173,13 @@ const studentclassSlice = createSlice({
 
 			.addCase(studentsInClassArm.fulfilled, (state, action: PayloadAction<any>) => {
 				if (action.payload) {
-					const classData = action.payload
+					const classData = action.payload.data
 					state.getStdentClassMsg = "success"
-					state.getStdentClass = classData.data
+					state.getStdentClass = classData.students
+					if (classData !== null) {
+						state.studentCurrentPage = classData.currentPage;
+						state.studentTotalPages = classData.totalPages;
+					}
 				}
 			})
 			.addCase(studentsInClassArm.rejected, (state, action: PayloadAction<any>) => {
@@ -173,5 +190,5 @@ const studentclassSlice = createSlice({
 	}
 })
 
-export const { clearClassData, resetAddClass, resetAddDept } = studentclassSlice.actions;
+export const { clearClassData, resetAddClass, resetAddDept, resetClassArm } = studentclassSlice.actions;
 export default studentclassSlice.reducer;

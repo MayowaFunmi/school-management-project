@@ -81,6 +81,8 @@ export interface IClass {
   msg: string
   getStdentClass: IStudent[]
   getStdentClassMsg: string
+  studentCurrentPage: number
+  studentTotalPages: number
 }
 
 export interface ClassValues {

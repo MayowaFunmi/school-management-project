@@ -71,7 +71,7 @@ const ParentProfile: React.FC = () => {
     } else {
       notifyError("something went wrong")
     }
-    navigate('/')
+    navigate('/check-user-status')
   }
 
   useEffect(() => {

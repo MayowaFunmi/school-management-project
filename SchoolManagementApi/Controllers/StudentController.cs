@@ -64,16 +64,23 @@ namespace SchoolManagementApi.Controllers
     [Route("get-students-in-class-arm/{studentClassId}")]
     [Authorize]
 
-    public async Task<IActionResult> StudentsInClassArm(string studentClassId)
+    public async Task<IActionResult> StudentsInClassArm(string studentClassId, [FromQuery] GetStudentsInClassArm.GetStudentsInClassArmQuery request)
     {
+      if (string.IsNullOrEmpty(CurrentUserId))
+          return BadRequest("You are not an authenticated");
+      if (string.IsNullOrEmpty(studentClassId))
+        return BadRequest("class Id cannot be empty");
+
+      if (request.Page == default || request.PageSize == default)
+      return BadRequest("Both Page and PageSize must be specified.");
+
+      if (request.Page <= 0 || request.PageSize <= 0)
+        return BadRequest("Page and PageSize must be greater than zero.");
+
+      request.StudentClassId = studentClassId;
       try
       {
-        if (string.IsNullOrEmpty(CurrentUserId))
-          return BadRequest("You are not an authenticated");
-        if (string.IsNullOrEmpty(studentClassId))
-          return BadRequest("class Id cannot be empty");
-        
-        var response = await _mediator.Send(new GetStudentsInClassArm.GetStudentsInClassArmQuery(studentClassId));
+        var response = await _mediator.Send(request);
         return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);
       }

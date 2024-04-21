@@ -9,7 +9,8 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<bool> GenerateClassArms(StudentClass studentClass);
     Task<List<StudentClass>> GetAllClasses(string schoolId);
     Task<List<ClassArms>> GetAllClassArms(string schoolId, string classId);
-    Task<List<Student>> StudentsByClassArm(string StudentClassId);
+    Task<List<Student>> StudentsByClassArm(string studentClassId, int page, int pageSize);
+    Task<int> StudentsByClassArmCount(string StudentClassId);
     Task<List<Student>> StudentsByClass(string classId);
   }
 }

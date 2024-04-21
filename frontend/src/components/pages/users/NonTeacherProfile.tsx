@@ -75,7 +75,7 @@ const NonTeacherProfile: React.FC = () => {
     if (teacherData && staffMsg && message) {
       notifySuccess(message)
       //navigate to tearcher profile page
-      navigate("/")
+      navigate("/check-user-status")
     }
   }
 

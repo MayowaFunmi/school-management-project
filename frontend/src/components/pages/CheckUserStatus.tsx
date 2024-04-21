@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext';
 import AddTeacherProfile from './users/AddTeacherProfile';
 import AddNonTeacherProfile from './users/AddNonTeacherProfile';
 import AddStudentProfile from './users/AddStudentProfile';
 import AddParentProfile from './users/AddParentProfile';
+import { useNavigate } from 'react-router-dom';
 
 const CheckUserStatus: React.FC = () => {
+  const navigate = useNavigate();
+
   const {
     isAuthenticated,
     isNonTeachingStaffExists,
@@ -13,6 +16,12 @@ const CheckUserStatus: React.FC = () => {
     isStudentExists,
     isTeachingStaffExists,
   } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login")
+    }
+  }, [isAuthenticated, navigate])
 
   return (
     <div>

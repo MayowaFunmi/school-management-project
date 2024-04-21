@@ -90,7 +90,7 @@ const TeacherProfile: React.FC = () => {
     if (teacherData && teacherMsg && msg) {
       notifySuccess(msg)
       //navigate to tearcher profile page
-      navigate("/")
+      navigate("/check-user-status")
     }
   }
 

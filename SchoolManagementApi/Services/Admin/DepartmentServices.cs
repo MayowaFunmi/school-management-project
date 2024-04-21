@@ -54,6 +54,7 @@ namespace SchoolManagementApi.Services.Admin
       }
       catch (Exception ex)
       {
+        Console.WriteLine("error service = " + ex.Message);
         _logger.LogError($"Error getting all school departments- {ex.Message}");
         WatchLogger.LogError(ex.ToString(), $"Error getting all school departments - {ex.Message}");
         throw;

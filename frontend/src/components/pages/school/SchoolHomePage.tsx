@@ -47,22 +47,22 @@ const SchoolHomePage = () => {
 
   const handleViewDetails = (user: TeachingStaff) => {
     store.dispatch(clearSchoolUsers())
-    navigate('/teacher-details', { state: { user }})
+    navigate('teacher-details', { state: { user }})
   }
 
   const handleViewStaffDetails = (user: NonTeachingStaff) => {
     store.dispatch(clearSchoolUsers())
-    navigate('/non-teacher-details', { state: { user }})
+    navigate('non-teacher-details', { state: { user }})
   }
 
   const handleViewParentDetails = (user: IParent) => {
     store.dispatch(clearSchoolUsers())
-    navigate('/parent-details', { state: { user }})
+    navigate('parent-details', { state: { user }})
   }
 
   const handleViewStudentDetails = (user: IStudent) => {
     store.dispatch(clearSchoolUsers())
-    navigate('/student-details', { state: { user }})
+    navigate('student-details', { state: { user }})
   }
 
   useEffect(() => {
@@ -191,6 +191,8 @@ const SchoolHomePage = () => {
       </div>
       <hr />
       <hr />
+
+      {/* outlet somewhere here */}
 
       {(teachersListMsg === "pending" || nonTeachersListMsg === "pending" || parentsListMsg === "pending" || studentsListMsg === "pending") && (
         <p><i>getting users list, please wait ...</i></p>
@@ -340,6 +342,7 @@ const SchoolHomePage = () => {
                 <div className="card-body">
                   <h5 className="card-title">Name: {student.user.lastName} {student.user.firstName}</h5>
                   <p className="card-text">Phone Number: {student.user.phoneNumber}</p>
+                  <p className="card-text">Admission Number: {student.admissionNumber}</p>
                   <div>
                   <button className='btn btn-info' onClick={() => handleViewStudentDetails(student)}>
                     View Details

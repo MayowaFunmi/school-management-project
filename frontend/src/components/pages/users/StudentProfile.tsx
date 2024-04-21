@@ -21,7 +21,6 @@ const StudentProfile: React.FC = () => {
   const { schParents, schParentMsg } = useAppSelector((state) => state.parent);
 
   const dispatch = useAppDispatch();
-  const notifyError = (msg: string) => toast.error(msg);
   const notifySuccess = (msg: string) => toast.success(msg);
   const navigate = useNavigate()
 
@@ -91,7 +90,7 @@ const StudentProfile: React.FC = () => {
     dispatch(createStudentProfile(studentData));
     if (setMessage === "success") {
       notifySuccess(setMsg)
-      navigate('/')
+      navigate('/check-user-status')
     }
   }
 

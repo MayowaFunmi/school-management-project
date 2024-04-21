@@ -9,7 +9,13 @@ namespace SchoolManagementApi.Queries.School
 {
   public class GetStudentsInClassArm
   {
-    public record GetStudentsInClassArmQuery(string studentClassId) : IRequest<GenericResponse>;
+    public class GetStudentsInClassArmQuery : IRequest<GenericResponse>
+    {
+      public string StudentClassId { get; set; } = string.Empty;
+      public int Page { get; set; } = 0;
+      public int PageSize { get; set; } = 0;
+    }
+
 
     public class GetStudentsInClassArmHandler(IStudentClassServices studentClassServices, ILoggerManager logger) : IRequestHandler<GetStudentsInClassArmQuery, GenericResponse>
     {
@@ -18,16 +24,30 @@ namespace SchoolManagementApi.Queries.School
 
       public async Task<GenericResponse> Handle(GetStudentsInClassArmQuery request, CancellationToken cancellationToken)
       {
+        var studentsCount = await _studentClassServices.StudentsByClassArmCount(request.StudentClassId);
+        int totalPages = 1;
+        if (request.Page != 0 || request.PageSize != 0)
+          totalPages = (int)Math.Ceiling((double)studentsCount / request.PageSize);
+        
+        request.Page = Math.Min(Math.Max(request.Page, 1), totalPages);
+
         try
         {
-          var students = await _studentClassServices.StudentsByClassArm(request.studentClassId);
+          var students = await _studentClassServices.StudentsByClassArm(request.StudentClassId, request.Page, request.PageSize);
           if (students.Count != 0)
           {
+            var response = new PageRespnses.StudentsPageResponse
+            {
+              Students = students,
+              TotalPages = totalPages,
+              CurrentPage = request.Page,
+              PagesLeft = totalPages - request.Page
+            };
             return new GenericResponse
             {
               Status = HttpStatusCode.OK.ToString(),
               Message = $"{students.Count} students in class retrieved successfully",
-              Data = students
+              Data = response
             };
           }
           return new GenericResponse

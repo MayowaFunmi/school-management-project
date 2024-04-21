@@ -54,7 +54,7 @@ const Login: React.FC = () => {
 			dispatch(loginUser(userCredentials));
 			//navigate('/get-user-profile');
 			if (status === "success") {
-				return <Navigate to='/' />
+				return <Navigate to='/check-user-status' />
 			}
     } catch (error) {
 	  	notifyError(message);

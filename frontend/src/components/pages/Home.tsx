@@ -8,13 +8,12 @@ import store from '../../store/store';
 import { getSchoolDepatments, resetDepartment } from '../../features/studentSlice';
 import AddStudentClass from '../../modals/AddStudentClass';
 import AddSchoolDept from '../../modals/AddSchoolDept';
-import { clearSchoolUsers } from '../../features/schoolSlice';
 
 const Home: React.FC = () => {
-	const { isAuthenticated, isAdminRoleExists, isOrganizationAdminExists } = useAuth();
+	const { isAuthenticated } = useAuth();
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
-	const { classArms, classMsg, getStdentClass, getStdentClassMsg } = useAppSelector((state) => state.studentclass)
+	const { classArms, classMsg } = useAppSelector((state) => state.studentclass)
 	const { departments, getDept } = useAppSelector((state) => state.student)
 
 	const { schoolId } = useParams<{ schoolId?: string}>();
@@ -35,9 +34,8 @@ const Home: React.FC = () => {
 	}
 
 	const getStudentsInClassArm = (classArmId: string) => {
-		store.dispatch(clearSchoolUsers())
-		dispatch(studentsInClassArm(classArmId))
-			// find better way to display students
+		//store.dispatch(clearSchoolUsers())
+		navigate('students-in-class-arm', { state: { classArmId }})
 	}
 
 	useEffect(() => {
@@ -73,7 +71,7 @@ const Home: React.FC = () => {
 							</div>
 							<div className="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
 								<ul className="nav flex-column">
-									<li className="nav-item dropdown position-static">
+									<li className="nav-item dropdown">
 										<button
 											className="nav-link dropdown-toggle d-flex align-items-center gap-2 active"
 											type="button"
@@ -103,7 +101,7 @@ const Home: React.FC = () => {
 										</ul>
 									</li>
 
-									<li className="nav-item dropdown position-static">
+									<li className="nav-item dropdown">
 										<button
 											className="nav-link dropdown-toggle d-flex align-items-center gap-2 active"
 											type="button"
