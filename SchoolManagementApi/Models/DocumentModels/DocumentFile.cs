@@ -9,11 +9,11 @@ namespace SchoolManagementApi.Models.DocumentModels
   {
     [Key]
     public Guid DocumenetId { get; set; }
-    public List<string> FilesUrls { get; set; }
+    public List<string> FilesUrls { get; set; } = [];
 
     [ForeignKey("UserId")]
-    public string UserId { get; set; }
-    public virtual ApplicationUser User { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public virtual ApplicationUser? User { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
   }

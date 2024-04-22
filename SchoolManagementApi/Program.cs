@@ -1,10 +1,13 @@
 using System.Text;
 using CloudinaryDotNet;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using SchoolManagementApi.Configurations;
 using SchoolManagementApi.Constants;
 using SchoolManagementApi.Data;
@@ -30,8 +33,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+var connectionString = builder.Configuration.GetConnectionString("PostgresDatabase");
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+    options.UseNpgsql(connectionString));
+
+builder.Services.AddHangfire(x =>
+    x.UsePostgreSqlStorage(connectionString));
+
+builder.Services.AddHangfireServer();
+
+
 
 IConfigurationSection cloudinaryConfig = builder.Configuration.GetSection("Cloudinary");
 Account cloudinaryAccount = new(
@@ -161,6 +174,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseHangfireDashboard("/dashboard");
+//app.UseHangfireServer();
 
 app.UseWatchDogExceptionLogger();
 app.UseWatchDog(opt => {

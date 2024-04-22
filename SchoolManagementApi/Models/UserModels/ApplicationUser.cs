@@ -5,10 +5,10 @@ namespace SchoolManagementApi.Models.UserModels
 {
   public class ApplicationUser : IdentityUser
   {
-    public string? OrganizationId { get; set; }
-    public string UniqueId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string OrganizationId { get; set; } = string.Empty;
+    public string UniqueId { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
     public int PercentageCompleted { get; set; }
     //public Organization Organization { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;

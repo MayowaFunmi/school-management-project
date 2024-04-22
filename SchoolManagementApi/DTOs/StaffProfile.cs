@@ -10,32 +10,32 @@ namespace SchoolManagementApi.DTOs
     [Key]
     public Guid StaffProfileId { get; set; }
     [ForeignKey("UserId")]
-    public string UserId { get; set; }
-    public virtual ApplicationUser User { get; set; }
-    public string OrganizationUniqueId { get; set; }
-    public string? Title { get; set; }
-    public string MiddleName { get; set; }
-    public string? ProfilePicture { get; set; }
-    public string Gender { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public virtual ApplicationUser? User { get; set; }
+    public string OrganizationUniqueId { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string MiddleName { get; set; } = string.Empty;
+    public string ProfilePicture { get; set; } = string.Empty;
+    public string Gender { get; set; } = string.Empty;
     public DateTime DateOfBirth { get; set; }
     public int Age { get; set; }
-    public string StateOfOrigin { get; set; }
-    public string LgaOfOrigin { get; set; }
-    public string Address { get; set; }
-    public string Religion { get; set; }
-    public string MaritalStatus { get; set; }
-    public string AboutMe { get; set; }
-    public string Designation { get; set; }
+    public string StateOfOrigin { get; set; } = string.Empty;
+    public string LgaOfOrigin { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Religion { get; set; } = string.Empty;
+    public string MaritalStatus { get; set; } = string.Empty;
+    public string AboutMe { get; set; } = string.Empty;
+    public string Designation { get; set; } = string.Empty;
     public int GradeLevel { get; set; }
     public int Step { get; set; }
     public DateTime? FirstAppointment { get; set; }
     public int YearsInService { get; set; }
     public string? Qualification { get; set; }
-    public string Discipline { get; set; }
+    public string Discipline { get; set; } = string.Empty;
 
     [ForeignKey("CurrentPostingZoneId")]
     public Guid CurrentPostingZoneId { get; set; }
-    public virtual Zone CurrentPostingZone { get; set; }
+    public virtual Zone? CurrentPostingZone { get; set; }
 
     [ForeignKey("CurrentPostingSchoolId")]
     public Guid? CurrentPostingSchoolId { get; set; }

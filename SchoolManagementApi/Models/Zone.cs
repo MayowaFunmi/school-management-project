@@ -8,13 +8,13 @@ namespace SchoolManagementApi.Models
   {
     [Key]
     public Guid ZoneId { get; set; }
-    public string AdminId { get; set; }
+    public string AdminId { get; set; } = string.Empty;
 
     [ForeignKey("OrganizationId")]
     [Required]
     public Guid OrganizationId { get; set; }
-    public string Name { get; set; }
-    public List<School> Schools { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public List<School>? Schools { get; set; }
     public string? State { get; set; }
     public List<string>? LocalGovtAreas { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;

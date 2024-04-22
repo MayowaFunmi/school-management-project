@@ -11,21 +11,21 @@ namespace SchoolManagementApi.Models
     public Guid SchoolId { get; set; }
     [ForeignKey("AdminId")]
     public string? AdminId { get; set; }
-    public ApplicationUser Admin { get; set; }
-    public string OrganizationUniqueId { get; set; }
-    public string SchoolUniqueId { get; set; }
+    public ApplicationUser? Admin { get; set; }
+    public string OrganizationUniqueId { get; set; } = string.Empty;
+    public string SchoolUniqueId { get; set; } = string.Empty;
     [ForeignKey("ZoneId")]
     [Required]
     public Guid ZoneId { get; set; }
     [JsonIgnore]
-    public virtual Zone Zone { get; set; }
-    public string Name { get; set; }
-    public string Address { get; set; }
-    public string? State { get; set; }
-    public string LocalGovtArea { get; set; }
-    public List<Department> Departments { get; set; }
-    public List<StudentClass> StudentClasses { get; set; }
-    public List<Subject> Subjects { get; set; }
+    public virtual Zone? Zone { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string State { get; set; } = string.Empty;
+    public string LocalGovtArea { get; set; } = string.Empty;
+    public List<Department>? Departments { get; set; }
+    public List<StudentClass>? StudentClasses { get; set; }
+    public List<Subject>? Subjects { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
   }

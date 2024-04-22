@@ -9,7 +9,7 @@ namespace SchoolManagementApi.Models
     public Guid ClassArmId { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [ForeignKey("SchoolId")]
     [Required]

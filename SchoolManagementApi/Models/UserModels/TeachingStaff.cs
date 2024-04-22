@@ -9,7 +9,7 @@ namespace SchoolManagementApi.Models.UserModels
 
     [ForeignKey("CurrentSubjectId")]
     public Guid CurrentSubjectId { get; set; }
-    public virtual Subject CurrentSubject { get; set; }
+    public virtual Subject? CurrentSubject { get; set; }
     public List<string>? OtherSubjects { get; set; }
   }
 }

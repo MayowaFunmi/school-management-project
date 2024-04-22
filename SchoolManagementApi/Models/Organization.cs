@@ -8,13 +8,13 @@ namespace SchoolManagementApi.Models
   {
     [Key]
     public Guid OrganizationId { get; set; }
-    public string OrganizationUniqueId { get; set; }
+    public string OrganizationUniqueId { get; set; } = string.Empty;
     [ForeignKey("AdminId")]
     [Required]
-    public string AdminId { get; set; }
-    public ApplicationUser Admin { get; set; }
-    public List<Zone> Zones { get; set; }
-    public string Name { get; set; }
+    public string AdminId { get; set; } = string.Empty;
+    public ApplicationUser? Admin { get; set; }
+    public List<Zone>? Zones { get; set; }
+    public string Name { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; }
   } 
