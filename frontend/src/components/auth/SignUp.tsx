@@ -1,10 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { baseUrl } from '../../config/Config';
-import { Role, RoleData } from '../../models/userModel';
+import LoadingOverlay from '../../spinner/LoadingOverlay';
 
 const SignUp: React.FC = () => {
   const backgroundImages = {
@@ -20,9 +20,9 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [roles, setRoles] = useState<RoleData[]>([]);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('');
+  const [status, setStatus] = useState("");
 
   const notifyError = (msg: string) => toast.error(msg);
   const notifySuccess = (msg: string) => toast.success(msg);
@@ -30,23 +30,9 @@ const SignUp: React.FC = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getRoles = async () => {
-      try {
-        const res = await axios.get<Role>(`${baseUrl}/api/role/get-selected-roles`)
-        const response = res.data
-        if (response.status === "OK") {
-          setRoles(response.data)
-        }
-      } catch (error) {
-        console.log(`Error fetching data: ${error}`)
-      }
-    }
-    getRoles();
-  }, [])
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatus("pending");
     // check if all fields are filled
     if (!username || !firstName || !lastName || !email || !password || !confirmPassword || !role) {
       notifyError("None of the fields must be empty")
@@ -82,6 +68,8 @@ const SignUp: React.FC = () => {
       }
     } catch (error) {
       console.log("error = ", error)
+    } finally {
+      setStatus("");
     }
   }
   return (
@@ -178,11 +166,10 @@ const SignUp: React.FC = () => {
               <option value="" disabled>
                 Select a role
               </option>
-              {roles.map((role) => (
-                <option key={role.id} value={role.name}>
-                  {role.name}
-                </option>
-              ))}
+              <option value="TeachingStaff">Teaching Staff</option>
+              <option value="NonTeachingStaff">Non Teaching Staff</option>
+              <option value="Parent">Parent</option>
+              <option value="Student">Student</option>
             </select>
           </div>
 
@@ -226,6 +213,7 @@ const SignUp: React.FC = () => {
           </div>
         </form>
       </div>
+      <LoadingOverlay loading={status} />
     </div>
   )
 }

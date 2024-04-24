@@ -28,7 +28,7 @@ namespace SchoolManagementApi.Models.UserModels
     public string LgaOfOrigin { get; set; } = string.Empty;
     public string LgaOfResidence { get; set; } = string.Empty;
     public string Occupation { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
   }
 }

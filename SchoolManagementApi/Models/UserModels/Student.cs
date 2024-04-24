@@ -43,7 +43,7 @@ namespace SchoolManagementApi.Models.UserModels
     public Guid ParentId { get; set; }
     public virtual Parent? Parent { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
   }
 }

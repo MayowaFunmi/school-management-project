@@ -26,7 +26,7 @@ namespace SchoolManagementApi.Models
     public List<Department>? Departments { get; set; }
     public List<StudentClass>? StudentClasses { get; set; }
     public List<Subject>? Subjects { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
   }
 }

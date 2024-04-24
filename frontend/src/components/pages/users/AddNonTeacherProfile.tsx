@@ -43,7 +43,7 @@ const AddNonTeacherProfile: React.FC = () => {
         <NonTeacherDetails data={staffData} />
       ) : (staffStatus === "success" && !profileData ? (
         <>
-          <h2>Create teacher profile</h2>
+          <h2>Create non-teaching staff profile</h2>
           <NonTeacherProfile />
         </>
       ) : null

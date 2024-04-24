@@ -12,6 +12,14 @@ namespace SchoolManagementApi.Services.Profiles
     private readonly ApplicationDbContext _context = context;
     private readonly ILoggerManager _logger = logger;
 
+    public async Task<string> OrganizationExists(string organizationUniqueId)
+    {
+      var organization = await _context.Organizations.FirstOrDefaultAsync(o => o.OrganizationUniqueId == organizationUniqueId);
+      if (organization != null)
+        return organization.OrganizationId.ToString();
+      return string.Empty;;
+    }
+
     public async Task<Parent> AddParentProfile(Parent parent)
     {
       try

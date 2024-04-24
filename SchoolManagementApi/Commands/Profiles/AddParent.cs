@@ -38,6 +38,16 @@ namespace SchoolManagementApi.Commands.Profiles
       {
         try
         {
+          var organizationId = await _parentService.OrganizationExists(request.OrganizationUniqueId);
+          if (string.IsNullOrEmpty(organizationId))
+          {
+            return new GenericResponse
+            {
+              Status = HttpStatusCode.OK.ToString(),
+              Message = $"Organization not found"
+            };
+          }
+
           var parent = await _parentService.ParentProfileExists(request.UserId);
           if (parent)
           {
@@ -55,6 +65,7 @@ namespace SchoolManagementApi.Commands.Profiles
             if (user != null)
             {
               user.PercentageCompleted += 30;
+              user.OrganizationId = organizationId;
               await _context.SaveChangesAsync(cancellationToken);
             }
             

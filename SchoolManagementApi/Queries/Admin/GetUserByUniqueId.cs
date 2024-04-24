@@ -21,7 +21,7 @@ namespace SchoolManagementApi.Queries.Admin
       {
         try
         {
-          var userProfile = await _adminService.GetUserByUniqueId(request.UniqueId!, request.RoleName!);
+          var userProfile = await _adminService.GetUserByUniqueId(request.UniqueId!, request.RoleName);
           if (userProfile.User != null)
           {
             return new GenericResponse

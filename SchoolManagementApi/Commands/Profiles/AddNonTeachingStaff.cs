@@ -47,8 +47,8 @@ namespace SchoolManagementApi.Commands.Profiles
         try
         {
           // check if organization exists
-          var checkOrganization = await _nonTeachingStaffInterface.OrganizationExists(request.OrganizationUniqueId);
-          if (!checkOrganization)
+          var organizationId = await _nonTeachingStaffInterface.OrganizationExists(request.OrganizationUniqueId);
+          if (string.IsNullOrEmpty(organizationId))
           {
             return new GenericResponse
             {
@@ -67,13 +67,14 @@ namespace SchoolManagementApi.Commands.Profiles
           }
 
           var staff = MapToNonTeachingStaff(request);
-          var createdSyaff = await _nonTeachingStaffInterface.AddNonTeachingStaff(staff);
-          if (createdSyaff != null)
+          var createdStaff = await _nonTeachingStaffInterface.AddNonTeachingStaff(staff);
+          if (createdStaff != null)
           {
             var user = _context.Users.FirstOrDefault(u => u.Id == request.UserId);
             if (user != null)
             {
               user.PercentageCompleted += 30;
+              user.OrganizationId = organizationId;
               await _context.SaveChangesAsync(cancellationToken);
             }
             
@@ -81,7 +82,7 @@ namespace SchoolManagementApi.Commands.Profiles
             {
               Status = HttpStatusCode.OK.ToString(),
               Message = "Non Teaching Staff profile created sucessfully",
-              Data = createdSyaff
+              Data = createdStaff
             };
           }
           return new GenericResponse

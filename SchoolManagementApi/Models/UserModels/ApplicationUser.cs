@@ -11,7 +11,7 @@ namespace SchoolManagementApi.Models.UserModels
     public string LastName { get; set; } = string.Empty;
     public int PercentageCompleted { get; set; }
     //public Organization Organization { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
   }
 }

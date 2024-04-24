@@ -50,8 +50,8 @@ namespace SchoolManagementApi.Commands.Profiles
         try
         {
           // check if organization exists
-          var checkOrganization = await _teachingStaffInterface.OrganizationExists(request.OrganizationUniqueId);
-          if (!checkOrganization)
+          var organizationId = await _teachingStaffInterface.OrganizationExists(request.OrganizationUniqueId);
+          if (string.IsNullOrEmpty(organizationId))
           {
             return new GenericResponse
             {
@@ -76,6 +76,7 @@ namespace SchoolManagementApi.Commands.Profiles
             if (user != null)
             {
               user.PercentageCompleted += 30;
+              user.OrganizationId = organizationId;
               await _context.SaveChangesAsync(cancellationToken);
             }
             

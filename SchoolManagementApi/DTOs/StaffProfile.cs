@@ -42,7 +42,7 @@ namespace SchoolManagementApi.DTOs
     public virtual School? CurrentPostingSchool { get; set; }
     public virtual List<string>? PreviousSchoolsIds { get; set; }
     public virtual IList<DocumentFile>? Documents { get; set;}
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedDate { get; set; }
   }
 }

@@ -14,7 +14,7 @@ namespace SchoolManagementApi.Models.DocumentModels
     [ForeignKey("UserId")]
     public string UserId { get; set; } = string.Empty;
     public virtual ApplicationUser? User { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
   }
 }

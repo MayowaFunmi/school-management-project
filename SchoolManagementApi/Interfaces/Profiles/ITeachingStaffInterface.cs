@@ -11,7 +11,7 @@ namespace SchoolManagementApi.Intefaces.Profiles
     Task<TeachingStaff> GetTeacherByUniqueId(string uniqueId);
     Task<TeachingStaff> TeachingStaffExists(string userId);
     Task<List<Zone>> AllOrganizationZones(string organizationUniqueId);
-    Task<bool> OrganizationExists(string organizationUniqueId);
+    Task<string> OrganizationExists(string organizationUniqueId);
     Task<DocumentFile> UploadDocuments(string userId, List<string> filesUrls);
   }
 }

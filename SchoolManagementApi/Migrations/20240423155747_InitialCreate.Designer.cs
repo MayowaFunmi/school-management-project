@@ -13,7 +13,7 @@ using SchoolManagementApi.Data;
 namespace SchoolManagementApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240422164103_InitialCreate")]
+    [Migration("20240423155747_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

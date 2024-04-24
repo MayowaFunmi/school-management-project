@@ -79,12 +79,12 @@ namespace SchoolManagementApi.Services.Profiles
       }
     }
 
-    public async Task<bool> OrganizationExists(string organizationUniqueId)
+    public async Task<string> OrganizationExists(string organizationUniqueId)
     {
       var organization = await _context.Organizations.FirstOrDefaultAsync(o => o.OrganizationUniqueId == organizationUniqueId);
       if (organization != null)
-        return true;
-      return false;
+        return organization.OrganizationId.ToString();
+      return string.Empty;;
     }
 
     public async Task<List<Zone>> AllOrganizationZones(string organizationUniqueId)

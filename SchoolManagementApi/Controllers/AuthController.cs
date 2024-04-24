@@ -62,8 +62,8 @@ namespace SchoolManagementApi.Controllers
         PhoneNumber = registerDto.PhoneNumber,
         PercentageCompleted = 30,
         SecurityStamp = Guid.NewGuid().ToString(),
-        CreatedAt = DateTime.Now,
-        UpdatedAt = DateTime.Now  
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow  
       };
       var createdUser = await _userManager.CreateAsync(newUser, registerDto.Password);
       if (!createdUser.Succeeded)
@@ -134,7 +134,7 @@ namespace SchoolManagementApi.Controllers
         Secret = _configuration.GetSection("JWT:Secret").Value!,
         Issuer = _configuration.GetSection("JWT:ValidIssuer").Value!,
         Audience = _configuration.GetSection("JWT:ValidAudience").Value!,
-        Lifetime = DateTime.Now.AddHours(Convert.ToDouble(_configuration.GetSection("JWT:Lifetime").Value))
+        Lifetime = DateTime.UtcNow.AddHours(Convert.ToDouble(_configuration.GetSection("JWT:Lifetime").Value))
       };
       var authSecret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Secret));
 
