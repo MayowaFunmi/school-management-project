@@ -26,7 +26,7 @@ const AddNonTeacherProfile: React.FC = () => {
   }, [staffData, staffStatus])
 
   return (
-    <div>
+    <div className='container'>
       {/* {profileData ? (
         <NonTeacherDetails data={staffData} />
       ) : (

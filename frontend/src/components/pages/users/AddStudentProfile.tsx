@@ -26,7 +26,7 @@ const AddStudentProfile: React.FC = () => {
   }, [getMessage, studentData])
 
   return (
-    <div>
+    <div className='container'>
       {getMessage === "pending" ? (
         <p>{getMsg}</p>
       ) : (getMessage === "success" && profileData ? (

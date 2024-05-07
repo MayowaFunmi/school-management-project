@@ -81,8 +81,14 @@ export interface IClass {
   msg: string
   getStdentClass: IStudent[]
   getStdentClassMsg: string
+  getAllStdentClass: IStudent[]
+  getAllStdentClassMsg: string
   studentCurrentPage: number
   studentTotalPages: number
+  scoreData: ScoreData
+  scoreMsg: string
+  resultData: ClassStudentsScores[]
+  resultMsg: string
 }
 
 export interface ClassValues {
@@ -91,4 +97,52 @@ export interface ClassValues {
 
 export interface SchoolDept {
   schoolId: string, name: string
+}
+
+export interface ScoreDto {
+  studentId: string
+  caTest1: number | 0
+  caTest2: number | 0
+  caTest3: number | 0
+  exam: number | 0
+}
+
+export interface ScoreData {
+  classId: string;
+  subjectId: string;
+  sessionId: string
+  term: string;
+  studentsScores: ScoreDto[]
+}
+
+export interface StudentData {
+  uniqueId: string
+  lastName: string
+  firstName: string
+  middleName: string
+  admissionnumber: string
+}
+
+export interface ClassStudentsScores {
+  studentId: string
+  studentData: StudentData
+  caTest1: number
+  caTest2: number
+  caTest3: number
+  exam: number
+  total: number
+}
+
+export interface ResultQuery {
+  sessionId: string
+  classId: string
+  subjectId: string
+  term: string
+}
+
+export interface Sessions {
+  schoolSessionId: string
+  name: string
+  sessionStarts: string
+  sessionEnds: string
 }

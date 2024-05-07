@@ -3,8 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagementApi.Commands.Profiles;
+using SchoolManagementApi.Commands.Students;
 using SchoolManagementApi.Queries.Profiles;
 using SchoolManagementApi.Queries.School;
+using SchoolManagementApi.Queries.Students;
 
 namespace SchoolManagementApi.Controllers
 {
@@ -91,7 +93,7 @@ namespace SchoolManagementApi.Controllers
     }
 
     [HttpGet]
-    [Route("get-students-in-class/{classId}")]
+    [Route("get-students-in-class/{classId}")] // all students in the same class arm without pagination
     [Authorize]
     public async Task<IActionResult> StudentsInClass(string classId)
     {
@@ -103,6 +105,53 @@ namespace SchoolManagementApi.Controllers
           return BadRequest("class Id cannot be empty");
         
         var response = await _mediator.Send(new GetStudentsInClass.GetStudentsInClassQuery(classId));
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpPost]
+    [Route("add-students-scores")]
+    [Authorize]
+
+    public async Task<IActionResult> AddCATests(AddStudentsCA.AddStudentsCACommand request)
+    {
+      if (string.IsNullOrEmpty(request.ClassId) 
+        || string.IsNullOrEmpty(request.SubjectId)
+        || string.IsNullOrEmpty(request.Term)
+        || string.IsNullOrEmpty(request.SessionId)
+        || request.StudentsScores.Count != 0)
+          return BadRequest("All field are required");
+      try
+      {
+        var response = await _mediator.Send(request);
+        return response.Status == HttpStatusCode.OK.ToString()
+          ? Ok(response) : BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-students-result")]
+    [Authorize]
+
+    public async Task<IActionResult> GetResult(GetStudentsResults.GetStudentsResultsQuery request)
+    {
+      if (string.IsNullOrEmpty(request.ClassId) 
+        || string.IsNullOrEmpty(request.SubjectId)
+        || string.IsNullOrEmpty(request.Term)
+        || string.IsNullOrEmpty(request.SessionId))
+          return BadRequest("All field are required");
+      try
+      {
+        var response = await _mediator.Send(request);
         return response.Status == HttpStatusCode.OK.ToString()
           ? Ok(response) : BadRequest(response);
       }

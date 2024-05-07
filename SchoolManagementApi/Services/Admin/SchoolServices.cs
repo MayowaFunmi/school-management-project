@@ -30,6 +30,28 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
+    public async Task<SchoolSession> AddSchoolSession(SessionDto sessionDto)
+    {
+      try
+      {
+        var session = new SchoolSession
+        {
+          Name = sessionDto.Name,
+          SessionStarts = sessionDto.SessionStarts,
+          SessionEnds = sessionDto.SessionEnds
+        };
+        _context.SchoolSessions.Add(session);
+        await _context.SaveChangesAsync();
+        return session;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error Creating School session - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error Creating School session - {ex.Message}");
+        throw;
+      }
+    }
+
     public async Task<List<School>> AllOrganizationScchools(string OrganizationUniqueId, int page, int pageSize)
     {
       try
@@ -287,6 +309,20 @@ namespace SchoolManagementApi.Services.Admin
       {
         _logger.LogError($"Error getting parents in schools - {ex.Message}");
         WatchLogger.LogError(ex.ToString(), $"Error getting parents in schools - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<SchoolSession>> GetSchoolSessions()
+    {
+      try
+      {
+        return await _context.SchoolSessions.ToListAsync();
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting sessions - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting sessions - {ex.Message}");
         throw;
       }
     }

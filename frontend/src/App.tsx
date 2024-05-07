@@ -18,6 +18,8 @@ import NonTeacherPage from './components/pages/school/NonTeacherPage';
 import ParentPage from './components/pages/school/ParentPage';
 import HomeContainer from './components/pages/HomePages/HomeContainer';
 import StudentsList from './components/pages/school/StudentsList';
+import AddStudentsCA from './components/pages/school/AddStudentsCA';
+import ShowStudentsResults from './components/pages/school/ShowStudentsResults';
 
 const App: React.FC = () => {
 
@@ -40,6 +42,8 @@ const App: React.FC = () => {
             <Route path='non-teacher-details' element={<NonTeacherPage />} />
             <Route path='parent-details' element={<ParentPage />} />
             <Route path='students-in-class-arm' element={<StudentsList />} />
+            <Route path='add-student-ca' element={<AddStudentsCA />} />
+            <Route path='get-students-result' element={<ShowStudentsResults />} />
           </Route>
         </Routes>
         <ToastContainer theme="dark" />

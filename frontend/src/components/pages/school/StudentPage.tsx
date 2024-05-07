@@ -85,7 +85,7 @@ const StudentPage = () => {
   }, [])
   
   return (
-    <>
+    <div className='container'>
       <div className='row'>
         <h3>Percentage Completed: {data.user.percentageCompleted}%</h3>
         <div className="progress" role="progressbar" aria-label="Basic example" aria-valuenow={data.user.percentageCompleted} aria-valuemin={0} aria-valuemax={100}>
@@ -208,7 +208,7 @@ const StudentPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

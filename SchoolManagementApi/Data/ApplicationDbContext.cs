@@ -21,7 +21,10 @@ namespace SchoolManagementApi.Data
     public DbSet<Parent> Parents { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<DocumentFile> DocumentFiles { get; set; }
-
+    public DbSet<StudentsCARecord> StudentsCARecords { get; set; }
+    public DbSet<SchoolSession> SchoolSessions { get; set; }
+    public DbSet<SchoolTerm> SchoolTerms { get; set; }
+    public DbSet<StudentsScores> StudentsScores { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,10 +91,15 @@ namespace SchoolManagementApi.Data
         .WithMany(z => z.Schools)
         .OnDelete(DeleteBehavior.NoAction);
 
-      // modelBuilder.Entity<Department>()
-      //   .HasOne(d => d.School)
-      //   .WithMany(s => s.Departments)
-      //   .OnDelete(DeleteBehavior.NoAction);
+      modelBuilder.Entity<SchoolTerm>()
+        .HasOne(d => d.SchoolSession)
+        .WithMany(s => s.SchoolTerms)
+        .OnDelete(DeleteBehavior.NoAction);
+
+      modelBuilder.Entity<StudentsScores>()
+        .HasOne(d => d.StudentsCARecord)
+        .WithMany(s => s.StudentsScores)
+        .OnDelete(DeleteBehavior.NoAction);
 
       // modelBuilder.Entity<ClassArms>()
       //   .HasOne(c => c.StudentClass)

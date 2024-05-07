@@ -122,7 +122,7 @@ const OrganizationDetails = () => {
 
   return (
     <>
-      <div>
+      <div className='container'>
         <h2>Organization Details</h2>
         <p>Name: {org.name}</p>
         <p>Unique ID: {org.organizationUniqueId}</p>

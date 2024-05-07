@@ -30,5 +30,7 @@ namespace SchoolManagementApi.Intefaces.Admin
     Task<List<ClassArms>> GetStudentClassesBySchoolId(string schoolId);
     Task<List<Parent>> GetSchoolParents(string schoolId);
     Task<List<School>> SearchSchool(string searchString);
+    Task<SchoolSession> AddSchoolSession(SessionDto sessionDto);
+    Task<List<SchoolSession>> GetSchoolSessions();
   }
 }

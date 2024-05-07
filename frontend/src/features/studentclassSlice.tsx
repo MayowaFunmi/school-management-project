@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ClassValues, IClass, SchoolDept } from "../models/studentModel";
+import { ClassValues, IClass, ResultQuery, SchoolDept, ScoreData } from "../models/studentModel";
 import axios from "axios";
 import { baseUrl, getAxiosConfig } from "../config/Config";
 import { GetClassStudents } from "../models/userModel";
@@ -20,7 +20,19 @@ const initialState: IClass = {
 	getStdentClass: [],
 	getStdentClassMsg: "",
 	studentCurrentPage: 0,
-	studentTotalPages: 0
+	studentTotalPages: 0,
+	getAllStdentClass: [],
+	getAllStdentClassMsg: "",
+	scoreData: {
+		classId: "",
+		subjectId: "",
+		term: "",
+		studentsScores: [],
+		sessionId: ""
+	},
+	scoreMsg: "",
+	resultData: [],
+	resultMsg: ""
 }
 
 // copy in student slice
@@ -62,6 +74,18 @@ export const addSchoolDepartment = createAsyncThunk(
 	}
 )
 
+export const addStudentsCATests = createAsyncThunk(
+	'studentclass/addStudentsCATests',
+	async (scoreData: ScoreData, thunkApi) => {
+		try {
+			const response = await axios.post(`${baseUrl}/api/student/add-students-scores`, {scoreData}, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
 export const studentsInClassArm = createAsyncThunk(
 	'studentclass/studentsInClassArm',
 	async (classData: GetClassStudents
@@ -72,6 +96,30 @@ export const studentsInClassArm = createAsyncThunk(
 				params: { page, pageSize },
 				...getAxiosConfig()
 			})
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const allStudentsInClassArm = createAsyncThunk(
+	'studentclass/allStudentsInClassArm',
+	async (classId: string, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/student/get-students-in-class/${classId}`, getAxiosConfig())
+			return response.data;
+		} catch (error: any) {
+			return thunkApi.rejectWithValue(error.message);
+		}
+	}
+)
+
+export const getStudentResults = createAsyncThunk(
+	'studentclass/getStudentResults',
+	async (query: ResultQuery, thunkApi) => {
+		try {
+			const response = await axios.get(`${baseUrl}/api/student/"get-students-result"/${query}`, getAxiosConfig())
 			return response.data;
 		} catch (error: any) {
 			return thunkApi.rejectWithValue(error.message);
@@ -97,15 +145,32 @@ const studentclassSlice = createSlice({
 			};
 			state.addClassMsg = ""
 		},
+
+		clearClassCATests: (state) => {
+			state.scoreData = {
+				classId: "",
+				subjectId: "",
+				term: "",
+				studentsScores: [],
+				sessionId: ""
+			};
+			state.scoreMsg = ""
+		},
 		resetAddDept: (state) => {
 			state.addDeptMsg = ""
 		},
 		resetClassArm: (state) => {
 			state.getStdentClass = []
+			state.getAllStdentClass = []
 			state.getStdentClassMsg = ""
+			state.getAllStdentClassMsg = ""
 			state.studentCurrentPage = 0
 			state.studentTotalPages = 0
 		},
+		clearResults: (state) => {
+			state.resultData = []
+			state.resultMsg = ""
+		}
 	},
 	extraReducers: (builder) => {
 		builder
@@ -187,8 +252,66 @@ const studentclassSlice = createSlice({
 					state.getStdentClassMsg = "rejected"
 				}
 			})
+
+		builder
+			.addCase(allStudentsInClassArm.pending, (state) => {
+				return { ...state, getAllStdentClassMsg: "pending" }
+			})
+
+			.addCase(allStudentsInClassArm.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const classData = action.payload.data
+					state.getAllStdentClassMsg = "success"
+					state.getAllStdentClass = classData
+				}
+			})
+			.addCase(allStudentsInClassArm.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					state.getAllStdentClassMsg = "rejected"
+				}
+			})
+
+		builder
+			.addCase(addStudentsCATests.pending, (state) => {
+				return { ...state, scoreMsg: "pending" }
+			})
+
+			.addCase(addStudentsCATests.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const classData = action.payload
+					state.scoreData = classData.data
+					state.scoreMsg = "success"
+				}
+			})
+			.addCase(addStudentsCATests.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const classData = action.payload
+					state.scoreData = classData.data
+					state.scoreMsg = "rejected"
+				}
+			})
+
+		builder
+			.addCase(getStudentResults.pending, (state) => {
+				return { ...state, resultMsg: "pending" }
+			})
+
+			.addCase(getStudentResults.fulfilled, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const classData = action.payload
+					state.resultData = classData.data
+					state.resultMsg = "success"
+				}
+			})
+			.addCase(getStudentResults.rejected, (state, action: PayloadAction<any>) => {
+				if (action.payload) {
+					const classData = action.payload
+					state.resultData = classData.data
+					state.resultMsg = "rejected"
+				}
+			})
 	}
 })
 
-export const { clearClassData, resetAddClass, resetAddDept, resetClassArm } = studentclassSlice.actions;
+export const { clearClassData, resetAddClass, resetAddDept, resetClassArm, clearClassCATests, clearResults } = studentclassSlice.actions;
 export default studentclassSlice.reducer;

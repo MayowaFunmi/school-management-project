@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using SchoolManagementApi.Commands.Students;
 using SchoolManagementApi.Data;
+using SchoolManagementApi.DTOs;
 using SchoolManagementApi.Intefaces.Admin;
 using SchoolManagementApi.Intefaces.LoggerManager;
 using SchoolManagementApi.Models;
@@ -141,14 +143,14 @@ namespace SchoolManagementApi.Services.Admin
       try
       {
         var students = await _context.Students
-          .Include(s => s.StudentClass)
-          .Include(s => s.User)
-          .Include(s => s.SchoolZone)
-          .Include(s => s.CurrentSchool)
-          .Include(s => s.Department)
-          .Include(s => s.Parent)
-          .Include(s => s.Documents)
-          .Where(s => s.StudentClass.StudentClassId.ToString() == classId)
+          // .Include(s => s.StudentClass)
+          // .Include(s => s.User)
+          // .Include(s => s.SchoolZone)
+          // .Include(s => s.CurrentSchool)
+          // .Include(s => s.Department)
+          // .Include(s => s.Parent)
+          // .Include(s => s.Documents)
+          .Where(s => s.StudentClassId.ToString() == classId)
           .ToListAsync();
         return students;
       }
@@ -158,6 +160,94 @@ namespace SchoolManagementApi.Services.Admin
         WatchLogger.LogError(ex.ToString(), $"Error getting - {ex.Message}");
         throw;
       }
+    }
+
+    public async Task<StudentsCARecord> AddStudentsCATest(AddStudentsCA.AddStudentsCACommand request)
+    {
+      try
+      {
+        var studentsCATest = new StudentsCARecord
+        {
+          //SchoolId = request.SchoolId,
+          ClassId = request.ClassId,
+          SubjectId = request.SubjectId,
+          SchoolSessionId = request.SessionId,
+          Term = request.Term,
+        };
+
+        _context.StudentsCARecords.Add(studentsCATest);
+        await _context.SaveChangesAsync();
+
+        List<StudentsScores> scoresList = [];
+        
+        foreach (var score in request.StudentsScores)
+        {
+          var studentScore = new StudentsScores
+          {
+            StudentsCARecordId = studentsCATest.TestId.ToString(),
+            StudentId = score.StudentId,
+            CATest1 = score.CATest1,
+            CATest2 = score.CATest2,
+            CATest3 = score.CATest3,
+            Exam = score.Exam
+          };
+          scoresList.Add(studentScore);
+        }
+
+        await _context.AddRangeAsync(scoresList);
+        await _context.SaveChangesAsync();
+        return studentsCATest;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error adding students' score - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error adding students' score - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<List<ClassStudentsScores>> GetClassStudentsScores(string sessionId, string classId, string subjectId, string term)
+    {
+      try
+      {
+        var records = await _context.StudentsCARecords
+          .Where(s => s.ClassId == classId && s.SubjectId == subjectId && s.SchoolSessionId == sessionId && s.Term == term)
+          .Include(s => s.SchoolSession)
+          .Include(s => s.StudentsScores)
+          .ThenInclude(ss => ss.Student)
+          .ToListAsync();
+
+        var classstudentsScores = records
+          .SelectMany(record => record.StudentsScores.Select(score => new ClassStudentsScores
+          {
+            StudentId = score.StudentId,
+            StudentData = new StudentData
+            {
+              UniqueId = score.Student.User!.UniqueId,
+              LastName = score.Student.User.LastName,
+              FirstName = score.Student.User.FirstName,
+              MiddleName = score.Student.MiddleName,
+              AdmissionNumber = score.Student.AdmissionNumber,
+            },
+            CATest1 = score.CATest1,
+            CATest2 = score.CATest2,
+            CATest3 = score.CATest3,
+            Exam = score.Exam
+          }))
+          .ToList();
+        return classstudentsScores;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error getting class students' score - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error getting class students' score - {ex.Message}");
+        throw;
+      }
+    }
+
+    public async Task<StudentSubjectSCores> GetStudentSubjectSCores(string studentId)
+    {
+        throw new NotImplementedException();
     }
 
     private static Guid? AddDepartment(string armName, ApplicationDbContext dbContext)

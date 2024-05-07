@@ -54,7 +54,7 @@ const OrganizationsList: React.FC = () => {
   };
 
   return (
-    <>
+    <div className='container'>
       <h2>List all organizations</h2>
       <hr />
 
@@ -127,7 +127,7 @@ const OrganizationsList: React.FC = () => {
           </div>
         </div>
       )} */}
-    </>
+    </div>
   )
 }
 

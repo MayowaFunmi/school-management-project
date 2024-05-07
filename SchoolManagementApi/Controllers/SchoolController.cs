@@ -389,5 +389,36 @@ namespace SchoolManagementApi.Controllers
         return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
       }
     }
+
+    [HttpPost]
+    [Route("add-school-session")]
+    [Authorize(Policy = "AdminOrganizationAdmin")]
+    public async Task<IActionResult> AddSchoolSession(SessionDto sessionDto)
+    {
+      try
+      {
+        var session = await _schoolServices.AddSchoolSession(sessionDto);
+        return Ok(session);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
+
+    [HttpGet]
+    [Route("get-school-session")]
+    public async Task<IActionResult> GetSchoolSession()
+    {
+      try
+      {
+        var session = await _schoolServices.GetSchoolSessions();
+        return Ok(session);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
   }
 }

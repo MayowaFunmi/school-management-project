@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useTypedSelector';
-import { studentsInClassArm } from '../../../features/studentclassSlice';
+import { clearClassCATests, clearResults, resetClassArm, studentsInClassArm } from '../../../features/studentclassSlice';
 import ProfileImage from '../../images/ProfileImage';
 import { clearSchoolUsers } from '../../../features/schoolSlice';
 import store from '../../../store/store';
 import { IStudent } from '../../../models/studentModel';
 
-const StudentsList = () => {
+const StudentsList: React.FC = () => {
   const location = useLocation();
   const classId: string = location.state.classArmId;
+  const nameOfClass: string = location.state.className;
 	const dispatch = useAppDispatch()
   const navigate = useNavigate()
   
@@ -37,8 +38,21 @@ const StudentsList = () => {
         dispatch(studentsInClassArm({ studentClassId: classId, page: studentCurrentPage - 1, pageSize: size}))
       } else {
         dispatch(studentsInClassArm({ studentClassId: classId, page: studentCurrentPage + 1, pageSize: size}))
-
       }
+    }
+  }
+
+  const addCATests = () => {
+    if (classId) {
+      store.dispatch(resetClassArm())
+      navigate('add-student-ca', { state: { classId, nameOfClass }})
+    }
+  }
+
+  const showResults = () => {
+    if (classId) {
+      store.dispatch(clearResults())
+      navigate(`get-students-result`, { state: { classId, nameOfClass }})
     }
   }
 
@@ -47,10 +61,21 @@ const StudentsList = () => {
       dispatch(studentsInClassArm({ studentClassId: classId, page: 1, pageSize: size}))
     }
   }, [classId, dispatch, size])
+
+  useEffect(() => {
+    store.dispatch(clearClassCATests());
+  }, [])
   
   return (
-    <>
-
+    <div className='container'>
+      <div>
+        <h3>Students in {nameOfClass} class</h3>
+      </div>
+      <div>
+        <button className='btn btn-info' onClick={addCATests}>Add Students Scores</button> | 
+        <button className='btn btn-info' onClick={showResults}>Show Results</button>
+      </div>
+      <hr />
       <div>
         <label htmlFor="size">How many students to be displayed at once: </label>
         <input className='form-control' type="number" id="size" value={size} onChange={handlePageSizeChange} />
@@ -96,7 +121,7 @@ const StudentsList = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   )
 }
 

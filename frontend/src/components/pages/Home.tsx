@@ -3,7 +3,7 @@ import './Home.css';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useAppDispatch, useAppSelector } from '../../hooks/useTypedSelector';
-import { clearClassData, getSchoolClass, resetAddClass, resetAddDept, studentsInClassArm } from '../../features/studentclassSlice';
+import { clearClassData, getSchoolClass, resetAddClass, resetAddDept } from '../../features/studentclassSlice';
 import store from '../../store/store';
 import { getSchoolDepatments, resetDepartment } from '../../features/studentSlice';
 import AddStudentClass from '../../modals/AddStudentClass';
@@ -33,9 +33,9 @@ const Home: React.FC = () => {
 		setIsDeptModalOpen(true)
 	}
 
-	const getStudentsInClassArm = (classArmId: string) => {
+	const getStudentsInClassArm = (classArmId: string, className: string) => {
 		//store.dispatch(clearSchoolUsers())
-		navigate('students-in-class-arm', { state: { classArmId }})
+		navigate('students-in-class-arm', { state: { classArmId, className }})
 	}
 
 	useEffect(() => {
@@ -89,7 +89,7 @@ const Home: React.FC = () => {
 															<Link 
 																className="nav-link d-flex align-items-center gap-2" 
 																to="#"
-																onClick={() => getStudentsInClassArm(clas.classArmId)}
+																onClick={() => getStudentsInClassArm(clas.classArmId, clas.name)}
 															>
 																{clas.name}
 															</Link>

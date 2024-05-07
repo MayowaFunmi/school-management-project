@@ -347,6 +347,7 @@ const SchoolHomePage = () => {
                   <button className='btn btn-info' onClick={() => handleViewStudentDetails(student)}>
                     View Details
                   </button>
+                  {/* view student result */}
                 </div>
                 </div>
               </div>

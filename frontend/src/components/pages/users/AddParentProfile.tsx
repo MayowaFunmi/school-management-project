@@ -26,7 +26,7 @@ const AddParentProfile: React.FC = () => {
   }, [getMessage, getParent])
 
   return (
-    <div>
+    <div className='container'>
       {getMessage === "pending" ? (
         <p>{getMsg}</p>
       ) : (getMessage === "success" && profileData ? (
