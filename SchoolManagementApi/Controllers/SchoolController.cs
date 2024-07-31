@@ -420,5 +420,25 @@ namespace SchoolManagementApi.Controllers
         return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
       }
     }
+
+    [HttpPost]
+    [Route("add-school-terms")]
+    [Authorize(Policy = "AdminOrganizationAdmin")]
+    public async Task<IActionResult> AddSchoolTerms(SchoolTermDto schoolTermDto)
+    {
+      try
+      {
+        var term = await _schoolServices.AddSchoolTerms(schoolTermDto);
+        if (term)
+        {
+          return Ok("Terms added successfully");
+        }
+        return BadRequest();
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"An error occurred while processing your request - {ex.Message}");
+      }
+    }
   }
 }

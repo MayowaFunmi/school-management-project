@@ -52,6 +52,38 @@ namespace SchoolManagementApi.Services.Admin
       }
     }
 
+    public async Task<bool> AddSchoolTerms(SchoolTermDto schoolTermDto)
+    {
+      try
+      {
+        foreach (var term in schoolTermDto.SchoolTerms)
+        {
+          await AddTerm(schoolTermDto.SchoolSessionId, term);
+        }
+        return true;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError($"Error Creating School terms - {ex.Message}");
+        WatchLogger.LogError(ex.ToString(), $"Error Creating School terms - {ex.Message}");
+        throw;
+      }
+    }
+
+    private async Task<SchoolTerm> AddTerm(string sessionId, TermDto termDto)
+    {
+      var term = new SchoolTerm
+      {
+        SchoolSessionId = sessionId,
+        Name = termDto.TermName,
+        TermStarts = termDto.TermStarts,
+        TermEnds = termDto.TermEnds
+      };
+      _context.SchoolTerms.Add(term);
+      await _context.SaveChangesAsync();
+      return term;
+    }
+
     public async Task<List<School>> AllOrganizationScchools(string OrganizationUniqueId, int page, int pageSize)
     {
       try
